@@ -12,7 +12,7 @@
         /// <summary>
         /// Flag to indicate whether client should act.
         /// </summary>
-        public uint ActionFlag { get; set; }
+        public uint? ActionFlags { get; set; }
 
 
     }

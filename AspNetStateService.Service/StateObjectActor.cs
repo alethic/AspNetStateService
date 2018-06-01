@@ -31,7 +31,7 @@ namespace AspNetStateService.Service
         /// <param name="flag"></param>
         /// <param name="time"></param>
         /// <returns></returns>
-        async Task SetDataAsync(byte[] data, uint flag, TimeSpan time)
+        async Task SetDataAsync(byte[] data, uint? flag, TimeSpan? time)
         {
             await StateManager.SetStateAsync("Data", data);
             await StateManager.SetStateAsync("Flag", flag);
@@ -44,7 +44,7 @@ namespace AspNetStateService.Service
         /// </summary>
         /// <param name="flag"></param>
         /// <returns></returns>
-        async Task SetFlagAsync(uint flag)
+        async Task SetFlagAsync(uint? flag)
         {
             await StateManager.SetStateAsync("Flag", flag);
         }
@@ -65,18 +65,18 @@ namespace AspNetStateService.Service
         /// Gets the currently set data.
         /// </summary>
         /// <returns></returns>
-        async Task<(byte[] data, uint flag, DateTime last, TimeSpan time)> GetDataAsync()
+        async Task<(byte[] data, uint? flag, DateTime? last, TimeSpan? time)> GetDataAsync()
         {
             var d = await StateManager.TryGetStateAsync<byte[]>("Data");
-            var f = await StateManager.TryGetStateAsync<uint>("Flag");
-            var u = await StateManager.TryGetStateAsync<DateTime>("Last");
-            var t = await StateManager.TryGetStateAsync<TimeSpan>("Time");
+            var f = await StateManager.TryGetStateAsync<uint?>("Flag");
+            var u = await StateManager.TryGetStateAsync<DateTime?>("Last");
+            var t = await StateManager.TryGetStateAsync<TimeSpan?>("Time");
 
             return (
                 d.HasValue ? d.Value : null,
-                f.HasValue ? f.Value : 0,
-                u.HasValue ? u.Value : DateTime.MinValue,
-                t.HasValue ? t.Value : TimeSpan.MinValue);
+                f.HasValue ? f.Value : null,
+                u.HasValue ? u.Value : null,
+                t.HasValue ? t.Value : null);
         }
 
         /// <summary>
@@ -105,14 +105,14 @@ namespace AspNetStateService.Service
         /// Gets the current lock data.
         /// </summary>
         /// <returns></returns>
-        async Task<(uint cookie, DateTime create)> GetLockAsync()
+        async Task<(uint? cookie, DateTime? create)> GetLockAsync()
         {
-            var l = await StateManager.TryGetStateAsync<uint>("LockCookie");
-            var c = await StateManager.TryGetStateAsync<DateTime>("LockCreate");
+            var l = await StateManager.TryGetStateAsync<uint?>("LockCookie");
+            var c = await StateManager.TryGetStateAsync<DateTime?>("LockCreate");
 
             return (
-                l.HasValue ? l.Value : 0,
-                c.HasValue ? c.Value : DateTime.MinValue);
+                l.HasValue ? l.Value : null,
+                c.HasValue ? c.Value : null);
         }
 
         /// <summary>
@@ -120,7 +120,7 @@ namespace AspNetStateService.Service
         /// </summary>
         /// <param name="cookie"></param>
         /// <returns></returns>
-        public async Task<DataResponse> Get(uint cookie)
+        public async Task<DataResponse> Get()
         {
             var r = new DataResponse();
 
@@ -128,9 +128,13 @@ namespace AspNetStateService.Service
             var (l, c) = await GetLockAsync();
             var (d, f, u, t) = await GetDataAsync();
 
-            r.LockCookie = l;
-            r.LockCreate = c;
-            r.LockAge = DateTime.Now - r.LockCreate;
+            // return lock information if present
+            if (l != null)
+            {
+                r.LockCookie = l;
+                r.LockCreate = c;
+                r.LockAge = DateTime.Now - r.LockCreate;
+            }
 
             // no data found
             if (d == null)
@@ -140,7 +144,7 @@ namespace AspNetStateService.Service
             }
 
             // invalid lock
-            if (l != 0 && l != cookie)
+            if (l != null)
             {
                 r.Status = ResponseStatus.Locked;
                 return r;
@@ -149,12 +153,12 @@ namespace AspNetStateService.Service
             // validate access to data
             r.Status = ResponseStatus.Ok;
             r.Data = d;
-            r.Date = u;
+            r.Timeout = (u + t) - DateTime.Now;
 
             // flag specified
             if (f == 1)
             {
-                r.ActionFlag = 1;
+                r.ActionFlags = 1;
                 await SetFlagAsync(0);
             }
 
@@ -166,53 +170,28 @@ namespace AspNetStateService.Service
         /// </summary>
         /// <param name="cookie"></param>
         /// <returns></returns>
-        public async Task<DataResponse> GetExclusive(uint cookie)
+        public async Task<DataResponse> GetExclusive()
         {
-            var r = await Get(cookie);
+            var r = await Get();
 
             // process requested lock if data successfully retrieved
             if (r.Status == ResponseStatus.Ok)
             {
-                r.LockCookie = cookie;
+                r.LockCookie = (uint)Guid.NewGuid().GetHashCode();
                 r.LockCreate = DateTime.Now;
                 r.LockAge = TimeSpan.Zero;
-                await SetLockAsync(cookie, r.LockCreate);
+                await SetLockAsync((uint)r.LockCookie, (DateTime)r.LockCreate);
             }
 
             return r;
         }
 
-        public async Task<Response> Set(uint cookie, byte[] data, uint flag, TimeSpan time)
+        public async Task<Response> Set(uint? cookie, byte[] data, uint? flag, TimeSpan? time)
         {
             var r = new Response();
 
             var (l, c) = await GetLockAsync();
             var (d, f, u, t) = await GetDataAsync();
-
-            r.LockCookie = l;
-            r.LockCreate = c;
-            r.LockAge = DateTime.Now - r.LockCreate;
-
-            // data exists and is locked
-            if (d != null && l != 0)
-            {
-                // lock belongs to somebody else
-                if (l != cookie)
-                {
-                    r.Status = ResponseStatus.Locked;
-                    return r;
-                }
-
-                if (flag == 1)
-                {
-                    r.Status = ResponseStatus.Ok;
-                    return r;
-                }
-            }
-
-            // no cookie is yet known
-            if (r.LockCookie == 0)
-                r.LockCookie = (uint)Guid.NewGuid().GetHashCode();
 
             // no data sent
             if (data == null)
@@ -221,12 +200,33 @@ namespace AspNetStateService.Service
                 return r;
             }
 
+            // return lock information if present
+            if (l != null)
+            {
+                r.LockCookie = l;
+                r.LockCreate = c;
+                r.LockAge = DateTime.Now - r.LockCreate;
+            }
+
+            if (d != null && flag == 1)
+            {
+                r.Status = ResponseStatus.Ok;
+                return r;
+            }
+
+            // data exists and is locked
+            if (d != null && l != null && l != cookie)
+            {
+                r.Status = ResponseStatus.Locked;
+                return r;
+            }
+
             // save new data
             await SetDataAsync(data, flag, time);
             (d, f, u, t) = await GetDataAsync();
 
-            r.Date = u;
             r.Status = ResponseStatus.Ok;
+            r.Timeout = (u + t) - DateTime.Now;
 
             return r;
         }

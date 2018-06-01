@@ -9,11 +9,11 @@ namespace AspNetStateService.Service.Interfaces
     public interface IStateObjectActor : IActor
     {
 
-        Task<DataResponse> Get(uint cookie);
+        Task<DataResponse> Get();
 
-        Task<DataResponse> GetExclusive(uint cookie);
+        Task<DataResponse> GetExclusive();
 
-        Task<Response> Set(uint cookie, byte[] data, uint flag, TimeSpan time);
+        Task<Response> Set(uint? cookie, byte[] data, uint? flag, TimeSpan? time);
 
         Task<Response> ReleaseExclusive(uint cookie);
 

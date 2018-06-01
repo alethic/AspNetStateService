@@ -30,7 +30,7 @@
     <Endpoints>
       <Endpoint Name="StateObjectActorServiceEndpointV2" />
       <Endpoint Name="StateObjectActorServiceReplicatorEndpoint" />
-      <Endpoint Name="ServiceEndpoint" Type="Input" UriScheme="http" />
+      <Endpoint Name="HttpServiceEndpoint" Protocol="http" Type="Input" />
     </Endpoints>
   </Resources>
 </ServiceManifest>

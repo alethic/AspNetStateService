@@ -21,9 +21,11 @@
 
   <ItemGroup>
     <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="4.2.2" />
-    <PackageReference Include="FileAndServe.Components.AspNetCore" Version="3.0.0-unstable0158" />
-    <PackageReference Include="FileAndServe.Components.ServiceFabric.AspNetCore" Version="3.0.0-unstable0158" />
+    <PackageReference Include="Cogito.Core" Version="2.0.0" />
+    <PackageReference Include="FileAndServe.Components.AspNetCore" Version="3.0.0-unstable0159" />
+    <PackageReference Include="FileAndServe.Components.ServiceFabric.AspNetCore" Version="3.0.0-unstable0159" />
     <PackageReference Include="Microsoft.AspNetCore" Version="2.1.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Server.HttpSys" Version="2.1.0" />
     <PackageReference Include="Microsoft.ServiceFabric" Version="6.2.283" />
     <PackageReference Include="Microsoft.ServiceFabric.Actors" Version="3.1.283" />
     <PackageReference Include="Microsoft.ServiceFabric.AspNetCore.Kestrel" Version="3.1.283" />

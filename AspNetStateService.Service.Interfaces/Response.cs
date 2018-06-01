@@ -14,22 +14,22 @@ namespace AspNetStateService.Service.Interfaces
         /// <summary>
         /// Date of data.
         /// </summary>
-        public DateTime Date { get; set; }
+        public TimeSpan? Timeout { get; set; }
 
         /// <summary>
         /// Identifier of the lock.
         /// </summary>
-        public uint LockCookie { get; set; }
+        public uint? LockCookie { get; set; }
 
         /// <summary>
         /// Date at which the lock was last renewed.
         /// </summary>
-        public DateTime LockCreate { get; set; }
+        public DateTime? LockCreate { get; set; }
 
         /// <summary>
         /// Current age of the lock.
         /// </summary>
-        public TimeSpan LockAge { get; set; }
+        public TimeSpan? LockAge { get; set; }
 
     }
 
