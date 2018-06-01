@@ -1,12 +1,30 @@
-﻿using System;
+﻿using System.Threading;
+using System.Threading.Tasks;
+
+using Autofac;
+using Autofac.Integration.ServiceFabric;
+
+using FileAndServe.Autofac;
+using FileAndServe.Components.ServiceFabric.AspNetCore;
 
 namespace AspNetStateService.Service
 {
-    class Program
+
+    public static class Program
     {
-        static void Main(string[] args)
+
+        public static async Task Main()
         {
-            Console.WriteLine("Hello World!");
+            var builder = new ContainerBuilder();
+            builder.RegisterAllAssemblyModules();
+            builder.RegisterServiceFabricSupport();
+            builder.RegisterStatelessKestrelWebService<StateWebService>("StateWebService");
+            builder.RegisterActor<StateObjectActor>();
+
+            using (builder.Build())
+                await Task.Delay(Timeout.Infinite);
         }
+
     }
+
 }
