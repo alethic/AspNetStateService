@@ -1,0 +1,19 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="4.2.2" />
+    <PackageReference Include="Cogito.Core" Version="2.0.0" />
+    <PackageReference Include="FileAndServe.AspNetCore" Version="3.0.0-unstable0159" />
+    <PackageReference Include="FileAndServe.AspNetCore.Autofac" Version="3.0.0-unstable0159" />
+    <PackageReference Include="FileAndServe.Autofac" Version="3.0.0-unstable0159" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\AspNetStateService.Interfaces\AspNetStateService.Interfaces.csproj" />
+  </ItemGroup>
+
+</Project>

@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Fabric;
 using System.Net;
-using System.Threading;
 using System.Threading.Tasks;
 
-using AspNetStateService.Fabric.Interfaces;
 using AspNetStateService.Interfaces;
 
 using Autofac;
@@ -18,30 +15,31 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.ServiceFabric.Actors;
-using Microsoft.ServiceFabric.Actors.Client;
 
-namespace AspNetStateService.Fabric.Services
+namespace AspNetStateService.AspNetCore
 {
 
+    /// <summary>
+    /// Base ASP.Net Core Web Service implementation around a <see cref="IStateObject"/>.
+    /// </summary>
     [RegisterAs(typeof(StateWebService))]
     public class StateWebService
     {
 
         readonly ILifetimeScope parent;
-        readonly StatelessServiceContext serviceContext;
+        readonly IStateObjectProvider stateObjectProvider;
 
         ILifetimeScope scope;
 
         /// <summary>
         /// Initializes a new instance.
         /// </summary>
-        /// <param name="serviceContext"></param>
         /// <param name="parent"></param>
-        public StateWebService(ILifetimeScope parent, StatelessServiceContext serviceContext = null)
+        /// <param name="stateObjectProvider"></param>
+        public StateWebService(ILifetimeScope parent, IStateObjectProvider stateObjectProvider)
         {
             this.parent = parent ?? throw new ArgumentNullException(nameof(parent));
-            this.serviceContext = serviceContext;
+            this.stateObjectProvider = stateObjectProvider ?? throw new ArgumentNullException(nameof(stateObjectProvider));
         }
 
         /// <summary>
@@ -54,25 +52,13 @@ namespace AspNetStateService.Fabric.Services
         }
 
         /// <summary>
-        /// Gets the <see cref="ActorId"/> for the given request.
+        /// Gets a reference to the <see cref="IStateObject"/> implementation.
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        ActorId GetActorId(HttpContext context)
+        protected Task<IStateObject> GetStateObjectAsync(HttpContext context)
         {
-            return new ActorId(WebUtility.UrlDecode(context.Request.Path.Value.TrimStart('/')));
-        }
-
-        /// <summary>
-        /// Gets an actor proxy to actor for the given state request.
-        /// </summary>
-        /// <param name="context"></param>
-        /// <returns></returns>
-        async Task<IStateObject> GetActorProxy(HttpContext context)
-        {
-            var actorId = GetActorId(context);
-            var fabctx = await FabricRuntime.GetActivationContextAsync(TimeSpan.FromSeconds(5), CancellationToken.None);
-            return new StateActorProxyObject(ActorProxy.Create<IStateActor>(actorId));
+            return stateObjectProvider.GetStateObjectAsync(WebUtility.UrlDecode(context.Request.Path.Value.TrimStart('/')));
         }
 
         /// <summary>
@@ -84,25 +70,29 @@ namespace AspNetStateService.Fabric.Services
         {
             app.Use(async (ctx, next) =>
             {
+                var state = await GetStateObjectAsync(ctx);
+                if (state == null)
+                    throw new InvalidOperationException("Could not resolve state object for request.");
+
                 switch (ctx.Request.Method)
                 {
                     case "GET" when ctx.Request.Headers["Exclusive"] == "Acquire":
-                        await GetExclusive(ctx, await GetActorProxy(ctx));
+                        await GetExclusive(ctx, state);
                         return;
                     case "GET" when ctx.Request.Headers["Exclusive"] == "Release":
-                        await ReleaseExclusive(ctx, await GetActorProxy(ctx));
+                        await ReleaseExclusive(ctx, state);
                         return;
                     case "GET":
-                        await Get(ctx, await GetActorProxy(ctx));
+                        await Get(ctx, state);
                         return;
                     case "PUT":
-                        await Set(ctx, await GetActorProxy(ctx));
+                        await Set(ctx, state);
                         return;
                     case "DELETE":
-                        await Remove(ctx, await GetActorProxy(ctx));
+                        await Remove(ctx, state);
                         return;
                     case "HEAD":
-                        await ResetTimeout(ctx, await GetActorProxy(ctx));
+                        await ResetTimeout(ctx, state);
                         return;
                 }
 

@@ -69,11 +69,12 @@ namespace AspNetStateService.Fabric.Services
         /// <summary>
         /// Sets the data fields.
         /// </summary>
+        /// <param name="id"></param>
         /// <param name="data"></param>
         /// <param name="extraFlags"></param>
         /// <param name="timeout"></param>
         /// <returns></returns>
-        public async Task SetDataAsync(byte[] data, uint? extraFlags, TimeSpan? timeout)
+        public async Task SetDataAsync(string id, byte[] data, uint? extraFlags, TimeSpan? timeout)
         {
             await SetStateAsync(DATA_FIELD, data);
             await SetStateAsync(EXTRA_FLAGS_FIELD, extraFlags);
@@ -84,9 +85,10 @@ namespace AspNetStateService.Fabric.Services
         /// <summary>
         /// Sets the extra flags field.
         /// </summary>
+        /// <param name="id"></param>
         /// <param name="extraFlags"></param>
         /// <returns></returns>
-        public async Task SetFlagAsync(uint? extraFlags)
+        public async Task SetFlagAsync(string id, uint? extraFlags)
         {
             await SetStateAsync(EXTRA_FLAGS_FIELD, extraFlags);
         }
@@ -94,8 +96,9 @@ namespace AspNetStateService.Fabric.Services
         /// <summary>
         /// Gets the current data fields.
         /// </summary>
+        /// <param name="id"></param>
         /// <returns></returns>
-        public async Task<(byte[] data, uint? extraFlags, TimeSpan? timeout, DateTime? touch)> GetDataAsync()
+        public async Task<(byte[] data, uint? extraFlags, TimeSpan? timeout, DateTime? touch)> GetDataAsync(string id)
         {
             var d = await GetStateAsync<byte[]>(DATA_FIELD);
             var f = await GetStateAsync<uint?>(EXTRA_FLAGS_FIELD);
@@ -107,8 +110,9 @@ namespace AspNetStateService.Fabric.Services
         /// <summary>
         /// Removes the current data.
         /// </summary>
+        /// <param name="id"></param>
         /// <returns></returns>
-        public async Task RemoveDataAsync()
+        public async Task RemoveDataAsync(string id)
         {
             await RemoveStateAsync(DATA_FIELD);
             await RemoveStateAsync(EXTRA_FLAGS_FIELD);
@@ -119,8 +123,9 @@ namespace AspNetStateService.Fabric.Services
         /// <summary>
         /// Gets the current lock fields.
         /// </summary>
+        /// <param name="id"></param>
         /// <returns></returns>
-        public async Task<(uint? cookie, DateTime? time)> GetLockAsync()
+        public async Task<(uint? cookie, DateTime? time)> GetLockAsync(string id)
         {
             var l = await GetStateAsync<uint?>(LOCK_COOKIE_FIELD);
             var c = await GetStateAsync<DateTime?>(LOCK_TIME_FIELD);
@@ -130,20 +135,22 @@ namespace AspNetStateService.Fabric.Services
         /// <summary>
         /// Sets the current lock fields.
         /// </summary>
+        /// <param name="id"></param>
         /// <param name="cookie"></param>
-        /// <param name="update"></param>
+        /// <param name="time"></param>
         /// <returns></returns>
-        public async Task SetLockAsync(uint cookie, DateTime update)
+        public async Task SetLockAsync(string id, uint cookie, DateTime time)
         {
             await SetStateAsync(LOCK_COOKIE_FIELD, cookie);
-            await SetStateAsync(LOCK_TIME_FIELD, update);
+            await SetStateAsync(LOCK_TIME_FIELD, time);
         }
 
         /// <summary>
         /// Removes the current lock.
         /// </summary>
+        /// <param name="id"></param>
         /// <returns></returns>
-        public async Task RemoveLockAsync()
+        public async Task RemoveLockAsync(string id )
         {
             await RemoveStateAsync(LOCK_COOKIE_FIELD);
             await RemoveStateAsync(LOCK_TIME_FIELD);
@@ -152,9 +159,10 @@ namespace AspNetStateService.Fabric.Services
         /// <summary>
         /// Invoked to register the expire at time. The implementation can register a timer to trigger at this time to expire state.
         /// </summary>
+        /// <param name="id"></param>
         /// <param name="timeout"></param>
         /// <returns></returns>
-        public async Task SetTimeoutAsync(TimeSpan? timeout)
+        public async Task SetTimeoutAsync(string id, TimeSpan? timeout)
         {
             await actor.SetTimeoutAsync(timeout);
         }

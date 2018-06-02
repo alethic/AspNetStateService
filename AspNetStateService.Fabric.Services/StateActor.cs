@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Threading;
 using System.Threading.Tasks;
 
 using AspNetStateService.Core;
@@ -29,7 +28,7 @@ namespace AspNetStateService.Fabric.Services
         public StateActor(ActorService actorService, ActorId actorId) :
             base(actorService, actorId)
         {
-            this.state = new StateObject(new StateActorDataStore(this));
+            this.state = new StateObject(actorId.GetStringId(), new StateActorDataStore(this));
         }
 
         /// <summary>

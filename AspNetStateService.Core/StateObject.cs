@@ -12,14 +12,17 @@ namespace AspNetStateService.Core
     public class StateObject : IStateObject
     {
 
+        readonly string id;
         readonly IStateObjectDataStore store;
 
         /// <summary>
         /// Initializes a new instance.
         /// </summary>
+        /// <param name="id"></param>
         /// <param name="store"></param>
-        public StateObject(IStateObjectDataStore store)
+        public StateObject(string id, IStateObjectDataStore store)
         {
+            this.id = id ?? throw new ArgumentNullException(nameof(id));
             this.store = store ?? throw new ArgumentNullException(nameof(store));
         }
 
@@ -28,18 +31,18 @@ namespace AspNetStateService.Core
             var r = new DataResponse();
 
             // load current information
-            var (l, c) = await store.GetLockAsync();
-            var (d, f, t, u) = await store.GetDataAsync();
+            var (l, c) = await store.GetLockAsync(id);
+            var (d, f, t, u) = await store.GetDataAsync(id);
 
             // expire session if required
             if ((u + t) - DateTime.Now < TimeSpan.Zero)
             {
-                await store.RemoveLockAsync();
-                await store.RemoveDataAsync();
+                await store.RemoveLockAsync(id);
+                await store.RemoveDataAsync(id);
 
                 // reload current state
-                (l, c) = await store.GetLockAsync();
-                (d, f, t, u) = await store.GetDataAsync();
+                (l, c) = await store.GetLockAsync(id);
+                (d, f, t, u) = await store.GetDataAsync(id);
             }
 
             // return lock information if present
@@ -73,7 +76,7 @@ namespace AspNetStateService.Core
             if (f == 1)
             {
                 r.ActionFlags = 1;
-                await store.SetFlagAsync(0);
+                await store.SetFlagAsync(id, 0);
             }
 
             return r;
@@ -89,7 +92,7 @@ namespace AspNetStateService.Core
                 r.LockCookie = (uint)Guid.NewGuid().GetHashCode();
                 r.LockTime = DateTime.Now;
                 r.LockAge = TimeSpan.Zero;
-                await store.SetLockAsync((uint)r.LockCookie, (DateTime)r.LockTime);
+                await store.SetLockAsync(id, (uint)r.LockCookie, (DateTime)r.LockTime);
             }
 
             return r;
@@ -99,18 +102,18 @@ namespace AspNetStateService.Core
         {
             var r = new Response();
 
-            var (l, c) = await store.GetLockAsync();
-            var (d, f, t, u) = await store.GetDataAsync();
+            var (l, c) = await store.GetLockAsync(id);
+            var (d, f, t, u) = await store.GetDataAsync(id);
 
             // expire session if required
             if ((u + t) - DateTime.Now < TimeSpan.Zero)
             {
-                await store.RemoveLockAsync();
-                await store.RemoveDataAsync();
+                await store.RemoveLockAsync(id);
+                await store.RemoveDataAsync(id);
 
                 // reload current state
-                (l, c) = await store.GetLockAsync();
-                (d, f, t, u) = await store.GetDataAsync();
+                (l, c) = await store.GetLockAsync(id);
+                (d, f, t, u) = await store.GetDataAsync(id);
             }
 
             // no data sent
@@ -143,15 +146,15 @@ namespace AspNetStateService.Core
             }
 
             // save new data
-            await store.SetDataAsync(data, flag, time);
-            (d, f, t, u) = await store.GetDataAsync();
+            await store.SetDataAsync(id, data, flag, time);
+            (d, f, t, u) = await store.GetDataAsync(id);
 
             r.Status = ResponseStatus.Ok;
             r.Timeout = (u + t) - DateTime.Now;
 
             // ensure we auto expire
             if (r.Timeout > TimeSpan.Zero)
-                await store.SetTimeoutAsync(r.Timeout);
+                await store.SetTimeoutAsync(id, r.Timeout);
 
             return r;
         }
@@ -160,8 +163,8 @@ namespace AspNetStateService.Core
         {
             var r = new Response();
 
-            var (l, c) = await store.GetLockAsync();
-            var (d, f, u, t) = await store.GetDataAsync();
+            var (l, c) = await store.GetLockAsync(id);
+            var (d, f, u, t) = await store.GetDataAsync(id);
 
             r.LockCookie = l;
             r.LockTime = c;
@@ -180,7 +183,7 @@ namespace AspNetStateService.Core
             }
 
             // remov any locks
-            await store.RemoveLockAsync();
+            await store.RemoveLockAsync(id);
             r.Status = ResponseStatus.Ok;
             return r;
         }
@@ -189,8 +192,8 @@ namespace AspNetStateService.Core
         {
             var r = new Response();
 
-            var (l, c) = await store.GetLockAsync();
-            var (d, f, u, t) = await store.GetDataAsync();
+            var (l, c) = await store.GetLockAsync(id);
+            var (d, f, u, t) = await store.GetDataAsync(id);
 
             r.LockCookie = l;
             r.LockTime = c;
@@ -208,7 +211,7 @@ namespace AspNetStateService.Core
                 return r;
             }
 
-            await store.RemoveDataAsync();
+            await store.RemoveDataAsync(id);
             r.Status = ResponseStatus.Ok;
             return r;
         }
@@ -217,8 +220,8 @@ namespace AspNetStateService.Core
         {
             var r = new Response();
 
-            var (l, c) = await store.GetLockAsync();
-            var (d, f, t, u) = await store.GetDataAsync();
+            var (l, c) = await store.GetLockAsync(id);
+            var (d, f, t, u) = await store.GetDataAsync(id);
 
             r.LockCookie = l;
             r.LockTime = c;
@@ -231,15 +234,15 @@ namespace AspNetStateService.Core
             }
 
             // refresh data, which refreshes timeout
-            await store.SetDataAsync(d, f, t);
-            (d, f, t, u) = await store.GetDataAsync();
+            await store.SetDataAsync(id, d, f, t);
+            (d, f, t, u) = await store.GetDataAsync(id);
 
             r.Status = ResponseStatus.Ok;
             r.Timeout = (u + t) - DateTime.Now;
 
             // ensure we auto expire
             if (r.Timeout > TimeSpan.Zero)
-                await store.SetTimeoutAsync(r.Timeout);
+                await store.SetTimeoutAsync(id, r.Timeout);
 
             return r;
         }

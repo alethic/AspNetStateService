@@ -7,11 +7,19 @@ Project("{A07B5EB6-E848-4116-A8D0-A826331D98C6}") = "AspNetStateService.Fabric",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AspNetStateService.Interfaces", "AspNetStateService.Interfaces\AspNetStateService.Interfaces.csproj", "{AD00C48E-208B-45E3-8F3C-CA3E1863479E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AspNetStateService.Core", "AspNetStateService.Core\AspNetStateService.Core.csproj", "{01B996A3-93A6-4BB5-9FA1-8622563102C6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AspNetStateService.Core", "AspNetStateService.Core\AspNetStateService.Core.csproj", "{01B996A3-93A6-4BB5-9FA1-8622563102C6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AspNetStateService.Fabric.Interfaces", "AspNetStateService.Fabric.Interfaces\AspNetStateService.Fabric.Interfaces.csproj", "{C8338E08-759A-4B10-ACAD-A35BE6FC4AF9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AspNetStateService.Fabric.Interfaces", "AspNetStateService.Fabric.Interfaces\AspNetStateService.Fabric.Interfaces.csproj", "{C8338E08-759A-4B10-ACAD-A35BE6FC4AF9}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AspNetStateService.Fabric.Services", "AspNetStateService.Fabric.Services\AspNetStateService.Fabric.Services.csproj", "{D44550A8-E401-4D1C-B6E7-899946C4A52A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AspNetStateService.Console", "AspNetStateService.Console\AspNetStateService.Console.csproj", "{F163486F-C920-4C4A-A9D3-FF9D418092C8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AspNetStateService.AspNetCore.Kestrel", "AspNetStateService.AspNetCore.Kestrel\AspNetStateService.AspNetCore.Kestrel.csproj", "{E0AC1CC0-1848-4ED0-A7FA-9AAA2D92FEDA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AspNetStateService.AspNetCore", "AspNetStateService.AspNetCore\AspNetStateService.AspNetCore.csproj", "{0CB293C0-494D-4AB8-B3C7-5D295864822A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AspNetStateService.EntityFrameworkCore", "AspNetStateService.EntityFrameworkCore\AspNetStateService.EntityFrameworkCore.csproj", "{F0818667-5589-4867-891A-95D6A33071C0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -63,6 +71,38 @@ Global
 		{D44550A8-E401-4D1C-B6E7-899946C4A52A}.Release|Any CPU.Build.0 = Release|Any CPU
 		{D44550A8-E401-4D1C-B6E7-899946C4A52A}.Release|x64.ActiveCfg = Release|Any CPU
 		{D44550A8-E401-4D1C-B6E7-899946C4A52A}.Release|x64.Build.0 = Release|Any CPU
+		{F163486F-C920-4C4A-A9D3-FF9D418092C8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F163486F-C920-4C4A-A9D3-FF9D418092C8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F163486F-C920-4C4A-A9D3-FF9D418092C8}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{F163486F-C920-4C4A-A9D3-FF9D418092C8}.Debug|x64.Build.0 = Debug|Any CPU
+		{F163486F-C920-4C4A-A9D3-FF9D418092C8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F163486F-C920-4C4A-A9D3-FF9D418092C8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F163486F-C920-4C4A-A9D3-FF9D418092C8}.Release|x64.ActiveCfg = Release|Any CPU
+		{F163486F-C920-4C4A-A9D3-FF9D418092C8}.Release|x64.Build.0 = Release|Any CPU
+		{E0AC1CC0-1848-4ED0-A7FA-9AAA2D92FEDA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E0AC1CC0-1848-4ED0-A7FA-9AAA2D92FEDA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E0AC1CC0-1848-4ED0-A7FA-9AAA2D92FEDA}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{E0AC1CC0-1848-4ED0-A7FA-9AAA2D92FEDA}.Debug|x64.Build.0 = Debug|Any CPU
+		{E0AC1CC0-1848-4ED0-A7FA-9AAA2D92FEDA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E0AC1CC0-1848-4ED0-A7FA-9AAA2D92FEDA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E0AC1CC0-1848-4ED0-A7FA-9AAA2D92FEDA}.Release|x64.ActiveCfg = Release|Any CPU
+		{E0AC1CC0-1848-4ED0-A7FA-9AAA2D92FEDA}.Release|x64.Build.0 = Release|Any CPU
+		{0CB293C0-494D-4AB8-B3C7-5D295864822A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0CB293C0-494D-4AB8-B3C7-5D295864822A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0CB293C0-494D-4AB8-B3C7-5D295864822A}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{0CB293C0-494D-4AB8-B3C7-5D295864822A}.Debug|x64.Build.0 = Debug|Any CPU
+		{0CB293C0-494D-4AB8-B3C7-5D295864822A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0CB293C0-494D-4AB8-B3C7-5D295864822A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0CB293C0-494D-4AB8-B3C7-5D295864822A}.Release|x64.ActiveCfg = Release|Any CPU
+		{0CB293C0-494D-4AB8-B3C7-5D295864822A}.Release|x64.Build.0 = Release|Any CPU
+		{F0818667-5589-4867-891A-95D6A33071C0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F0818667-5589-4867-891A-95D6A33071C0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F0818667-5589-4867-891A-95D6A33071C0}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{F0818667-5589-4867-891A-95D6A33071C0}.Debug|x64.Build.0 = Debug|Any CPU
+		{F0818667-5589-4867-891A-95D6A33071C0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F0818667-5589-4867-891A-95D6A33071C0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F0818667-5589-4867-891A-95D6A33071C0}.Release|x64.ActiveCfg = Release|Any CPU
+		{F0818667-5589-4867-891A-95D6A33071C0}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
