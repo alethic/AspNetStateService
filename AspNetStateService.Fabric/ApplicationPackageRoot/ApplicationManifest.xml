@@ -1,16 +1,23 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ApplicationManifest xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ApplicationTypeName="AspNetStateService" ApplicationTypeVersion="1.0.0" xmlns="http://schemas.microsoft.com/2011/01/fabric">
   <Parameters>
-    <Parameter Name="StateActorService_PartitionCount" DefaultValue="10" />
-    <Parameter Name="StateActorService_MinReplicaSetSize" DefaultValue="3" />
+    <Parameter Name="Port" DefaultValue="42424" />
+    <Parameter Name="StateWebService_InstanceCount" DefaultValue="-1" />
+    <Parameter Name="StateActorService_PartitionCount" DefaultValue="3" />
+    <Parameter Name="StateActorService_MinReplicaSetSize" DefaultValue="2" />
     <Parameter Name="StateActorService_TargetReplicaSetSize" DefaultValue="3" />
   </Parameters>
   <ServiceManifestImport>
     <ServiceManifestRef ServiceManifestName="AspNetStateService.Fabric.ServicesPkg" ServiceManifestVersion="1.0.0" />
+    <ResourceOverrides>
+      <Endpoints>
+        <Endpoint Name="HttpServiceEndpoint" Port="[Port]" />
+      </Endpoints>
+    </ResourceOverrides>
   </ServiceManifestImport>
   <DefaultServices>
     <Service Name="StateWebService" ServicePackageActivationMode="ExclusiveProcess">
-      <StatelessService ServiceTypeName="StateWebService" InstanceCount="2">
+      <StatelessService ServiceTypeName="StateWebService" InstanceCount="[StateWebService_InstanceCount]">
         <SingletonPartition />
       </StatelessService>
     </Service>

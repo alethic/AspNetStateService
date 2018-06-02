@@ -28,8 +28,8 @@
   <ConfigPackage Name="Config" Version="1.0.0" />
   <Resources>
     <Endpoints>
-      <Endpoint Name="StateObjectActorServiceEndpointV2" />
       <Endpoint Name="HttpServiceEndpoint" Protocol="http" Type="Input" />
+      <Endpoint Name="StateObjectActorServiceEndpointV2" />
       <Endpoint Name="StateActorServiceEndpoint" />
       <Endpoint Name="StateActorServiceReplicatorEndpoint" />
     </Endpoints>
