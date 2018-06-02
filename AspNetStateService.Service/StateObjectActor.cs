@@ -128,6 +128,17 @@ namespace AspNetStateService.Service
             var (l, c) = await GetLockAsync();
             var (d, f, u, t) = await GetDataAsync();
 
+            // expire session if required
+            if ((u + t) - DateTime.Now < TimeSpan.Zero)
+            {
+                await RemoveLockAsync();
+                await RemoveDataAsync();
+
+                // reload current state
+                (l, c) = await GetLockAsync();
+                (d, f, u, t) = await GetDataAsync();
+            }
+
             // return lock information if present
             if (l != null)
             {
@@ -193,6 +204,17 @@ namespace AspNetStateService.Service
             var (l, c) = await GetLockAsync();
             var (d, f, u, t) = await GetDataAsync();
 
+            // expire session if required
+            if ((u + t) - DateTime.Now < TimeSpan.Zero)
+            {
+                await RemoveLockAsync();
+                await RemoveDataAsync();
+
+                // reload current state
+                (l, c) = await GetLockAsync();
+                (d, f, u, t) = await GetDataAsync();
+            }
+
             // no data sent
             if (data == null)
             {
@@ -208,6 +230,7 @@ namespace AspNetStateService.Service
                 r.LockAge = DateTime.Now - r.LockCreate;
             }
 
+            // flag is set
             if (d != null && flag == 1)
             {
                 r.Status = ResponseStatus.Ok;

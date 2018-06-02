@@ -17,7 +17,7 @@ namespace AspNetStateService.Service.Interfaces
 
         Task<Response> ReleaseExclusive(uint cookie);
 
-        Task<Response> Remove(uint cookie);
+        Task<Response> Remove(uint? cookie);
 
         Task<Response> ResetTimeout();
 

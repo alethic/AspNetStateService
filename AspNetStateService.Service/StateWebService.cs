@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Fabric;
 using System.IO;
+using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using AspNetStateService.Service.Interfaces;
@@ -55,7 +56,7 @@ namespace AspNetStateService.Service
         /// <returns></returns>
         ActorId GetActorId(HttpContext context)
         {
-            return new ActorId(context.Request.Path);
+            return new ActorId(WebUtility.UrlDecode(context.Request.Path.Value.TrimStart('/')));
         }
 
         /// <summary>
@@ -65,8 +66,9 @@ namespace AspNetStateService.Service
         /// <returns></returns>
         async Task<IStateObjectActor> GetActorProxy(HttpContext context)
         {
+            var actorId = GetActorId(context);
             var fabctx = await FabricRuntime.GetActivationContextAsync(TimeSpan.FromSeconds(5), CancellationToken.None);
-            return ActorProxy.Create<IStateObjectActor>(GetActorId(context));
+            return ActorProxy.Create<IStateObjectActor>(actorId);
         }
 
         /// <summary>
@@ -118,7 +120,7 @@ namespace AspNetStateService.Service
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        TimeSpan? GetTimeout(HttpContext context) => uint.TryParse(context.Request.Headers["Timeout"], out uint l) ? (TimeSpan?)TimeSpan.FromSeconds(l) : null;
+        TimeSpan? GetTimeout(HttpContext context) => uint.TryParse(context.Request.Headers["Timeout"], out uint l) ? (TimeSpan?)TimeSpan.FromMinutes(l) : null;
 
         /// <summary>
         /// Gets the Exclusive request header value.
@@ -153,7 +155,7 @@ namespace AspNetStateService.Service
             switch (response.Status)
             {
                 case ResponseStatus.Ok:
-                    context.Response.StatusCode = 404;
+                    context.Response.StatusCode = 200;
                     break;
                 case ResponseStatus.Locked:
                     context.Response.StatusCode = 423;
@@ -167,7 +169,7 @@ namespace AspNetStateService.Service
             }
 
             if (response.Timeout != null)
-                context.Response.Headers["Timeout"] = response.Timeout.Value.TotalSeconds.ToString();
+                context.Response.Headers["Timeout"] = ((int)response.Timeout.Value.TotalMinutes).ToString();
 
             if (response.LockCookie != null)
                 context.Response.Headers["LockCookie"] = response.LockCookie.Value.ToString();
@@ -176,7 +178,7 @@ namespace AspNetStateService.Service
                 context.Response.Headers["LockDate"] = response.LockCreate.Value.Ticks.ToString();
 
             if (response.LockAge != null)
-                context.Response.Headers["LockAge"] = response.LockAge.Value.TotalSeconds.ToString();
+                context.Response.Headers["LockAge"] = ((int)response.LockAge.Value.TotalSeconds).ToString();
         }
 
         /// <summary>
@@ -194,7 +196,7 @@ namespace AspNetStateService.Service
             if (response.Data != null)
             {
                 context.Response.ContentLength = response.Data.Length;
-                context.Response.Body = new MemoryStream(response.Data);
+                context.Response.Body.WriteAsync(response.Data, 0, response.Data.Length);
             }
         }
 
@@ -220,7 +222,7 @@ namespace AspNetStateService.Service
 
         public async Task Remove(HttpContext context, IStateObjectActor actor)
         {
-            SetResponse(context, await actor.Remove((uint)GetLockCookie(context)));
+            SetResponse(context, await actor.Remove((uint?)GetLockCookie(context)));
         }
 
         public async Task ResetTimeout(HttpContext context, IStateObjectActor actor)

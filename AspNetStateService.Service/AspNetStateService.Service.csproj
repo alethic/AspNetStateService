@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>netcoreapp2.0</TargetFramework>
+    <TargetFramework>net47</TargetFramework>
     <IsServiceFabricServiceProject>True</IsServiceFabricServiceProject>
     <RuntimeIdentifier>win7-x64</RuntimeIdentifier>
     <UpdateServiceFabricManifestEnabled>True</UpdateServiceFabricManifestEnabled>
@@ -13,10 +13,12 @@
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <LangVersion>7.2</LangVersion>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <LangVersion>7.2</LangVersion>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 
   <ItemGroup>
@@ -24,6 +26,7 @@
     <PackageReference Include="Cogito.Core" Version="2.0.0" />
     <PackageReference Include="FileAndServe.Components.AspNetCore" Version="3.0.0-unstable0159" />
     <PackageReference Include="FileAndServe.Components.ServiceFabric.AspNetCore" Version="3.0.0-unstable0159" />
+    <PackageReference Include="Harmony" Version="0.0.0-wasabi1" />
     <PackageReference Include="Microsoft.AspNetCore" Version="2.1.0" />
     <PackageReference Include="Microsoft.AspNetCore.Server.HttpSys" Version="2.1.0" />
     <PackageReference Include="Microsoft.ServiceFabric" Version="6.2.283" />
