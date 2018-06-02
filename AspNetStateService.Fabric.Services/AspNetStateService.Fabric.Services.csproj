@@ -22,7 +22,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="FileAndServe.Components.ServiceFabric.AspNetCore" Version="3.0.0-unstable0159" />
+    <PackageReference Include="FileAndServe.Components.ServiceFabric.AspNetCore" Version="3.0.0-unstable0162" />
     <PackageReference Include="Microsoft.AspNetCore.Server.Kestrel" Version="2.1.0" />
     <PackageReference Include="Microsoft.ServiceFabric" Version="6.2.283" />
     <PackageReference Include="Microsoft.ServiceFabric.Actors" Version="3.1.283" />

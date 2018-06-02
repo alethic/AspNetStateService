@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="FileAndServe.Autofac" Version="3.0.0-unstable0162" />
+    <PackageReference Include="FileAndServe.Components.Logging" Version="3.0.0-unstable0162" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="2.1.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\AspNetStateService.EntityFrameworkCore\AspNetStateService.EntityFrameworkCore.csproj" />
+  </ItemGroup>
+
+</Project>

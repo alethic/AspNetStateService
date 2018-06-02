@@ -14,14 +14,18 @@
   </PropertyGroup>
 
   <ItemGroup>
-      <PackageReference Include="FileAndServe.Components.AspNetCore" Version="3.0.0-unstable0159" />
+      <PackageReference Include="FileAndServe.Components.AspNetCore" Version="3.0.0-unstable0162" />
+      <PackageReference Include="FileAndServe.Components.Logging" Version="3.0.0-unstable0162" />
+      <PackageReference Include="FileAndServe.Components.Serilog" Version="3.0.0-unstable0162" />
       <PackageReference Include="Microsoft.AspNetCore" Version="2.1.0" />
+      <PackageReference Include="Serilog.AspNetCore" Version="2.1.1" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\AspNetStateService.AspNetCore.Kestrel\AspNetStateService.AspNetCore.Kestrel.csproj" />
     <ProjectReference Include="..\AspNetStateService.AspNetCore\AspNetStateService.AspNetCore.csproj" />
     <ProjectReference Include="..\AspNetStateService.Core\AspNetStateService.Core.csproj" />
+    <ProjectReference Include="..\AspNetStateService.EntityFrameworkCore.InMemory\AspNetStateService.EntityFrameworkCore.InMemory.csproj" />
   </ItemGroup>
 
 </Project>

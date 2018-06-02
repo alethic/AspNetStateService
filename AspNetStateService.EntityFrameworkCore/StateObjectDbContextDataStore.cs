@@ -3,12 +3,15 @@ using System.Threading.Tasks;
 
 using AspNetStateService.Core;
 
+using FileAndServe.Autofac;
+
 namespace AspNetStateService.EntityFrameworkCore
 {
 
     /// <summary>
     /// Implements a <see cref="IStateObjectDataStore"/> using Entity Framework Core.
     /// </summary>
+    [RegisterAs(typeof(IStateObjectDataStore))]
     public class StateObjectDbContextDataStore : IStateObjectDataStore
     {
 

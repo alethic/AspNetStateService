@@ -31,6 +31,7 @@ namespace AspNetStateService.Console
             using (var hostScope = container.BeginLifetimeScope())
                 await WebHost.CreateDefaultBuilder(args)
                     .ConfigureComponents<StateWebService>(hostScope)
+                    .UseUrls("http://localhost:42424")
                     .UseKestrel()
                     .BuildAndRunAsync();
         }

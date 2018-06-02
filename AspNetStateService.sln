@@ -21,6 +21,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AspNetStateService.AspNetCo
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AspNetStateService.EntityFrameworkCore", "AspNetStateService.EntityFrameworkCore\AspNetStateService.EntityFrameworkCore.csproj", "{F0818667-5589-4867-891A-95D6A33071C0}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AspNetStateService.EntityFrameworkCore.InMemory", "AspNetStateService.EntityFrameworkCore.InMemory\AspNetStateService.EntityFrameworkCore.InMemory.csproj", "{49903D53-AE90-4334-8836-6C8C1D1E2FDE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -103,6 +105,14 @@ Global
 		{F0818667-5589-4867-891A-95D6A33071C0}.Release|Any CPU.Build.0 = Release|Any CPU
 		{F0818667-5589-4867-891A-95D6A33071C0}.Release|x64.ActiveCfg = Release|Any CPU
 		{F0818667-5589-4867-891A-95D6A33071C0}.Release|x64.Build.0 = Release|Any CPU
+		{49903D53-AE90-4334-8836-6C8C1D1E2FDE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{49903D53-AE90-4334-8836-6C8C1D1E2FDE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{49903D53-AE90-4334-8836-6C8C1D1E2FDE}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{49903D53-AE90-4334-8836-6C8C1D1E2FDE}.Debug|x64.Build.0 = Debug|Any CPU
+		{49903D53-AE90-4334-8836-6C8C1D1E2FDE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{49903D53-AE90-4334-8836-6C8C1D1E2FDE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{49903D53-AE90-4334-8836-6C8C1D1E2FDE}.Release|x64.ActiveCfg = Release|Any CPU
+		{49903D53-AE90-4334-8836-6C8C1D1E2FDE}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
