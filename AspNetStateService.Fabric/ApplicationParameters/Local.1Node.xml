@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Application xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Name="fabric:/AspNetStateService" xmlns="http://schemas.microsoft.com/2011/01/fabric">
   <Parameters>
-    <Parameter Name="StateObjectActorService_PartitionCount" Value="1" />
-    <Parameter Name="StateObjectActorService_TargetReplicaSetSize" Value="1" />
-    <Parameter Name="StateObjectActorService_MinReplicaSetSize" Value="1" />
+    <Parameter Name="StateActorService_PartitionCount" Value="1" />
+    <Parameter Name="StateActorService_TargetReplicaSetSize" Value="1" />
+    <Parameter Name="StateActorService_MinReplicaSetSize" Value="1" />
   </Parameters>
 </Application>

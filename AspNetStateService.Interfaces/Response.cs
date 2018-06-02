@@ -1,8 +1,11 @@
 ﻿using System;
 
-namespace AspNetStateService.Service.Interfaces
+namespace AspNetStateService.Interfaces
 {
 
+    /// <summary>
+    /// Describes a response from a <see cref="IStateObject"/>.
+    /// </summary>
     public class Response
     {
 
@@ -12,7 +15,7 @@ namespace AspNetStateService.Service.Interfaces
         public ResponseStatus Status { get; set; }
 
         /// <summary>
-        /// Date of data.
+        /// Length of time from now when the data will expire.
         /// </summary>
         public TimeSpan? Timeout { get; set; }
 
@@ -24,7 +27,7 @@ namespace AspNetStateService.Service.Interfaces
         /// <summary>
         /// Date at which the lock was last renewed.
         /// </summary>
-        public DateTime? LockCreate { get; set; }
+        public DateTime? LockTime { get; set; }
 
         /// <summary>
         /// Current age of the lock.

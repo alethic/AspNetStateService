@@ -1,12 +1,12 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ApplicationManifest xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ApplicationTypeName="AspNetStateService" ApplicationTypeVersion="1.0.0" xmlns="http://schemas.microsoft.com/2011/01/fabric">
   <Parameters>
-    <Parameter Name="StateObjectActorService_PartitionCount" DefaultValue="10" />
-    <Parameter Name="StateObjectActorService_MinReplicaSetSize" DefaultValue="3" />
-    <Parameter Name="StateObjectActorService_TargetReplicaSetSize" DefaultValue="3" />
+    <Parameter Name="StateActorService_PartitionCount" DefaultValue="10" />
+    <Parameter Name="StateActorService_MinReplicaSetSize" DefaultValue="3" />
+    <Parameter Name="StateActorService_TargetReplicaSetSize" DefaultValue="3" />
   </Parameters>
   <ServiceManifestImport>
-    <ServiceManifestRef ServiceManifestName="AspNetStateService.ServicePkg" ServiceManifestVersion="1.0.0" />
+    <ServiceManifestRef ServiceManifestName="AspNetStateService.Fabric.ServicesPkg" ServiceManifestVersion="1.0.0" />
   </ServiceManifestImport>
   <DefaultServices>
     <Service Name="StateWebService" ServicePackageActivationMode="ExclusiveProcess">
@@ -14,9 +14,9 @@
         <SingletonPartition />
       </StatelessService>
     </Service>
-    <Service Name="StateObjectActorService" GeneratedIdRef="ec54efd8-f779-459c-9fd2-0a1863ad57e3|Volatile">
-      <StatefulService ServiceTypeName="StateObjectActorServiceType" TargetReplicaSetSize="[StateObjectActorService_TargetReplicaSetSize]" MinReplicaSetSize="[StateObjectActorService_MinReplicaSetSize]">
-        <UniformInt64Partition PartitionCount="[StateObjectActorService_PartitionCount]" LowKey="-9223372036854775808" HighKey="9223372036854775807" />
+    <Service Name="StateActorService" GeneratedIdRef="2d68d4f9-898b-4b26-a391-154cd47cfcfd|Volatile">
+      <StatefulService ServiceTypeName="StateActorServiceType" TargetReplicaSetSize="[StateActorService_TargetReplicaSetSize]" MinReplicaSetSize="[StateActorService_MinReplicaSetSize]">
+        <UniformInt64Partition PartitionCount="[StateActorService_PartitionCount]" LowKey="-9223372036854775808" HighKey="9223372036854775807" />
       </StatefulService>
     </Service>
   </DefaultServices>

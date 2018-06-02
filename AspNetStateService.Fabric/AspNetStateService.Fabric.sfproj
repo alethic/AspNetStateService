@@ -32,7 +32,7 @@
     <Content Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\AspNetStateService.Service\AspNetStateService.Service.csproj" />
+    <ProjectReference Include="..\AspNetStateService.Fabric.Services\AspNetStateService.Fabric.Services.csproj" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.Common.targets" />
   <PropertyGroup>

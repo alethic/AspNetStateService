@@ -1,0 +1,37 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ServiceManifest xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Name="AspNetStateService.Fabric.ServicesPkg" Version="1.0.0" xmlns="http://schemas.microsoft.com/2011/01/fabric">
+  <ServiceTypes>
+    <StatelessServiceType ServiceTypeName="StateWebService" />
+    <StatefulServiceType ServiceTypeName="StateActorServiceType">
+      <Extensions>
+        <Extension Name="__GeneratedServiceType__" GeneratedId="2d68d4f9-898b-4b26-a391-154cd47cfcfd|Volatile">
+          <GeneratedNames xmlns="http://schemas.microsoft.com/2015/03/fabact-no-schema">
+            <DefaultService Name="StateActorService" />
+            <ReplicatorEndpoint Name="StateActorServiceReplicatorEndpoint" />
+            <ReplicatorConfigSection Name="StateActorServiceReplicatorConfig" />
+            <ReplicatorSecurityConfigSection Name="StateActorServiceReplicatorSecurityConfig" />
+            <StoreConfigSection Name="StateActorServiceLocalStoreConfig" />
+            <ServiceEndpoint Name="StateActorServiceEndpoint" />
+          </GeneratedNames>
+        </Extension>
+      </Extensions>
+    </StatefulServiceType>
+  </ServiceTypes>
+  <CodePackage Name="Code" Version="1.0.0">
+    <EntryPoint>
+      <ExeHost>
+        <Program>AspNetStateService.Fabric.Services.exe</Program>
+        <ConsoleRedirection FileRetentionCount="4" FileMaxSizeInKb="65536" />
+      </ExeHost>
+    </EntryPoint>
+  </CodePackage>
+  <ConfigPackage Name="Config" Version="1.0.0" />
+  <Resources>
+    <Endpoints>
+      <Endpoint Name="StateObjectActorServiceEndpointV2" />
+      <Endpoint Name="HttpServiceEndpoint" Protocol="http" Type="Input" />
+      <Endpoint Name="StateActorServiceEndpoint" />
+      <Endpoint Name="StateActorServiceReplicatorEndpoint" />
+    </Endpoints>
+  </Resources>
+</ServiceManifest>

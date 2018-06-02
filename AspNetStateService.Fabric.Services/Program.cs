@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using System.Reflection;
-using System.Reflection.Emit;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
@@ -17,13 +13,13 @@ using FileAndServe.Autofac;
 using FileAndServe.Components.AspNetCore;
 using FileAndServe.Components.ServiceFabric.AspNetCore;
 using FileAndServe.ServiceFabric;
+
 using Harmony;
+
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Server.Kestrel.Core.Internal.Http;
-using Microsoft.AspNetCore.Server.Kestrel.Core.Internal.Infrastructure;
 
-namespace AspNetStateService.Service
+namespace AspNetStateService.Fabric.Services
 {
 
     public static class Program
@@ -131,7 +127,7 @@ namespace AspNetStateService.Service
             var builder = new ContainerBuilder();
             builder.RegisterAllAssemblyModules();
             builder.RegisterServiceFabricSupport();
-            builder.RegisterActor<StateObjectActor>();
+            builder.RegisterActor<StateActor>();
             builder.RegisterStatelessKestrelWebService<StateWebService>("StateWebService", "HttpServiceEndpoint");
 
             using (builder.Build())

@@ -1,13 +1,17 @@
 ﻿using System;
 using System.Fabric;
-using System.IO;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
-using AspNetStateService.Service.Interfaces;
+
+using AspNetStateService.Fabric.Interfaces;
+using AspNetStateService.Interfaces;
+
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
+
 using Cogito.IO;
+
 using FileAndServe.Autofac;
 
 using Microsoft.AspNetCore.Builder;
@@ -17,7 +21,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.ServiceFabric.Actors;
 using Microsoft.ServiceFabric.Actors.Client;
 
-namespace AspNetStateService.Service
+namespace AspNetStateService.Fabric.Services
 {
 
     [RegisterAs(typeof(StateWebService))]
@@ -64,11 +68,11 @@ namespace AspNetStateService.Service
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        async Task<IStateObjectActor> GetActorProxy(HttpContext context)
+        async Task<IStateObject> GetActorProxy(HttpContext context)
         {
             var actorId = GetActorId(context);
             var fabctx = await FabricRuntime.GetActivationContextAsync(TimeSpan.FromSeconds(5), CancellationToken.None);
-            return ActorProxy.Create<IStateObjectActor>(actorId);
+            return new StateActorProxyObject(ActorProxy.Create<IStateActor>(actorId));
         }
 
         /// <summary>
@@ -174,8 +178,8 @@ namespace AspNetStateService.Service
             if (response.LockCookie != null)
                 context.Response.Headers["LockCookie"] = response.LockCookie.Value.ToString();
 
-            if (response.LockCreate != null)
-                context.Response.Headers["LockDate"] = response.LockCreate.Value.Ticks.ToString();
+            if (response.LockTime != null)
+                context.Response.Headers["LockDate"] = response.LockTime.Value.Ticks.ToString();
 
             if (response.LockAge != null)
                 context.Response.Headers["LockAge"] = ((int)response.LockAge.Value.TotalSeconds).ToString();
@@ -200,32 +204,32 @@ namespace AspNetStateService.Service
             }
         }
 
-        public async Task Get(HttpContext context, IStateObjectActor actor)
+        public async Task Get(HttpContext context, IStateObject actor)
         {
             SetResponse(context, await actor.Get());
         }
 
-        public async Task GetExclusive(HttpContext context, IStateObjectActor actor)
+        public async Task GetExclusive(HttpContext context, IStateObject actor)
         {
             SetResponse(context, await actor.GetExclusive());
         }
 
-        public async Task Set(HttpContext context, IStateObjectActor actor)
+        public async Task Set(HttpContext context, IStateObject actor)
         {
             SetResponse(context, await actor.Set(GetLockCookie(context), await GetDataAsync(context), GetExtraFlags(context), GetTimeout(context)));
         }
 
-        public async Task ReleaseExclusive(HttpContext context, IStateObjectActor actor)
+        public async Task ReleaseExclusive(HttpContext context, IStateObject actor)
         {
             SetResponse(context, await actor.ReleaseExclusive((uint)GetLockCookie(context)));
         }
 
-        public async Task Remove(HttpContext context, IStateObjectActor actor)
+        public async Task Remove(HttpContext context, IStateObject actor)
         {
             SetResponse(context, await actor.Remove((uint?)GetLockCookie(context)));
         }
 
-        public async Task ResetTimeout(HttpContext context, IStateObjectActor actor)
+        public async Task ResetTimeout(HttpContext context, IStateObject actor)
         {
             SetResponse(context, await actor.ResetTimeout());
         }
