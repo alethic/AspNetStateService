@@ -23,13 +23,17 @@
 
   <ItemGroup>
     <PackageReference Include="FileAndServe.Components.ServiceFabric.AspNetCore" Version="3.0.0-unstable0159" />
+    <PackageReference Include="Microsoft.AspNetCore.Server.Kestrel" Version="2.1.0" />
+    <PackageReference Include="Microsoft.ServiceFabric" Version="6.2.283" />
     <PackageReference Include="Microsoft.ServiceFabric.Actors" Version="3.1.283" />
     <PackageReference Include="Microsoft.ServiceFabric.AspNetCore.Abstractions" Version="3.1.283" />
     <PackageReference Include="Microsoft.ServiceFabric.AspNetCore.Kestrel" Version="3.1.283" />
+    <PackageReference Include="Microsoft.ServiceFabric.Data" Version="3.1.283" />
     <PackageReference Include="Microsoft.ServiceFabric.Services" Version="3.1.283" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\AspNetStateService.AspNetCore.Kestrel\AspNetStateService.AspNetCore.Kestrel.csproj" />
     <ProjectReference Include="..\AspNetStateService.AspNetCore\AspNetStateService.AspNetCore.csproj" />
     <ProjectReference Include="..\AspNetStateService.Core\AspNetStateService.Core.csproj" />
     <ProjectReference Include="..\AspNetStateService.Fabric.Interfaces\AspNetStateService.Fabric.Interfaces.csproj" />
