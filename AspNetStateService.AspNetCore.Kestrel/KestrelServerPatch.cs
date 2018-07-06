@@ -37,9 +37,9 @@ namespace AspNetStateService.AspNetCore.Kestrel
             var i = t.IndexOf(' ');
             if (i > 2)
             {
-                // is the following character a '%'?
+                // is the following character not a '/'?
                 var c = t[i + 1];
-                if (c == '%')
+                if (c != '/')
                 {
                     // insert missing '/'
                     t = t.Insert(i + 1, "/");

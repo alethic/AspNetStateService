@@ -58,7 +58,9 @@ namespace AspNetStateService.AspNetCore
         /// <returns></returns>
         protected Task<IStateObject> GetStateObjectAsync(HttpContext context)
         {
-            return stateObjectProvider.GetStateObjectAsync(WebUtility.UrlDecode(context.Request.Path.Value.TrimStart('/')));
+            var str = context.Request.Path.Value.TrimStart('/');
+            var uri = WebUtility.UrlDecode(str);
+            return stateObjectProvider.GetStateObjectAsync(uri);
         }
 
         /// <summary>
