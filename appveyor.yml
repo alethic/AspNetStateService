@@ -19,9 +19,9 @@ build:
   project: AspNetStateService.sln
 
 after_build:
-  - ps: Compress-Archive -Path  AspNetStateService\pkg\$(Configuration) -DestinationPath AspNetStateService\pkg\zip\$(Configuration)\AspNetStateService.sfproj
+  - ps: Compress-Archive -Path  AspNetStateService\pkg\$(Configuration) -DestinationPath AspNetStateService\pkg\zip\$(Configuration)\AspNetStateService.sfpkg
 
 artifacts:
-  - path: AspNetStateService\pkg\zip\$(Configuration)\AspNetStateService.sfproj
+  - path: AspNetStateService\pkg\zip\$(Configuration)\AspNetStateService.sfpkg
     name: AspNetStateService
 
