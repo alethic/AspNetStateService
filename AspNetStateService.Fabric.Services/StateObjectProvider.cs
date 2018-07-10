@@ -3,7 +3,7 @@
 using AspNetStateService.Fabric.Interfaces;
 using AspNetStateService.Interfaces;
 
-using FileAndServe.Autofac;
+using Cogito.Autofac;
 
 using Microsoft.ServiceFabric.Actors;
 using Microsoft.ServiceFabric.Actors.Client;

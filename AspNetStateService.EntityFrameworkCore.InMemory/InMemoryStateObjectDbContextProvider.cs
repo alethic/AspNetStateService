@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 
-using FileAndServe.Autofac;
+using Cogito.Autofac;
 
 namespace AspNetStateService.EntityFrameworkCore.InMemory
 {

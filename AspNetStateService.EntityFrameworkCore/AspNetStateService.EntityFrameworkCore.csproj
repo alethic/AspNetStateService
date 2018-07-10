@@ -5,7 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="FileAndServe.Autofac" Version="3.0.0-unstable0162" />
+    <PackageReference Include="Cogito.Autofac" Version="0.1.0-unstable0006" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="2.1.0" />
   </ItemGroup>
 

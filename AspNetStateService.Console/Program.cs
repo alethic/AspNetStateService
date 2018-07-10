@@ -4,8 +4,9 @@ using AspNetStateService.AspNetCore;
 
 using Autofac;
 
+using Cogito.Autofac;
+
 using FileAndServe.AspNetCore;
-using FileAndServe.Autofac;
 using FileAndServe.Components.AspNetCore;
 
 using Microsoft.AspNetCore;

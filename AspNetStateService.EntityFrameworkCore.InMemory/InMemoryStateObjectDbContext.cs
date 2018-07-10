@@ -1,4 +1,4 @@
-﻿using FileAndServe.Autofac;
+﻿using Cogito.Autofac;
 
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;

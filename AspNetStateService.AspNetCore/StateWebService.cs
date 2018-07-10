@@ -7,9 +7,8 @@ using AspNetStateService.Interfaces;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
 
+using Cogito.Autofac;
 using Cogito.IO;
-
-using FileAndServe.Autofac;
 
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;

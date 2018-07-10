@@ -6,10 +6,10 @@
 
   <ItemGroup>
     <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="4.2.2" />
-    <PackageReference Include="Cogito.Core" Version="2.0.0" />
+    <PackageReference Include="Cogito.Autofac" Version="0.1.0-unstable0006" />
+    <PackageReference Include="Cogito.Core" Version="2.1.0-unstable0035" />
     <PackageReference Include="FileAndServe.AspNetCore" Version="3.0.0-unstable0162" />
     <PackageReference Include="FileAndServe.AspNetCore.Autofac" Version="3.0.0-unstable0162" />
-    <PackageReference Include="FileAndServe.Autofac" Version="3.0.0-unstable0162" />
   </ItemGroup>
 
   <ItemGroup>

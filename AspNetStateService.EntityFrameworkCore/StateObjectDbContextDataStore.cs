@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 using AspNetStateService.Core;
 
-using FileAndServe.Autofac;
+using Cogito.Autofac;
 
 namespace AspNetStateService.EntityFrameworkCore
 {

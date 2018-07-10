@@ -6,7 +6,8 @@ using AspNetStateService.AspNetCore;
 using Autofac;
 using Autofac.Integration.ServiceFabric;
 
-using FileAndServe.Autofac;
+using Cogito.Autofac;
+
 using FileAndServe.Components.ServiceFabric.AspNetCore;
 
 namespace AspNetStateService.Fabric.Services
