@@ -18,6 +18,10 @@ build:
   verbosity: minimal
   project: AspNetStateService.sln
 
+after_build:
+  - ps: Compress-Archive -Path  AspNetStateService\pkg\$(Configuration) -DestinationPath AspNetStateService\pkg\zip\$(Configuration)\AspNetStateService.sfproj
+
 artifacts:
-  - path: AspNetStateService\pkg\$(Configuration)
+  - path: AspNetStateService\pkg\zip\$(Configuration)\AspNetStateService.sfproj
     name: AspNetStateService
+
