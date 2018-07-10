@@ -8,8 +8,8 @@
     <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="4.2.2" />
     <PackageReference Include="Cogito.Autofac" Version="0.1.0-unstable0006" />
     <PackageReference Include="Cogito.Core" Version="2.1.0-unstable0035" />
-    <PackageReference Include="FileAndServe.AspNetCore" Version="3.0.0-unstable0162" />
-    <PackageReference Include="FileAndServe.AspNetCore.Autofac" Version="3.0.0-unstable0162" />
+    <PackageReference Include="Microsoft.AspNetCore.Hosting.Abstractions" Version="2.1.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.1.1" />
   </ItemGroup>
 
   <ItemGroup>
