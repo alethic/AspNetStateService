@@ -4,6 +4,7 @@ platform: Any CPU
 
 install:
   - choco install gitversion.portable -pre -y
+  - nuget sources add -Name wasabi -Source https://www.myget.org/F/wasabi/api/v3/index.json
 
 before_build:
   - ps: gitversion /l console /output buildserver

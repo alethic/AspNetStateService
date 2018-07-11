@@ -37,6 +37,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Cogito.Extensions.Logging.Serilog.Autofac" Version="0.1.0-unstable0006" />
     <PackageReference Include="Cogito.ServiceFabric.AspNetCore.Kestrel.Autofac" Version="1.2.0-unstable0031" />
     <PackageReference Include="Microsoft.AspNetCore.Server.Kestrel" Version="2.1.2" />
     <PackageReference Include="Microsoft.ServiceFabric" Version="6.2.301" />
