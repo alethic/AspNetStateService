@@ -15,6 +15,9 @@
 
   <ItemGroup>
       <PackageReference Include="Cogito.AspNetCore.Autofac" Version="0.1.0-unstable0009" />
+      <PackageReference Include="Cogito.Extensions.Logging.Autofac" Version="0.1.0-unstable0004" />
+      <PackageReference Include="Cogito.Extensions.Logging.Serilog.Autofac" Version="0.1.0-unstable0004" />
+      <PackageReference Include="Cogito.Serilog.Autofac" Version="0.1.0-unstable0002" />
       <PackageReference Include="Microsoft.AspNetCore" Version="2.1.2" />
       <PackageReference Include="Serilog.AspNetCore" Version="2.1.1" />
   </ItemGroup>

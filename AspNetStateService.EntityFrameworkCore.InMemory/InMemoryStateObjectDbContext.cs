@@ -23,7 +23,7 @@ namespace AspNetStateService.EntityFrameworkCore.InMemory
         protected override void OnConfiguringDatabase(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseInMemoryDatabase("AspNetStateService");
-            optionsBuilder.EnableSensitiveDataLogging(true);
+            optionsBuilder.EnableSensitiveDataLogging();
         }
 
     }

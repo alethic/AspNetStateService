@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using System.Linq;
 
 using AspNetStateService.AspNetCore;
 
@@ -11,6 +12,7 @@ using Cogito.Autofac;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 
 namespace AspNetStateService.Console
 {
@@ -27,15 +29,18 @@ namespace AspNetStateService.Console
         {
             var builder = new ContainerBuilder();
             builder.RegisterAllAssemblyModules();
-            builder.Register(ctx => new ConfigurationBuilder().AddJsonFile("appsettings.json").Build());
+            builder.RegisterInstance(new ConfigurationBuilder().AddJsonFile("appsettings.json", true).Build());
 
             using (var container = builder.Build())
-            using (var hostScope = container.BeginLifetimeScope())
-                await WebHost.CreateDefaultBuilder(args)
-                    .UseUrls("http://localhost:42424")
-                    .UseKestrel()
-                    .UseStartup<StateWebService>(hostScope)
-                    .BuildAndRunAsync();
+            {
+                var l = container.Resolve<Microsoft.Extensions.Logging.ILoggerFactory>();
+                using (var hostScope = container.BeginLifetimeScope())
+                    await WebHost.CreateDefaultBuilder(args)
+                        .UseStartup<StateWebService>(hostScope)
+                        .UseUrls("http://localhost:42424")
+                        .UseKestrel()
+                        .BuildAndRunAsync();
+            }
         }
 
     }
