@@ -17,8 +17,7 @@ before_build:
   - dotnet restore
 
 build:
-  verbosity: normal
-  project: AspNetStateService.sln
+  - cmd: msbuild.exe AspNetStateService.sln /t:AspNetStateService_Fabric:Package
 
 after_build:
   - ps: Compress-Archive -Path "AspNetStateService.Fabric\pkg\$($env:Configuration)" -DestinationPath "$($env:ServiceFabricPackageName).zip"
