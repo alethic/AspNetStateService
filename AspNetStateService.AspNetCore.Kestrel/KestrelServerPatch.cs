@@ -10,9 +10,10 @@ namespace AspNetStateService.AspNetCore.Kestrel
     /// <summary>
     /// Patches the Kestrel web server to accept invalid HTTP requests that begin with a '%'.
     /// </summary>
-    [HarmonyPatch(typeof(Microsoft.AspNetCore.Server.Kestrel.Core.Internal.Http.HttpParser<Microsoft.AspNetCore.Server.Kestrel.Core.Internal.Http.Http1ParsingHandler>))]
-    [HarmonyPatch("ParseRequestLine")]
-    [HarmonyPatch(new[] { typeof(Microsoft.AspNetCore.Server.Kestrel.Core.Internal.Http.Http1ParsingHandler), typeof(byte*), typeof(int) })]
+    [HarmonyPatch(
+        typeof(Microsoft.AspNetCore.Server.Kestrel.Core.Internal.Http.HttpParser<Microsoft.AspNetCore.Server.Kestrel.Core.Internal.Http.Http1ParsingHandler>),
+        "ParseRequestLine",
+        new[] { typeof(Microsoft.AspNetCore.Server.Kestrel.Core.Internal.Http.Http1ParsingHandler), typeof(byte*), typeof(int) })]
     public class KestrelPatch
     {
 
@@ -23,9 +24,9 @@ namespace AspNetStateService.AspNetCore.Kestrel
         /// <param name="handler"></param>
         /// <param name="data"></param>
         /// <param name="length"></param>
-        public unsafe static bool Prefix(
+        public unsafe static void Prefix(
             ref IntPtr __state,
-            Microsoft.AspNetCore.Server.Kestrel.Core.Internal.Http.Http1ParsingHandler handler,
+            ref Microsoft.AspNetCore.Server.Kestrel.Core.Internal.Http.Http1ParsingHandler handler,
             ref byte* data,
             ref int length)
         {
@@ -57,8 +58,6 @@ namespace AspNetStateService.AspNetCore.Kestrel
                     length = buf.Length;
                 }
             }
-
-            return true;
         }
 
         /// <summary>
@@ -68,7 +67,9 @@ namespace AspNetStateService.AspNetCore.Kestrel
         /// <param name="handler"></param>
         public unsafe static void Postfix(
             IntPtr __state,
-            Microsoft.AspNetCore.Server.Kestrel.Core.Internal.Http.Http1ParsingHandler handler)
+            ref Microsoft.AspNetCore.Server.Kestrel.Core.Internal.Http.Http1ParsingHandler handler,
+            ref byte* data,
+            ref int length)
         {
             // deallocate our temporary buffer
             if (__state != IntPtr.Zero)
