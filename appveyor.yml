@@ -21,7 +21,7 @@ build:
   project: AspNetStateService.sln
 
 after_build:
-  - ps: Compress-Archive -Path  AspNetStateService\pkg\$($env:Configuration) -DestinationPath "$($env:ServiceFabricPackageName).zip"
+  - ps: Compress-Archive -Path "AspNetStateService.Fabric\pkg\$($env:Configuration)" -DestinationPath "$($env:ServiceFabricPackageName).zip"
   - ps: Move-Item "$($env:ServiceFabricPackageName).zip" "$($env:ServiceFabricPackageName).sfpkg"
 
 artifacts:
