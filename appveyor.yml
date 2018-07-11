@@ -12,7 +12,7 @@ before_build:
   - ps: $env:AssemblyVersion=$env:GitVersion_AssemblySemVer
   - ps: $env:FileVersion=$env:GitVersion_MajorMinorPatch.0
   - ps: $env:InformationalVersion=$env:GitVersion_InformationalVersion
-  - ps: $env:ServiceFabricPackageLocation="AspNetStateService-$($env:GitVersion_NuGetVersion).sfpkg"
+  - ps: $env:ServiceFabricPackageName="AspNetStateService-$($env:GitVersion_NuGetVersion)"
   - nuget restore
   - dotnet restore
 
@@ -21,7 +21,8 @@ build:
   project: AspNetStateService.sln
 
 after_build:
-  - ps: Compress-Archive -Path  AspNetStateService\pkg\$env:Configuration -DestinationPath $env:ServiceFabricPackageLocation
+  - ps: Compress-Archive -Path  AspNetStateService\pkg\$env:Configuration -DestinationPath $env:ServiceFabricPackageName.zip
+  - ps: Move-Item $env:ServiceFabricPackageName.zip $env:ServiceFabricPackageName.sfpkg
 
 artifacts:
   - path: $ServiceFabricPackageLocation).sfpkg
