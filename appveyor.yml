@@ -16,7 +16,7 @@ before_build:
   - nuget restore
   - dotnet restore
 
-build:
+build_script:
   - cmd: msbuild.exe AspNetStateService.sln /t:AspNetStateService_Fabric:Package
 
 after_build:
