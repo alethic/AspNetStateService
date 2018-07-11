@@ -20,7 +20,7 @@ build_script:
   - cmd: msbuild.exe AspNetStateService.sln /t:AspNetStateService_Fabric:Package
 
 after_build:
-  - ps: Compress-Archive -Path "AspNetStateService.Fabric\pkg\$($env:Configuration)" -DestinationPath "$($env:ServiceFabricPackageName).zip"
+  - ps: Compress-Archive -Path "AspNetStateService.Fabric\pkg\$($env:Configuration)\*" -DestinationPath "$($env:ServiceFabricPackageName).zip"
   - ps: Move-Item "$($env:ServiceFabricPackageName).zip" "$($env:ServiceFabricPackageName).sfpkg"
 
 artifacts:
