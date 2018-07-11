@@ -7,8 +7,7 @@ using Autofac;
 using Autofac.Integration.ServiceFabric;
 
 using Cogito.Autofac;
-
-using FileAndServe.Components.ServiceFabric.AspNetCore;
+using Cogito.ServiceFabric.AspNetCore.Kestrel.Autofac;
 
 namespace AspNetStateService.Fabric.Services
 {

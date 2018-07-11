@@ -4,13 +4,13 @@ using AspNetStateService.AspNetCore;
 
 using Autofac;
 
+using Cogito.AspNetCore;
+using Cogito.AspNetCore.Autofac;
 using Cogito.Autofac;
-
-using FileAndServe.AspNetCore;
-using FileAndServe.Components.AspNetCore;
 
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
 
 namespace AspNetStateService.Console
 {
@@ -27,13 +27,14 @@ namespace AspNetStateService.Console
         {
             var builder = new ContainerBuilder();
             builder.RegisterAllAssemblyModules();
+            builder.Register(ctx => new ConfigurationBuilder().AddJsonFile("appsettings.json").Build());
 
             using (var container = builder.Build())
             using (var hostScope = container.BeginLifetimeScope())
                 await WebHost.CreateDefaultBuilder(args)
-                    .ConfigureComponents<StateWebService>(hostScope)
                     .UseUrls("http://localhost:42424")
                     .UseKestrel()
+                    .UseStartup<StateWebService>(hostScope)
                     .BuildAndRunAsync();
         }
 
