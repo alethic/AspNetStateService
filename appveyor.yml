@@ -28,4 +28,3 @@ after_build:
 artifacts:
   - path: $(ServiceFabricPackageName).sfpkg
     name: AspNetStateService
-
