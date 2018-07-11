@@ -48,9 +48,7 @@ namespace AspNetStateService.AspNetCore
         /// <param name="services"></param>
         public IServiceProvider ConfigureServices(IServiceCollection services)
         {
-            var p = new AutofacServiceProvider(scope = parent.BeginLifetimeScope(builder => builder.Populate(services)));
-            var f = scope.Resolve<ILoggerFactory>();
-            return p;
+            return new AutofacServiceProvider(scope = parent.BeginLifetimeScope(builder => builder.Populate(services)));
         }
 
         /// <summary>
