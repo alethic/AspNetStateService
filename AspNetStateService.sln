@@ -13,15 +13,20 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AspNetStateService.Fabric.I
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AspNetStateService.Fabric.Services", "AspNetStateService.Fabric.Services\AspNetStateService.Fabric.Services.csproj", "{D44550A8-E401-4D1C-B6E7-899946C4A52A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AspNetStateService.Console", "AspNetStateService.Console\AspNetStateService.Console.csproj", "{F163486F-C920-4C4A-A9D3-FF9D418092C8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AspNetStateService.Console", "AspNetStateService.Console\AspNetStateService.Console.csproj", "{F163486F-C920-4C4A-A9D3-FF9D418092C8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AspNetStateService.AspNetCore.Kestrel", "AspNetStateService.AspNetCore.Kestrel\AspNetStateService.AspNetCore.Kestrel.csproj", "{E0AC1CC0-1848-4ED0-A7FA-9AAA2D92FEDA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AspNetStateService.AspNetCore.Kestrel", "AspNetStateService.AspNetCore.Kestrel\AspNetStateService.AspNetCore.Kestrel.csproj", "{E0AC1CC0-1848-4ED0-A7FA-9AAA2D92FEDA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AspNetStateService.AspNetCore", "AspNetStateService.AspNetCore\AspNetStateService.AspNetCore.csproj", "{0CB293C0-494D-4AB8-B3C7-5D295864822A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AspNetStateService.AspNetCore", "AspNetStateService.AspNetCore\AspNetStateService.AspNetCore.csproj", "{0CB293C0-494D-4AB8-B3C7-5D295864822A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AspNetStateService.EntityFrameworkCore", "AspNetStateService.EntityFrameworkCore\AspNetStateService.EntityFrameworkCore.csproj", "{F0818667-5589-4867-891A-95D6A33071C0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AspNetStateService.EntityFrameworkCore", "AspNetStateService.EntityFrameworkCore\AspNetStateService.EntityFrameworkCore.csproj", "{F0818667-5589-4867-891A-95D6A33071C0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AspNetStateService.EntityFrameworkCore.InMemory", "AspNetStateService.EntityFrameworkCore.InMemory\AspNetStateService.EntityFrameworkCore.InMemory.csproj", "{49903D53-AE90-4334-8836-6C8C1D1E2FDE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AspNetStateService.EntityFrameworkCore.InMemory", "AspNetStateService.EntityFrameworkCore.InMemory\AspNetStateService.EntityFrameworkCore.InMemory.csproj", "{49903D53-AE90-4334-8836-6C8C1D1E2FDE}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{EB5A276D-627F-4DB9-959D-0B6ED3AB3A5D}"
+	ProjectSection(SolutionItems) = preProject
+		appveyor.yml = appveyor.yml
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

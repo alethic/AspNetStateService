@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 namespace AspNetStateService.AspNetCore
 {
@@ -26,7 +27,7 @@ namespace AspNetStateService.AspNetCore
     {
 
         readonly ILifetimeScope parent;
-        readonly IStateObjectProvider stateObjectProvider;
+        readonly Lazy<IStateObjectProvider> stateObjectProvider;
 
         ILifetimeScope scope;
 
@@ -35,10 +36,10 @@ namespace AspNetStateService.AspNetCore
         /// </summary>
         /// <param name="parent"></param>
         /// <param name="stateObjectProvider"></param>
-        public StateWebService(ILifetimeScope parent, IStateObjectProvider stateObjectProvider)
+        public StateWebService(ILifetimeScope parent)
         {
             this.parent = parent ?? throw new ArgumentNullException(nameof(parent));
-            this.stateObjectProvider = stateObjectProvider ?? throw new ArgumentNullException(nameof(stateObjectProvider));
+            this.stateObjectProvider = new Lazy<IStateObjectProvider>(() => scope.Resolve<IStateObjectProvider>());
         }
 
         /// <summary>
@@ -47,7 +48,9 @@ namespace AspNetStateService.AspNetCore
         /// <param name="services"></param>
         public IServiceProvider ConfigureServices(IServiceCollection services)
         {
-            return new AutofacServiceProvider(scope = parent.BeginLifetimeScope(builder => builder.Populate(services)));
+            var p = new AutofacServiceProvider(scope = parent.BeginLifetimeScope(builder => builder.Populate(services)));
+            var f = scope.Resolve<ILoggerFactory>();
+            return p;
         }
 
         /// <summary>
@@ -59,7 +62,7 @@ namespace AspNetStateService.AspNetCore
         {
             var str = context.Request.Path.Value.TrimStart('/');
             var uri = WebUtility.UrlDecode(str);
-            return stateObjectProvider.GetStateObjectAsync(uri);
+            return stateObjectProvider.Value.GetStateObjectAsync(uri);
         }
 
         /// <summary>
