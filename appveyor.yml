@@ -18,11 +18,7 @@ before_build:
 
 build_script:
   - cmd: msbuild.exe AspNetStateService.sln /t:AspNetStateService_Fabric:Package
-  - ps: |
-        $m = [xml](gc "AspNetStateService.Fabric\pkg\$($env:Configuration)\ApplicationManifest.xml")
-        $m.ApplicationManifest.ApplicationTypeVersion = $env:GitVersion_NuGetVersion
-        $m.ApplicationManifest.ServiceManifestImport | %{ $_.ServiceManifestRef.ServiceManifestVersion = $env:GitVersion_NuGetVersion }
-        $m | Out-File -FilePath "AspNetStateService.Fabric\pkg\$($env:Configuration)\ApplicationManifest.xml"
+  - ps: Update-PackageVersion.ps1 -PackagePath "AspNetStateService.Fabric\pkg\$($env:Configuration)" -Version $env:GitVersion_NuGetVersion
 
 after_build:
   - ps: Compress-Archive -Path "AspNetStateService.Fabric\pkg\$($env:Configuration)\*" -DestinationPath "$($env:ServiceFabricPackageName).zip"
