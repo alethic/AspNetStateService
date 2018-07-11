@@ -16,7 +16,7 @@ before_build:
   - dotnet restore
 
 build:
-  verbosity: minimal
+  verbosity: normal
   project: AspNetStateService.sln
 
 after_build:
