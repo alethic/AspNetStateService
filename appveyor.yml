@@ -13,18 +13,19 @@ before_build:
   - ps: $env:FileVersion=$env:GitVersion_MajorMinorPatch.0
   - ps: $env:InformationalVersion=$env:GitVersion_InformationalVersion
   - ps: $env:ServiceFabricPackageName="AspNetStateService-$($env:GitVersion_NuGetVersion)"
+  - ps: $env:BuildPath=(Resolve-Path .)
   - nuget restore
   - dotnet restore
 
 build_script:
   - cmd: msbuild.exe AspNetStateService.sln /t:AspNetStateService_Fabric:Package
-  - ps: .\Update-PackageVersion.ps1 -PackagePath "AspNetStateService.Fabric\pkg\$($env:Configuration)" -Version $env:GitVersion_NuGetVersion
+  - ps: .\Update-PackageVersion.ps1 -PackagePath "$($env:BuildPath)\AspNetStateService.Fabric\pkg\$($env:Configuration)" -Version $env:GitVersion_NuGetVersion
 
 after_build:
-  - ps: Compress-Archive -Path "AspNetStateService.Fabric\pkg\$($env:Configuration)\*" -DestinationPath "$($env:ServiceFabricPackageName).zip"
-  - ps: Move-Item "$($env:ServiceFabricPackageName).zip" "$($env:ServiceFabricPackageName).sfpkg"
+  - ps: Compress-Archive -Path "$($env:BuildPath)\AspNetStateService.Fabric\pkg\$($env:Configuration)\*" -DestinationPath "$($env:ServiceFabricPackageName).zip"
+  - ps: Move-Item "$($env:BuildPath)\$($env:ServiceFabricPackageName).zip" "$($env:BuildPath)\$($env:ServiceFabricPackageName).sfpkg"
 
 artifacts:
-  - path: $(ServiceFabricPackageName).sfpkg
+  - path: $(BuildPath)\$(ServiceFabricPackageName).sfpkg
     name: AspNetStateService
 
