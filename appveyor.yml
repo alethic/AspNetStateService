@@ -26,6 +26,6 @@ after_build:
   - ps: Move-Item "$($env:BuildPath)\$($env:ServiceFabricPackageName).zip" "$($env:BuildPath)\$($env:ServiceFabricPackageName).sfpkg"
 
 artifacts:
-  - path: $(BuildPath)\$(ServiceFabricPackageName).sfpkg
+  - path: $(ServiceFabricPackageName).sfpkg
     name: AspNetStateService
 
