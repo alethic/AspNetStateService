@@ -6,7 +6,7 @@
 
   <ItemGroup>
     <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="4.2.2" />
-    <PackageReference Include="Cogito.Autofac" Version="0.1.0-unstable0007" />
+    <PackageReference Include="Cogito.Autofac" Version="0.1.0-unstable0009" />
     <PackageReference Include="Cogito.Core" Version="2.1.0-unstable0035" />
     <PackageReference Include="Microsoft.AspNetCore.Hosting.Abstractions" Version="2.1.1" />
     <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.1.1" />

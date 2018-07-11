@@ -37,9 +37,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Cogito.Extensions.Logging.Serilog.Autofac" Version="0.1.0-unstable0006" />
-    <PackageReference Include="Cogito.ServiceFabric.AspNetCore.Kestrel.Autofac" Version="1.2.0-unstable0031" />
-    <PackageReference Include="Microsoft.AspNetCore.Server.Kestrel" Version="2.1.2" />
+    <PackageReference Include="Cogito.AspNetCore.Autofac" Version="0.1.0-unstable0012" />
+    <PackageReference Include="Cogito.Extensions.Logging.Serilog.Autofac" Version="0.1.0-unstable0008" />
+    <PackageReference Include="Cogito.ServiceFabric.AspNetCore.Kestrel.Autofac" Version="1.2.0-unstable0033" />
+    <PackageReference Include="Microsoft.AspNetCore" Version="2.1.2" />
+    <PackageReference Include="Microsoft.AspNetCore" Version="2.1.2" />
     <PackageReference Include="Microsoft.ServiceFabric" Version="6.2.301" />
     <PackageReference Include="Microsoft.ServiceFabric.Actors" Version="3.1.301" />
     <PackageReference Include="Microsoft.ServiceFabric.AspNetCore.Abstractions" Version="3.1.301" />
