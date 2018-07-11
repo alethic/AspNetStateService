@@ -21,7 +21,7 @@ build:
   project: AspNetStateService.sln
 
 after_build:
-  - ps: Compress-Archive -Path  AspNetStateService\pkg\$(Configuration) -DestinationPath $env:ServiceFabricPackageLocation
+  - ps: Compress-Archive -Path  AspNetStateService\pkg\$env:Configuration -DestinationPath $env:ServiceFabricPackageLocation
 
 artifacts:
   - path: $ServiceFabricPackageLocation).sfpkg
