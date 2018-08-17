@@ -3,7 +3,7 @@
   <Parameters>
     <Parameter Name="Port" DefaultValue="42424" />
     <Parameter Name="StateWebService_InstanceCount" DefaultValue="-1" />
-    <Parameter Name="StateActorService_PartitionCount" DefaultValue="3" />
+    <Parameter Name="StateActorService_PartitionCount" DefaultValue="16" />
     <Parameter Name="StateActorService_MinReplicaSetSize" DefaultValue="2" />
     <Parameter Name="StateActorService_TargetReplicaSetSize" DefaultValue="3" />
   </Parameters>
