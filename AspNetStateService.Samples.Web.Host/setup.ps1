@@ -2,7 +2,16 @@ Set-PSDebug -Trace 2
 
 $ErrorActionPreference = 'Stop'
 $p = [int]::Parse($env:Fabric_Endpoint_ServiceEndpoint)
-$n = 'User'
+
+# discover SF user name of code package main entry point
+$x = [xml](gc "${env:Fabric_Folder_Application}/${env:Fabric_ServicePackageName}.${env:Fabric_ServicePackageActivationId}.Package.Current.xml")
+$x.OuterXml
+$ns = @{ sf = 'http://schemas.microsoft.com/2011/01/fabric' }
+$n1 = Select-Xml -Xml $x -Namespace $ns -XPath "//sf:ServicePackage/sf:DigestedCodePackage/sf:RunAsPolicy[@CodePackageRef='${env:Fabric_CodePackageName}'][@EntryPointType='Main']/@UserRef"
+$n2 = Select-Xml -Xml $x -Namespace $ns -XPath "//sf:ServicePackage/sf:DigestedCodePackage/sf:RunAsPolicy[@CodePackageRef='${env:Fabric_CodePackageName}'][@EntryPointType='All']/@UserRef"
+$n3 = Select-Xml -Xml $x -Namespace $ns -XPath "//sf:ServicePackage/sf:DigestedCodePackage/sf:RunAsPolicy[@CodePackageRef='${env:Fabric_CodePackageName}'][not(@EntryPointType)]/@UserRef"
+$n = ($n1.Node.Value, $n2.Node.Value, $n3.Node.Value -ne $null)[0]
+Write-Host "Discovered Main entry point user: $n"
 
 $ErrorActionPreference = 'SilentlyContinue'
 & netsh http delete urlacl url=http://*:$p/

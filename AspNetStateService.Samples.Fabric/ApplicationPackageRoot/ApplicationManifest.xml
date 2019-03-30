@@ -8,7 +8,6 @@
     <ConfigOverrides />
     <Policies>
       <RunAsPolicy CodePackageRef="Code" UserRef="SetupUser" EntryPointType="Setup" />
-      <RunAsPolicy CodePackageRef="Code" UserRef="User" />
     </Policies>
   </ServiceManifestImport>
   <DefaultServices>

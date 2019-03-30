@@ -35,7 +35,7 @@ namespace AspNetStateService.AspNetCore.Kestrel
             var d = data;
             var t = Encoding.ASCII.GetString(d, length);
 
-            var i = t.IndexOf(' ', 0, 20);
+            var i = t.IndexOf(' ', 0, Math.Min(20, t.Length));
             if (i > 2 && t.Length > i + 2)
             {
                 // is the following character not a '/'?

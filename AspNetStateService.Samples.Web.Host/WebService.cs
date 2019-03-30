@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Fabric;
 using System.IO;
 using System.Xml.Linq;
@@ -45,7 +46,10 @@ namespace AspNetStateService.Samples.Web.Host
                     new AppHostBuilder()
                         .ConfigureWeb(LoadXmlResource("Web.config"), w => w
                             .SystemWeb(s => s
-                                .Configure("sessionState", c => c.SetAttributeValue("mode", FabricEnvironment.IsFabric ? "StateServer" : "StateServer"))))
+                                .SessionState(z => z
+                                    .Mode(WebSystemWebSessionStateMode.StateServer)
+                                    .StateNetworkTimeout(TimeSpan.FromMinutes(2))
+                                    .Timeout(TimeSpan.FromMinutes(20)))))
                         .ConfigureApp(LoadXmlResource("ApplicationHost.config"), c => c
                             .Site(1, s => s
                                 .RemoveBindings()

@@ -28,7 +28,7 @@
   <ConfigPackage Name="Config" Version="1.0.0" />
   <Resources>
     <Endpoints>
-      <Endpoint Name="HttpServiceEndpoint" Protocol="http" Type="Input" />
+      <Endpoint Name="HttpServiceEndpoint" Protocol="http" Type="Input" Port="42424" />
       <Endpoint Name="StateObjectActorServiceEndpointV2" />
       <Endpoint Name="StateActorServiceEndpoint" />
       <Endpoint Name="StateActorServiceReplicatorEndpoint" />
