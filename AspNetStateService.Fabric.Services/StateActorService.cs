@@ -43,7 +43,7 @@ namespace AspNetStateService.Fabric.Services
             while (cancellationToken.IsCancellationRequested == false)
             {
                 await TryPurgeActorsAsync(cancellationToken);
-                await Task.Delay(TimeSpan.FromMinutes(1), cancellationToken);
+                await Task.Delay(TimeSpan.FromMinutes(5), cancellationToken);
             }
         }
 
