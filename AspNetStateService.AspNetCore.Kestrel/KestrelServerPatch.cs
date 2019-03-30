@@ -20,7 +20,7 @@ namespace AspNetStateService.AspNetCore.Kestrel
         /// <summary>
         /// Invoked before the original ParseRequestLine method.
         /// </summary>
-        /// <param name="__instance"></param>
+        /// <param name="__state"></param>
         /// <param name="handler"></param>
         /// <param name="data"></param>
         /// <param name="length"></param>
