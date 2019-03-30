@@ -1,0 +1,55 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net47</TargetFramework>
+        <OutputType>Exe</OutputType>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <None Remove="ApplicationHost.config" />
+      <None Remove="Web.config" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <EmbeddedResource Include="ApplicationHost.config" />
+      <EmbeddedResource Include="Web.config" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Autofac" Version="4.9.2" />
+      <PackageReference Include="Autofac.ServiceFabric" Version="2.2.0" />
+      <PackageReference Include="Cogito.AspNet.WebImport" Version="0.1.1">
+        <PrivateAssets>all</PrivateAssets>
+        <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      </PackageReference>
+      <PackageReference Include="Cogito.Autofac" Version="1.2.1" />
+      <PackageReference Include="Cogito.HostedWebCore.ServiceFabric" Version="1.2.0" />
+      <PackageReference Include="Cogito.ServiceFabric" Version="1.3.2" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\AspNetStateService.Samples.Web\AspNetStateService.Samples.Web.csproj">
+            <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+            <Private>false</Private>
+            <PrivateAssets>All</PrivateAssets>
+            <WebImportPath>site</WebImportPath>
+        </ProjectReference>
+    </ItemGroup>
+
+    <ItemGroup>
+        <None Update="launch.bat">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+        <None Update="setup.bat">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+        <None Update="setup.ps1">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Properties\" />
+    </ItemGroup>
+
+</Project>

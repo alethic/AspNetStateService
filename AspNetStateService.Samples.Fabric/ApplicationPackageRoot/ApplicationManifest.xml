@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ApplicationManifest xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ApplicationTypeName="AspNetStateService.Samples" ApplicationTypeVersion="1.0.0" xmlns="http://schemas.microsoft.com/2011/01/fabric">
+  <Parameters>
+    <Parameter Name="AspNetStateService.Samples.Web.Host_InstanceCount" DefaultValue="-1" />
+  </Parameters>
+  <ServiceManifestImport>
+    <ServiceManifestRef ServiceManifestName="AspNetStateService.Samples.Web.Host" ServiceManifestVersion="1.0.0" />
+    <ConfigOverrides />
+    <Policies>
+      <RunAsPolicy CodePackageRef="Code" UserRef="SetupUser" EntryPointType="Setup" />
+      <RunAsPolicy CodePackageRef="Code" UserRef="User" />
+    </Policies>
+  </ServiceManifestImport>
+  <DefaultServices>
+    <Service Name="Web" ServicePackageActivationMode="ExclusiveProcess">
+      <StatelessService ServiceTypeName="AspNetStateService.Samples.Web.Host" InstanceCount="[AspNetStateService.Samples.Web.Host_InstanceCount]">
+        <SingletonPartition />
+      </StatelessService>
+    </Service>
+  </DefaultServices>
+  <Principals>
+    <Users>
+      <User Name="SetupUser" AccountType="LocalSystem" />
+      <User Name="User" />
+    </Users>
+  </Principals>
+  <Policies>
+    <DefaultRunAsPolicy UserRef="User" />
+  </Policies>
+</ApplicationManifest>
