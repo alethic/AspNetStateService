@@ -28,7 +28,7 @@ namespace AspNetStateService.Fabric.Services
         public StateActorService(StatefulServiceContext context, ActorTypeInformation actorTypeInfo, Func<ActorService, ActorId, ActorBase> actorFactory = null, Func<ActorBase, IActorStateProvider, IActorStateManager> stateManagerFactory = null, IActorStateProvider stateProvider = null, ActorServiceSettings settings = null) :
             base(context, actorTypeInfo, actorFactory, stateManagerFactory, stateProvider, settings)
         {
-
+            
         }
 
         /// <summary>
@@ -42,16 +42,25 @@ namespace AspNetStateService.Fabric.Services
 
             while (cancellationToken.IsCancellationRequested == false)
             {
-                try
-                {
-                    await PurgeActorsAsync(cancellationToken);
-                }
-                catch
-                {
-                    // we tried
-                }
-
+                await TryPurgeActorsAsync(cancellationToken);
                 await Task.Delay(TimeSpan.FromMinutes(1), cancellationToken);
+            }
+        }
+
+        /// <summary>
+        /// Attempts to check each actor for an expired condition and deletes.
+        /// </summary>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        async Task TryPurgeActorsAsync(CancellationToken cancellationToken)
+        {
+            try
+            {
+                await PurgeActorsAsync(cancellationToken);
+            }
+            catch
+            {
+                // we tried
             }
         }
 
@@ -87,13 +96,24 @@ namespace AspNetStateService.Fabric.Services
         {
             try
             {
-                if (await ActorProxy.Create<IStateActor>(actorId).IsExpired())
-                    await ((IActorService)this).DeleteActorAsync(actorId, cancellationToken);
+                await PurgeActorAsync(actorId, cancellationToken);
             }
             catch
             {
 
             }
+        }
+
+        /// <summary>
+        /// Purges the given actor if expired.
+        /// </summary>
+        /// <param name="actorId"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        async Task PurgeActorAsync(ActorId actorId, CancellationToken cancellationToken)
+        {
+            if (await ActorProxy.Create<IStateActor>(actorId).IsExpired())
+                await ((IActorService)this).DeleteActorAsync(actorId, cancellationToken);
         }
 
     }
