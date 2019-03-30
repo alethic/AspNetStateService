@@ -94,12 +94,6 @@
       <Version>4.5.0</Version>
     </PackageReference>
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\AspNetStateService.Fabric.Client\AspNetStateService.Fabric.Client.csproj">
-      <Project>{aec4445e-c1ad-4530-b9bb-a32ed9a0dc66}</Project>
-      <Name>AspNetStateService.Fabric.Client</Name>
-    </ProjectReference>
-  </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
