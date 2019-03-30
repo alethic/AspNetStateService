@@ -26,12 +26,12 @@ namespace AspNetStateService.EntityFrameworkCore
             this.dbContextProvider = dbContextProvider ?? throw new ArgumentNullException(nameof(dbContextProvider));
         }
 
-        public async Task<(byte[] data, uint? extraFlags, TimeSpan? timeout, DateTime? touch)> GetDataAsync(string id)
+        public async Task<(byte[] data, uint? extraFlags, TimeSpan? timeout, DateTime? altered)> GetDataAsync(string id)
         {
             using (var db = await dbContextProvider.CreateDbContextAsync())
             {
                 var o = await db.FindAsync<StateObjectData>(id);
-                return (o?.Data, o?.ExtraFlags, o?.Timeout, o?.Touched);
+                return (o?.Data, o?.ExtraFlags, o?.Timeout, o?.Altered);
             }
         }
 
@@ -54,7 +54,7 @@ namespace AspNetStateService.EntityFrameworkCore
                     o.Data = null;
                     o.ExtraFlags = null;
                     o.Timeout = null;
-                    o.Touched = null;
+                    o.Altered = null;
                 }
 
                 await db.SaveChangesAsync();
@@ -87,7 +87,7 @@ namespace AspNetStateService.EntityFrameworkCore
                 o.Data = data;
                 o.ExtraFlags = extraFlags;
                 o.Timeout = timeout;
-                o.Touched = DateTime.Now;
+                o.Altered = DateTime.UtcNow;
 
                 await db.SaveChangesAsync();
             }

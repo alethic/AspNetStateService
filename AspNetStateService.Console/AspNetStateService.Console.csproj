@@ -3,20 +3,13 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>net47</TargetFramework>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <LangVersion>7.2</LangVersion>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <LangVersion>7.2</LangVersion>
+    <LangVersion>7.3</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>
-      <PackageReference Include="Cogito.AspNetCore.Autofac" Version="0.1.0-unstable0012" />
-      <PackageReference Include="Cogito.Extensions.Logging.Serilog.Autofac" Version="0.1.0-unstable0008" />
-      <PackageReference Include="Microsoft.AspNetCore" Version="2.1.2" />
+      <PackageReference Include="Cogito.AspNetCore.Autofac" Version="1.3.0" />
+      <PackageReference Include="Cogito.Extensions.Logging.Serilog.Autofac" Version="1.1.0" />
+      <PackageReference Include="Microsoft.AspNetCore" Version="2.2.0" />
   </ItemGroup>
 
   <ItemGroup>

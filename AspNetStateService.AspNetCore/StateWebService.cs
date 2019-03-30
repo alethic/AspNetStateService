@@ -217,7 +217,7 @@ namespace AspNetStateService.AspNetCore
 
         public async Task Remove(HttpContext context, IStateObject actor)
         {
-            SetResponse(context, await actor.Remove((uint?)GetLockCookie(context)));
+            SetResponse(context, await actor.Remove(GetLockCookie(context)));
         }
 
         public async Task ResetTimeout(HttpContext context, IStateObject actor)

@@ -8,7 +8,6 @@ using Cogito.AspNetCore;
 using Cogito.AspNetCore.Autofac;
 using Cogito.Autofac;
 
-using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 
@@ -31,10 +30,9 @@ namespace AspNetStateService.Console
 
             using (var container = builder.Build())
             using (var hostScope = container.BeginLifetimeScope())
-                await WebHost.CreateDefaultBuilder(args)
+                await new WebHostBuilder()
                     .UseStartup<StateWebService>(hostScope)
-                    .UseUrls("http://localhost:42424")
-                    .UseKestrel()
+                    .UseKestrel(o => o.ListenLocalhost(42424))
                     .BuildAndRunAsync();
         }
 

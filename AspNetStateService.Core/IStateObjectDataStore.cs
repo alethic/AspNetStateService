@@ -33,7 +33,7 @@ namespace AspNetStateService.Core
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        Task<(byte[] data, uint? extraFlags, TimeSpan? timeout, DateTime? touch)> GetDataAsync(string id);
+        Task<(byte[] data, uint? extraFlags, TimeSpan? timeout, DateTime? altered)> GetDataAsync(string id);
 
         /// <summary>
         /// Removes the current data.

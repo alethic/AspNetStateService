@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.27705.2000
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.28721.148
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{A07B5EB6-E848-4116-A8D0-A826331D98C6}") = "AspNetStateService.Fabric", "AspNetStateService.Fabric\AspNetStateService.Fabric.sfproj", "{B8B2E8B2-4AC3-454A-B207-B02CAB46A6BF}"
 EndProject

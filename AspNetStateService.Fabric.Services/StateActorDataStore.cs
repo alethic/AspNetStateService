@@ -14,13 +14,6 @@ namespace AspNetStateService.Fabric.Services
     public class StateActorDataStore : IStateObjectDataStore
     {
 
-        const string DATA_FIELD = "Data";
-        const string EXTRA_FLAGS_FIELD = "ExtraFlags";
-        const string TIMEOUT_FIELD = "Timeout";
-        const string TOUCH_FIELD = "Touch";
-        const string LOCK_COOKIE_FIELD = "Lock-Cookie";
-        const string LOCK_TIME_FIELD = "Lock-Time";
-
         readonly StateActor actor;
 
         /// <summary>
@@ -40,8 +33,7 @@ namespace AspNetStateService.Fabric.Services
         /// <returns></returns>
         async Task<T> GetStateAsync<T>(string stateName)
         {
-            var v = await actor.StateManager.TryGetStateAsync<T>(stateName);
-            return v.HasValue ? v.Value : default;
+            return await actor.GetStateAsync<T>(stateName);
         }
 
         /// <summary>
@@ -51,9 +43,9 @@ namespace AspNetStateService.Fabric.Services
         /// <param name="stateName"></param>
         /// <param name="value"></param>
         /// <returns></returns>
-        Task SetStateAsync<T>(string stateName, T value)
+        async Task SetStateAsync<T>(string stateName, T value)
         {
-            return actor.StateManager.SetStateAsync(stateName, value);
+            await actor.SetStateAsync<T>(stateName, value);
         }
 
         /// <summary>
@@ -76,10 +68,10 @@ namespace AspNetStateService.Fabric.Services
         /// <returns></returns>
         public async Task SetDataAsync(string id, byte[] data, uint? extraFlags, TimeSpan? timeout)
         {
-            await SetStateAsync(DATA_FIELD, data);
-            await SetStateAsync(EXTRA_FLAGS_FIELD, extraFlags);
-            await SetStateAsync(TIMEOUT_FIELD, timeout);
-            await SetStateAsync(TOUCH_FIELD, DateTime.Now);
+            await SetStateAsync(StateActor.DATA_FIELD, data);
+            await SetStateAsync(StateActor.EXTRA_FLAGS_FIELD, extraFlags);
+            await SetStateAsync(StateActor.TIMEOUT_FIELD, timeout);
+            await SetStateAsync(StateActor.ALTERED_FIELD, DateTime.UtcNow);
         }
 
         /// <summary>
@@ -90,7 +82,8 @@ namespace AspNetStateService.Fabric.Services
         /// <returns></returns>
         public async Task SetFlagAsync(string id, uint? extraFlags)
         {
-            await SetStateAsync(EXTRA_FLAGS_FIELD, extraFlags);
+            await SetStateAsync(StateActor.EXTRA_FLAGS_FIELD, extraFlags);
+            await SetStateAsync(StateActor.ALTERED_FIELD, DateTime.UtcNow);
         }
 
         /// <summary>
@@ -98,12 +91,12 @@ namespace AspNetStateService.Fabric.Services
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public async Task<(byte[] data, uint? extraFlags, TimeSpan? timeout, DateTime? touch)> GetDataAsync(string id)
+        public async Task<(byte[] data, uint? extraFlags, TimeSpan? timeout, DateTime? altered)> GetDataAsync(string id)
         {
-            var d = await GetStateAsync<byte[]>(DATA_FIELD);
-            var f = await GetStateAsync<uint?>(EXTRA_FLAGS_FIELD);
-            var t = await GetStateAsync<TimeSpan?>(TIMEOUT_FIELD);
-            var u = await GetStateAsync<DateTime?>(TOUCH_FIELD);
+            var d = await GetStateAsync<byte[]>(StateActor.DATA_FIELD);
+            var f = await GetStateAsync<uint?>(StateActor.EXTRA_FLAGS_FIELD);
+            var t = await GetStateAsync<TimeSpan?>(StateActor.TIMEOUT_FIELD);
+            var u = await GetStateAsync<DateTime?>(StateActor.ALTERED_FIELD);
             return (d, f, t, u);
         }
 
@@ -114,10 +107,10 @@ namespace AspNetStateService.Fabric.Services
         /// <returns></returns>
         public async Task RemoveDataAsync(string id)
         {
-            await RemoveStateAsync(DATA_FIELD);
-            await RemoveStateAsync(EXTRA_FLAGS_FIELD);
-            await RemoveStateAsync(TIMEOUT_FIELD);
-            await RemoveStateAsync(TOUCH_FIELD);
+            await RemoveStateAsync(StateActor.DATA_FIELD);
+            await RemoveStateAsync(StateActor.EXTRA_FLAGS_FIELD);
+            await RemoveStateAsync(StateActor.TIMEOUT_FIELD);
+            await RemoveStateAsync(StateActor.ALTERED_FIELD);
         }
 
         /// <summary>
@@ -127,8 +120,8 @@ namespace AspNetStateService.Fabric.Services
         /// <returns></returns>
         public async Task<(uint? cookie, DateTime? time)> GetLockAsync(string id)
         {
-            var l = await GetStateAsync<uint?>(LOCK_COOKIE_FIELD);
-            var c = await GetStateAsync<DateTime?>(LOCK_TIME_FIELD);
+            var l = await GetStateAsync<uint?>(StateActor.LOCK_COOKIE_FIELD);
+            var c = await GetStateAsync<DateTime?>(StateActor.LOCK_TIME_FIELD);
             return (l, c);
         }
 
@@ -141,8 +134,8 @@ namespace AspNetStateService.Fabric.Services
         /// <returns></returns>
         public async Task SetLockAsync(string id, uint cookie, DateTime time)
         {
-            await SetStateAsync(LOCK_COOKIE_FIELD, cookie);
-            await SetStateAsync(LOCK_TIME_FIELD, time);
+            await SetStateAsync(StateActor.LOCK_COOKIE_FIELD, cookie);
+            await SetStateAsync(StateActor.LOCK_TIME_FIELD, time);
         }
 
         /// <summary>
@@ -150,10 +143,10 @@ namespace AspNetStateService.Fabric.Services
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public async Task RemoveLockAsync(string id )
+        public async Task RemoveLockAsync(string id)
         {
-            await RemoveStateAsync(LOCK_COOKIE_FIELD);
-            await RemoveStateAsync(LOCK_TIME_FIELD);
+            await RemoveStateAsync(StateActor.LOCK_COOKIE_FIELD);
+            await RemoveStateAsync(StateActor.LOCK_TIME_FIELD);
         }
 
         /// <summary>
@@ -162,9 +155,10 @@ namespace AspNetStateService.Fabric.Services
         /// <param name="id"></param>
         /// <param name="timeout"></param>
         /// <returns></returns>
-        public async Task SetTimeoutAsync(string id, TimeSpan? timeout)
+        public Task SetTimeoutAsync(string id, TimeSpan? timeout)
         {
-            await actor.SetTimeoutAsync(timeout);
+            // no implementation, we scan in the actor service
+            return Task.CompletedTask;
         }
 
     }

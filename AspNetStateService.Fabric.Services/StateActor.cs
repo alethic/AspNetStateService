@@ -15,8 +15,18 @@ namespace AspNetStateService.Fabric.Services
     /// Hosts the <see cref="StateObject"/> in a Service Fabric Actor, using the Actor state.
     /// </summary>
     [StatePersistence(StatePersistence.Volatile)]
-    public class StateActor : Actor, IRemindable, IStateActor
+    public class StateActor : Actor, IStateActor
     {
+
+        public static readonly TimeSpan DEFAULT_TIMEOUT = TimeSpan.FromMinutes(20);
+        public static readonly TimeSpan MAXIMUM_TIMEOUT = TimeSpan.FromHours(4);
+
+        public const string DATA_FIELD = "Data";
+        public const string EXTRA_FLAGS_FIELD = "ExtraFlags";
+        public const string TIMEOUT_FIELD = "Timeout";
+        public const string ALTERED_FIELD = "Altered";
+        public const string LOCK_COOKIE_FIELD = "Lock-Cookie";
+        public const string LOCK_TIME_FIELD = "Lock-Time";
 
         readonly IStateObject state;
 
@@ -29,6 +39,30 @@ namespace AspNetStateService.Fabric.Services
             base(actorService, actorId)
         {
             this.state = new StateObject(actorId.GetStringId(), new StateActorDataStore(this));
+        }
+
+        /// <summary>
+        /// Gets the given state object from the state manager.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="stateName"></param>
+        /// <returns></returns>
+        public async Task<T> GetStateAsync<T>(string stateName)
+        {
+            var v = await StateManager.TryGetStateAsync<T>(stateName);
+            return v.HasValue ? v.Value : default;
+        }
+
+        /// <summary>
+        /// Sets the given state value in the state manager.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="stateName"></param>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public Task SetStateAsync<T>(string stateName, T value)
+        {
+            return StateManager.SetStateAsync(stateName, value);
         }
 
         /// <summary>
@@ -71,51 +105,11 @@ namespace AspNetStateService.Fabric.Services
             return state.ResetTimeout();
         }
 
-        /// <summary>
-        /// Tries to get the reminder with the specified name, or returns null.
-        /// </summary>
-        /// <param name="name"></param>
-        /// <returns></returns>
-        IActorReminder TryGetReminder(string name)
+        public async Task<bool> IsExpired()
         {
-            try
-            {
-                return GetReminder("Timeout");
-            }
-            catch (ReminderNotFoundException)
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Sets the expiration reminder.
-        /// </summary>
-        /// <param name="timeout"></param>
-        /// <returns></returns>
-        public async Task SetTimeoutAsync(TimeSpan? timeout)
-        {
-            // refresh existing reminder
-            var reminder = TryGetReminder("Timeout");
-            if (timeout != null)
-                await RegisterReminderAsync("Timeout", null, timeout.Value, TimeSpan.MaxValue);
-            else if (reminder != null)
-                await UnregisterReminderAsync(reminder);
-        }
-
-        /// <summary>
-        /// Invoked when a reminder is received.
-        /// </summary>
-        /// <param name="reminderName"></param>
-        /// <param name="state"></param>
-        /// <param name="dueTime"></param>
-        /// <param name="period"></param>
-        /// <returns></returns>
-        public async Task ReceiveReminderAsync(string reminderName, byte[] state, TimeSpan dueTime, TimeSpan period)
-        {
-            // delete actor on expiration
-            if (reminderName == "Timeout")
-                await ActorService.StateProvider.RemoveActorAsync(this.GetActorId());
+            var altered = await GetStateAsync<DateTime?>(ALTERED_FIELD) ?? DateTime.MinValue;
+            var timeout = await GetStateAsync<TimeSpan?>(TIMEOUT_FIELD) ?? DEFAULT_TIMEOUT;
+            return altered < DateTime.UtcNow - timeout || altered < DateTime.UtcNow - MAXIMUM_TIMEOUT;
         }
 
     }

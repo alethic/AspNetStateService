@@ -40,8 +40,8 @@ namespace AspNetStateService.EntityFrameworkCore
         /// <summary>
         /// Last time the state object was modified.
         /// </summary>
-        [Column("Touched")]
-        public virtual DateTime? Touched { get; set; }
+        [Column("Altered")]
+        public virtual DateTime? Altered { get; set; }
 
         /// <summary>
         /// Current lock cookie value.

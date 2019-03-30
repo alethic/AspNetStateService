@@ -26,7 +26,7 @@ namespace AspNetStateService.Fabric.Services
             builder.RegisterAllAssemblyModules();
             builder.RegisterServiceFabricSupport();
             builder.RegisterStatelessKestrelWebService<StateWebService>("StateWebService", "HttpServiceEndpoint");
-            builder.RegisterActor<StateActor>();
+            builder.RegisterActor<StateActor>(typeof(StateActorService));
 
             using (builder.Build())
                 await Task.Delay(Timeout.Infinite);

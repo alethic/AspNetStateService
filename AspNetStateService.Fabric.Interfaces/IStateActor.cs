@@ -56,6 +56,12 @@ namespace AspNetStateService.Fabric.Interfaces
         /// <returns></returns>
         Task<Response> ResetTimeout();
 
+        /// <summary>
+        /// Returns <c>true</c> if the actor state is expired.
+        /// </summary>
+        /// <returns></returns>
+        Task<bool> IsExpired();
+
     }
 
 }
