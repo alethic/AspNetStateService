@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 
+using AspNetStateService.Fabric.Core;
 using AspNetStateService.Fabric.Interfaces;
 using AspNetStateService.Interfaces;
 

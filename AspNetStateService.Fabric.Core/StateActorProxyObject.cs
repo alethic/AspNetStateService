@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Threading.Tasks;
 
+using AspNetStateService.Fabric.Interfaces;
 using AspNetStateService.Interfaces;
 
-namespace AspNetStateService.Fabric.Interfaces
+namespace AspNetStateService.Fabric.Core
 {
 
     /// <summary>
