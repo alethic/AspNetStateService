@@ -25,15 +25,15 @@ namespace AspNetStateService.AspNetCore.Kestrel
         /// <param name="data"></param>
         /// <param name="length"></param>
         public unsafe static void Prefix(
-            ref IntPtr __state,
+            ref GCHandle? __state,
             ref Microsoft.AspNetCore.Server.Kestrel.Core.Internal.Http.Http1ParsingHandler handler,
             ref byte* data,
             ref int length)
         {
-            __state = IntPtr.Zero;
+            __state = null;
 
             var d = data;
-            var t = Marshal.PtrToStringAnsi((IntPtr)d, length);
+            var t = Encoding.ASCII.GetString(d, length);
 
             var i = t.IndexOf(' ');
             if (i > 2)
@@ -47,11 +47,11 @@ namespace AspNetStateService.AspNetCore.Kestrel
 
                     // create a copy of the rewritten request string
                     var buf = Encoding.ASCII.GetBytes(t);
-                    var ptr = Marshal.AllocHGlobal(buf.Length);
-                    Marshal.Copy(buf, 0, ptr, buf.Length);
+                    var pin = GCHandle.Alloc(buf, GCHandleType.Pinned);
+                    var ptr = pin.AddrOfPinnedObject();
 
                     // will need to free this in the postfix
-                    __state = ptr;
+                    __state = pin;
 
                     // replace argument going into original method
                     data = (byte*)ptr.ToPointer();
@@ -66,14 +66,13 @@ namespace AspNetStateService.AspNetCore.Kestrel
         /// <param name="__state"></param>
         /// <param name="handler"></param>
         public unsafe static void Postfix(
-            IntPtr __state,
+            GCHandle? __state,
             ref Microsoft.AspNetCore.Server.Kestrel.Core.Internal.Http.Http1ParsingHandler handler,
             ref byte* data,
             ref int length)
         {
-            // deallocate our temporary buffer
-            if (__state != IntPtr.Zero)
-                Marshal.FreeHGlobal(__state);
+            if (__state.HasValue)
+                __state.Value.Free();
         }
 
     }
