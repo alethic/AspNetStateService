@@ -27,12 +27,4 @@
       </StatefulService>
     </Service>
   </DefaultServices>
-  <Principals>
-    <Users>
-      <User Name="User" />
-    </Users>
-  </Principals>
-  <Policies>
-    <DefaultRunAsPolicy UserRef="User" />
-  </Policies>
 </ApplicationManifest>
