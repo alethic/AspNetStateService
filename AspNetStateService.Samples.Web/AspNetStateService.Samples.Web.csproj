@@ -79,6 +79,11 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="Cogito.AspNet.MSBuild">
+      <Version>0.1.8</Version>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
     <PackageReference Include="Cogito.AspNet.WebImport">
       <Version>0.1.1</Version>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>

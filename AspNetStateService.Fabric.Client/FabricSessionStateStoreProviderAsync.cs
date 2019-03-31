@@ -1,16 +1,60 @@
 ﻿using System;
+using System.Collections.Specialized;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.SessionState;
 
+using AspNetStateService.Fabric.Interfaces;
+
+using Cogito;
+
 using Microsoft.AspNet.SessionState;
+using Microsoft.ServiceFabric.Actors;
+using Microsoft.ServiceFabric.Actors.Client;
 
 namespace AspNetStateService.Fabric.Client
 {
 
-    public class FabricSessionStateStoreProvider : SessionStateStoreProviderAsyncBase
+    public class FabricSessionStateStoreProviderAsync : SessionStateStoreProviderAsyncBase
     {
+
+        const string APPLICATION_URI_CONFIGURATION_NAME = "serviceUri";
+        const string DEFAULT_STATE_APPLICATION_NAME = "fabric:/AspNetStateService";
+        const string ACTOR_PROXY_KEY = "FabricSessionStateStoreProviderAsync:ActorProxy";
+
+        string stateApplicationName;
+
+        /// <summary>
+        /// Initializes the session state store.
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="config"></param>
+        public override void Initialize(string name, NameValueCollection config)
+        {
+            if (name == null)
+                throw new ArgumentNullException(nameof(name));
+            if (config == null)
+                throw new ArgumentNullException(nameof(config));
+
+            stateApplicationName = config[APPLICATION_URI_CONFIGURATION_NAME]?.TrimOrNull() ?? DEFAULT_STATE_APPLICATION_NAME;
+
+            base.Initialize(name, config);
+        }
+
+        /// <summary>
+        /// Gets the <see cref="IStateActor"/> proxy instance for the given state ID.
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        IStateActor GetActorProxy(HttpContext context, string id)
+        {
+            if (context.Items.Contains(ACTOR_PROXY_KEY) == false)
+                context.Items[ACTOR_PROXY_KEY] = ActorProxy.Create<IStateActor>(new ActorId(id), applicationName: stateApplicationName);
+
+            return (IStateActor)context.Items[ACTOR_PROXY_KEY];
+        }
 
         public override void InitializeRequest(HttpContextBase context)
         {
@@ -19,14 +63,11 @@ namespace AspNetStateService.Fabric.Client
 
         public override SessionStateStoreData CreateNewStoreData(HttpContextBase context, int timeout)
         {
-            throw new NotImplementedException();
+            return new SessionStateStoreData(new SessionStateItemCollection(), SessionStateUtility.GetSessionStaticObjects(context.ApplicationInstance.Context), timeout);
         }
 
-        public override Task CreateUninitializedItemAsync(HttpContextBase context, string id, int timeout, CancellationToken cancellationToken)
+        public override async Task CreateUninitializedItemAsync(HttpContextBase context, string id, int timeout, CancellationToken cancellationToken)
         {
-            if (id == null)
-                throw new ArgumentNullException(nameof(id));
-
             throw new NotImplementedException();
         }
 

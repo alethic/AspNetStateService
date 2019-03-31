@@ -8,7 +8,12 @@
     <PackageReference Include="Cogito.Core" Version="3.0.0" />
     <PackageReference Include="Microsoft.AspNet.SessionState.SessionStateModule" Version="1.1.0" />
     <PackageReference Include="Microsoft.ServiceFabric" Version="6.4.644" />
+    <PackageReference Include="Microsoft.ServiceFabric.Actors" Version="3.3.644" />
     <PackageReference Include="Microsoft.ServiceFabric.Services" Version="3.3.644" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\AspNetStateService.Fabric.Interfaces\AspNetStateService.Fabric.Interfaces.csproj" />
   </ItemGroup>
 
   <ItemGroup>
