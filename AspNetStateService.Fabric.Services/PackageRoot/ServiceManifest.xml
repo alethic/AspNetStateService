@@ -21,7 +21,6 @@
     <EntryPoint>
       <ExeHost>
         <Program>AspNetStateService.Fabric.Services.exe</Program>
-        <ConsoleRedirection FileRetentionCount="4" FileMaxSizeInKb="65536" />
       </ExeHost>
     </EntryPoint>
   </CodePackage>
