@@ -13,7 +13,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Cogito.Autofac" Version="1.2.1" />
+    <PackageReference Include="Cogito.Autofac" Version="1.2.5" />
     <PackageReference Include="Lib.Harmony" Version="1.2.0.1" />
     <PackageReference Include="Microsoft.AspNetCore.Server.Kestrel.Core" Version="2.2.0" />
   </ItemGroup>
