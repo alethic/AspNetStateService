@@ -25,8 +25,7 @@ namespace AspNetStateService.Samples.Web.Host
             builder.RegisterStatelessService<WebService>("AspNetStateService.Samples.Web.Host");
 
             using (var container = builder.Build())
-                while (true)
-                    Thread.Sleep(Timeout.Infinite);
+                Thread.Sleep(Timeout.Infinite);
         }
 
     }
