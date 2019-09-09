@@ -1,31 +1,32 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>net47</TargetFramework>
+        <TargetFramework>net472</TargetFramework>
         <OutputType>Exe</OutputType>
+        <EnableWebImport>true</EnableWebImport>
     </PropertyGroup>
 
     <ItemGroup>
-      <None Remove="ApplicationHost.config" />
-      <None Remove="Web.config" />
+        <None Remove="ApplicationHost.config" />
+        <None Remove="Web.config" />
     </ItemGroup>
 
     <ItemGroup>
-      <EmbeddedResource Include="ApplicationHost.config" />
-      <EmbeddedResource Include="Web.config" />
+        <EmbeddedResource Include="ApplicationHost.config" />
+        <EmbeddedResource Include="Web.config" />
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="Autofac" Version="4.9.4" />
-      <PackageReference Include="Autofac.ServiceFabric" Version="2.2.0" />
-      <PackageReference Include="Cogito.AspNet.WebImport" Version="0.1.1">
-        <PrivateAssets>all</PrivateAssets>
-        <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-      </PackageReference>
-      <PackageReference Include="Cogito.Autofac" Version="1.2.19" />
-      <PackageReference Include="Cogito.HostedWebCore.ServiceFabric" Version="1.2.11" />
-      <PackageReference Include="Cogito.ServiceFabric" Version="1.3.9" />
-      <PackageReference Include="Microsoft.ServiceFabric.Diagnostics.Internal" Version="3.4.664" />
+        <PackageReference Include="Autofac" Version="4.9.4" />
+        <PackageReference Include="Autofac.ServiceFabric" Version="2.2.0" />
+        <PackageReference Include="Cogito.AspNet.WebImport" Version="0.1.1">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="Cogito.Autofac" Version="1.2.19" />
+        <PackageReference Include="Cogito.HostedWebCore.ServiceFabric" Version="1.2.11" />
+        <PackageReference Include="Cogito.ServiceFabric" Version="1.3.9" />
+        <PackageReference Include="Microsoft.ServiceFabric.Diagnostics.Internal" Version="3.4.664" />
     </ItemGroup>
 
     <ItemGroup>
@@ -50,7 +51,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Properties\" />
+        <Folder Include="Properties\" />
     </ItemGroup>
 
 </Project>

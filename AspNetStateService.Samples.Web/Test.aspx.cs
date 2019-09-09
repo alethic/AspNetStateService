@@ -8,7 +8,8 @@ namespace AspNetStateService.Samples.Web
 
         protected void Page_Load(object sender, EventArgs args)
         {
-
+            if (Session.IsNewSession)
+                Session.Timeout = 1;
         }
 
         public int Value
