@@ -28,7 +28,7 @@ namespace AspNetStateService.Fabric.Services
         public StateActorService(StatefulServiceContext context, ActorTypeInformation actorTypeInfo, Func<ActorService, ActorId, ActorBase> actorFactory = null, Func<ActorBase, IActorStateProvider, IActorStateManager> stateManagerFactory = null, IActorStateProvider stateProvider = null, ActorServiceSettings settings = null) :
             base(context, actorTypeInfo, actorFactory, stateManagerFactory, stateProvider, settings)
         {
-            
+
         }
 
         /// <summary>
@@ -112,8 +112,13 @@ namespace AspNetStateService.Fabric.Services
         /// <returns></returns>
         async Task PurgeActorAsync(ActorId actorId, CancellationToken cancellationToken)
         {
-            if (await ActorProxy.Create<IStateActor>(actorId).IsExpired())
-                await ((IActorService)this).DeleteActorAsync(actorId, cancellationToken);
+            // check state directly before bothering to contact actor itself
+            var altered = await StateProvider.LoadStateAsync<DateTime?>(actorId, StateActor.ALTERED_FIELD, cancellationToken) ?? DateTime.MinValue;
+            var timeout = await StateProvider.LoadStateAsync<TimeSpan?>(actorId, StateActor.TIMEOUT_FIELD, cancellationToken) ?? StateActor.DEFAULT_TIMEOUT;
+            var expired = altered < DateTime.UtcNow - timeout || altered < DateTime.UtcNow - StateActor.MAXIMUM_TIMEOUT;
+            if (expired)
+                if (await ActorProxy.Create<IStateActor>(actorId).IsExpired())
+                    await ((IActorService)this).DeleteActorAsync(actorId, cancellationToken);
         }
 
     }

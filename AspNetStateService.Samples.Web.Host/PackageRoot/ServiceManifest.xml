@@ -20,7 +20,7 @@
         </SetupEntryPoint>
         <EntryPoint>
             <ExeHost>
-                <Program>AspNetStateService.Samples.Web.Host.exe</Program>
+                <Program>launch.bat</Program>
                 <WorkingFolder>CodePackage</WorkingFolder>
                 <ConsoleRedirection FileMaxSizeInKb="65536" FileRetentionCount="4" />
             </ExeHost>
