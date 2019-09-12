@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Net;
+using System.Threading;
 using System.Threading.Tasks;
 
 using AspNetStateService.Interfaces;
@@ -78,22 +79,22 @@ namespace AspNetStateService.AspNetCore
                 switch (ctx.Request.Method)
                 {
                     case "GET" when ctx.Request.Headers["Exclusive"] == "Acquire":
-                        await GetExclusive(ctx, state);
+                        await GetExclusive(ctx, state, ctx.RequestAborted);
                         return;
                     case "GET" when ctx.Request.Headers["Exclusive"] == "Release":
-                        await ReleaseExclusive(ctx, state);
+                        await ReleaseExclusive(ctx, state, ctx.RequestAborted);
                         return;
                     case "GET":
-                        await Get(ctx, state);
+                        await Get(ctx, state, ctx.RequestAborted);
                         return;
                     case "PUT":
-                        await Set(ctx, state);
+                        await Set(ctx, state, ctx.RequestAborted);
                         return;
                     case "DELETE":
-                        await Remove(ctx, state);
+                        await Remove(ctx, state, ctx.RequestAborted);
                         return;
                     case "HEAD":
-                        await ResetTimeout(ctx, state);
+                        await ResetTimeout(ctx, state, ctx.RequestAborted);
                         return;
                 }
 
@@ -143,7 +144,8 @@ namespace AspNetStateService.AspNetCore
         /// </summary>
         /// <param name="context"></param>
         /// <param name="response"></param>
-        void SetResponse(HttpContext context, Response response)
+        /// <param name="cancellationToken"></param>
+        Task SetResponse(HttpContext context, Response response, CancellationToken cancellationToken)
         {
             context.Response.ContentLength = 0;
 
@@ -174,6 +176,8 @@ namespace AspNetStateService.AspNetCore
 
             if (response.LockAge != null)
                 context.Response.Headers["LockAge"] = ((int)response.LockAge.Value.TotalSeconds).ToString();
+
+            return Task.CompletedTask;
         }
 
         /// <summary>
@@ -181,9 +185,10 @@ namespace AspNetStateService.AspNetCore
         /// </summary>
         /// <param name="context"></param>
         /// <param name="response"></param>
-        void SetResponse(HttpContext context, DataResponse response)
+        /// <param name="cancellationToken"></param>
+        async Task SetResponse(HttpContext context, DataResponse response, CancellationToken cancellationToken)
         {
-            SetResponse(context, (Response)response);
+            await SetResponse(context, (Response)response, cancellationToken);
 
             if (response.ActionFlags != null)
                 context.Response.Headers["ActionFlags"] = response.ActionFlags.Value.ToString();
@@ -191,38 +196,38 @@ namespace AspNetStateService.AspNetCore
             if (response.Data != null)
             {
                 context.Response.ContentLength = response.Data.Length;
-                context.Response.Body.WriteAsync(response.Data, 0, response.Data.Length);
+                await context.Response.Body.WriteAsync(response.Data, 0, response.Data.Length);
             }
         }
 
-        public async Task Get(HttpContext context, IStateObject actor)
+        public async Task Get(HttpContext context, IStateObject actor, CancellationToken cancellationToken)
         {
-            SetResponse(context, await actor.Get());
+            await SetResponse(context, await actor.Get(cancellationToken), cancellationToken);
         }
 
-        public async Task GetExclusive(HttpContext context, IStateObject actor)
+        public async Task GetExclusive(HttpContext context, IStateObject actor, CancellationToken cancellationToken)
         {
-            SetResponse(context, await actor.GetExclusive());
+            await SetResponse(context, await actor.GetExclusive(cancellationToken), cancellationToken);
         }
 
-        public async Task Set(HttpContext context, IStateObject actor)
+        public async Task Set(HttpContext context, IStateObject actor, CancellationToken cancellationToken)
         {
-            SetResponse(context, await actor.Set(GetLockCookie(context), await GetDataAsync(context), GetExtraFlags(context), GetTimeout(context)));
+            await SetResponse(context, await actor.Set(GetLockCookie(context), await GetDataAsync(context), GetExtraFlags(context), GetTimeout(context), cancellationToken), cancellationToken);
         }
 
-        public async Task ReleaseExclusive(HttpContext context, IStateObject actor)
+        public async Task ReleaseExclusive(HttpContext context, IStateObject actor, CancellationToken cancellationToken)
         {
-            SetResponse(context, await actor.ReleaseExclusive((uint)GetLockCookie(context)));
+            await SetResponse(context, await actor.ReleaseExclusive((uint)GetLockCookie(context), cancellationToken), cancellationToken);
         }
 
-        public async Task Remove(HttpContext context, IStateObject actor)
+        public async Task Remove(HttpContext context, IStateObject actor, CancellationToken cancellationToken)
         {
-            SetResponse(context, await actor.Remove(GetLockCookie(context)));
+            await SetResponse(context, await actor.Remove(GetLockCookie(context), cancellationToken), cancellationToken);
         }
 
-        public async Task ResetTimeout(HttpContext context, IStateObject actor)
+        public async Task ResetTimeout(HttpContext context, IStateObject actor, CancellationToken cancellationToken)
         {
-            SetResponse(context, await actor.ResetTimeout());
+            await SetResponse(context, await actor.ResetTimeout(cancellationToken), cancellationToken);
         }
 
     }

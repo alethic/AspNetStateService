@@ -25,7 +25,7 @@ namespace AspNetStateService.Fabric.Services
         /// <param name="stateManagerFactory"></param>
         /// <param name="stateProvider"></param>
         /// <param name="settings"></param>
-        public StateActorService(StatefulServiceContext context, ActorTypeInformation actorTypeInfo, Func<ActorService, ActorId, ActorBase> actorFactory = null, Func<ActorBase, IActorStateProvider, IActorStateManager> stateManagerFactory = null, IActorStateProvider stateProvider = null, ActorServiceSettings settings = null) :
+        public StateActorService(FabricClient fabric, StatefulServiceContext context, ActorTypeInformation actorTypeInfo, Func<ActorService, ActorId, ActorBase> actorFactory = null, Func<ActorBase, IActorStateProvider, IActorStateManager> stateManagerFactory = null, IActorStateProvider stateProvider = null, ActorServiceSettings settings = null) :
             base(context, actorTypeInfo, actorFactory, stateManagerFactory, stateProvider, settings)
         {
 
@@ -45,6 +45,21 @@ namespace AspNetStateService.Fabric.Services
                 await TryPurgeActorsAsync(cancellationToken);
                 await Task.Delay(TimeSpan.FromMinutes(1), cancellationToken);
             }
+        }
+
+        /// <summary>
+        /// Executed when the actor changes role.
+        /// </summary>
+        /// <param name="newRole"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        protected override async Task OnChangeRoleAsync(ReplicaRole newRole, CancellationToken cancellationToken)
+        {
+            await base.OnChangeRoleAsync(newRole, cancellationToken);
+
+            // zero out load
+            if (newRole != ReplicaRole.Primary)
+                Partition.ReportLoad(new[] { new LoadMetric("ActiveSessionCount", 0) });
         }
 
         /// <summary>
@@ -72,6 +87,7 @@ namespace AspNetStateService.Fabric.Services
         async Task PurgeActorsAsync(CancellationToken cancellationToken)
         {
             var more = (ContinuationToken)null;
+            var nact = 0;
 
             do
             {
@@ -81,9 +97,13 @@ namespace AspNetStateService.Fabric.Services
 
                 // potentially purge actors
                 foreach (var actorId in page.Items)
-                    await TryPurgeActorAsync(actorId, cancellationToken);
+                    if (await TryPurgeActorAsync(actorId, cancellationToken) == false)
+                        nact++;
             }
             while (more != null && cancellationToken.IsCancellationRequested == false);
+
+            // report count of known active actors
+            Partition.ReportLoad(new[] { new LoadMetric("ActiveSessionCount", nact) });
         }
 
         /// <summary>
@@ -92,16 +112,18 @@ namespace AspNetStateService.Fabric.Services
         /// <param name="actorId"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        async Task TryPurgeActorAsync(ActorId actorId, CancellationToken cancellationToken)
+        async Task<bool> TryPurgeActorAsync(ActorId actorId, CancellationToken cancellationToken)
         {
             try
             {
-                await PurgeActorAsync(actorId, cancellationToken);
+                return await PurgeActorAsync(actorId, cancellationToken);
             }
             catch
             {
 
             }
+
+            return false;
         }
 
         /// <summary>
@@ -110,15 +132,33 @@ namespace AspNetStateService.Fabric.Services
         /// <param name="actorId"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        async Task PurgeActorAsync(ActorId actorId, CancellationToken cancellationToken)
+        async Task<bool> PurgeActorAsync(ActorId actorId, CancellationToken cancellationToken)
+        {
+            if (await IsExpiredAsync(actorId, cancellationToken))
+            {
+                await ((IActorService)this).DeleteActorAsync(actorId, cancellationToken);
+                return true;
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// Returns <c>true</c> if the given actor is expired.
+        /// </summary>
+        /// <param name="actorId"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        async Task<bool> IsExpiredAsync(ActorId actorId, CancellationToken cancellationToken)
         {
             // check state directly before bothering to contact actor itself
             var altered = await StateProvider.LoadStateAsync<DateTime?>(actorId, StateActor.ALTERED_FIELD, cancellationToken) ?? DateTime.MinValue;
             var timeout = await StateProvider.LoadStateAsync<TimeSpan?>(actorId, StateActor.TIMEOUT_FIELD, cancellationToken) ?? StateActor.DEFAULT_TIMEOUT;
-            var expired = altered < DateTime.UtcNow - timeout || altered < DateTime.UtcNow - StateActor.MAXIMUM_TIMEOUT;
-            if (expired)
-                if (await ActorProxy.Create<IStateActor>(actorId).IsExpired())
-                    await ((IActorService)this).DeleteActorAsync(actorId, cancellationToken);
+            if (altered < DateTime.UtcNow - timeout || altered < DateTime.UtcNow - StateActor.MAXIMUM_TIMEOUT)
+                if (await ActorProxy.Create<IStateActor>(actorId).IsExpired(cancellationToken))
+                    return true;
+
+            return false;
         }
 
     }

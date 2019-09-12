@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 
 using AspNetStateService.Core;
@@ -46,10 +47,11 @@ namespace AspNetStateService.Fabric.Services
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="stateName"></param>
+        /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task<T> GetStateAsync<T>(string stateName)
+        public async Task<T> GetStateAsync<T>(string stateName, CancellationToken cancellationToken)
         {
-            var v = await StateManager.TryGetStateAsync<T>(stateName);
+            var v = await StateManager.TryGetStateAsync<T>(stateName, cancellationToken);
             return v.HasValue ? v.Value : default;
         }
 
@@ -59,56 +61,59 @@ namespace AspNetStateService.Fabric.Services
         /// <typeparam name="T"></typeparam>
         /// <param name="stateName"></param>
         /// <param name="value"></param>
+        /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public Task SetStateAsync<T>(string stateName, T value)
+        public Task SetStateAsync<T>(string stateName, T value, CancellationToken cancellationToken)
         {
-            return StateManager.SetStateAsync(stateName, value);
+            return StateManager.SetStateAsync(stateName, value, cancellationToken);
         }
 
         /// <summary>
         /// Processes a non-exclusive get request.
         /// </summary>
         /// <param name="cookie"></param>
+        /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public Task<DataResponse> Get()
+        public Task<DataResponse> Get(CancellationToken cancellationToken)
         {
-            return state.Get();
+            return state.Get(cancellationToken);
         }
 
         /// <summary>
         /// Processes an exclusive get request.
         /// </summary>
         /// <param name="cookie"></param>
+        /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public Task<DataResponse> GetExclusive()
+        public Task<DataResponse> GetExclusive(CancellationToken cancellationToken)
         {
-            return state.GetExclusive();
+            return state.GetExclusive(cancellationToken);
         }
 
-        public Task<Response> Set(uint? cookie, byte[] data, uint? extraFlags, TimeSpan? timeout)
+        public Task<Response> Set(uint? cookie, byte[] data, uint? extraFlags, TimeSpan? timeout, CancellationToken cancellationToken)
         {
-            return state.Set(cookie, data, extraFlags, timeout);
+            return state.Set(cookie, data, extraFlags, timeout, cancellationToken);
         }
 
-        public Task<Response> ReleaseExclusive(uint cookie)
+        public Task<Response> ReleaseExclusive(uint cookie, CancellationToken cancellationToken)
         {
-            return state.ReleaseExclusive(cookie);
+            return state.ReleaseExclusive(cookie, cancellationToken);
         }
 
-        public Task<Response> Remove(uint? cookie)
+        public Task<Response> Remove(uint? cookie, CancellationToken cancellationToken)
         {
-            return state.Remove(cookie);
+            return state.Remove(cookie, cancellationToken);
         }
 
-        public Task<Response> ResetTimeout()
+        public Task<Response> ResetTimeout(CancellationToken cancellationToken)
         {
-            return state.ResetTimeout();
+            return state.ResetTimeout(cancellationToken);
         }
 
-        public async Task<bool> IsExpired()
+        public async Task<bool> IsExpired(CancellationToken cancellationToken)
         {
-            var altered = await GetStateAsync<DateTime?>(ALTERED_FIELD) ?? DateTime.MinValue;
-            var timeout = await GetStateAsync<TimeSpan?>(TIMEOUT_FIELD) ?? DEFAULT_TIMEOUT;
+            var altered = await GetStateAsync<DateTime?>(ALTERED_FIELD, cancellationToken) ?? DateTime.MinValue;
+            var timeout = await GetStateAsync<TimeSpan?>(TIMEOUT_FIELD, cancellationToken) ?? DEFAULT_TIMEOUT;
             return altered < DateTime.UtcNow - timeout || altered < DateTime.UtcNow - MAXIMUM_TIMEOUT;
         }
 

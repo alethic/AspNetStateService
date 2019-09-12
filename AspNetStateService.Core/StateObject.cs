@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 
 using AspNetStateService.Interfaces;
@@ -26,23 +27,23 @@ namespace AspNetStateService.Core
             this.store = store ?? throw new ArgumentNullException(nameof(store));
         }
 
-        public async Task<DataResponse> Get()
+        public async Task<DataResponse> Get(CancellationToken cancellationToken)
         {
             var r = new DataResponse();
 
             // load current information
-            var (l, c) = await store.GetLockAsync(id);
-            var (d, f, t, m) = await store.GetDataAsync(id);
+            var (l, c) = await store.GetLockAsync(id, cancellationToken);
+            var (d, f, t, m) = await store.GetDataAsync(id, cancellationToken);
 
             // expire session if required
             if ((m + t) - DateTime.UtcNow < TimeSpan.Zero)
             {
-                await store.RemoveLockAsync(id);
-                await store.RemoveDataAsync(id);
+                await store.RemoveLockAsync(id, cancellationToken);
+                await store.RemoveDataAsync(id, cancellationToken);
 
                 // reload current state
-                (l, c) = await store.GetLockAsync(id);
-                (d, f, t, m) = await store.GetDataAsync(id);
+                (l, c) = await store.GetLockAsync(id, cancellationToken);
+                (d, f, t, m) = await store.GetDataAsync(id, cancellationToken);
             }
 
             // return lock information if present
@@ -76,15 +77,15 @@ namespace AspNetStateService.Core
             if (f == 1)
             {
                 r.ActionFlags = 1;
-                await store.SetFlagAsync(id, 0);
+                await store.SetFlagAsync(id, 0, cancellationToken);
             }
 
             return r;
         }
 
-        public async Task<DataResponse> GetExclusive()
+        public async Task<DataResponse> GetExclusive(CancellationToken cancellationToken)
         {
-            var r = await Get();
+            var r = await Get(cancellationToken);
 
             // process requested lock if data successfully retrieved
             if (r.Status == ResponseStatus.Ok)
@@ -92,28 +93,28 @@ namespace AspNetStateService.Core
                 r.LockCookie = (uint)Guid.NewGuid().GetHashCode();
                 r.LockTime = DateTime.UtcNow;
                 r.LockAge = TimeSpan.Zero;
-                await store.SetLockAsync(id, (uint)r.LockCookie, (DateTime)r.LockTime);
+                await store.SetLockAsync(id, (uint)r.LockCookie, (DateTime)r.LockTime, cancellationToken);
             }
 
             return r;
         }
 
-        public async Task<Response> Set(uint? cookie, byte[] data, uint? flag, TimeSpan? time)
+        public async Task<Response> Set(uint? cookie, byte[] data, uint? flag, TimeSpan? time, CancellationToken cancellationToken)
         {
             var r = new Response();
 
-            var (l, c) = await store.GetLockAsync(id);
-            var (d, f, t, m) = await store.GetDataAsync(id);
+            var (l, c) = await store.GetLockAsync(id, cancellationToken);
+            var (d, f, t, m) = await store.GetDataAsync(id, cancellationToken);
 
             // expire session if required
             if ((m + t) - DateTime.UtcNow < TimeSpan.Zero)
             {
-                await store.RemoveLockAsync(id);
-                await store.RemoveDataAsync(id);
+                await store.RemoveLockAsync(id, cancellationToken);
+                await store.RemoveDataAsync(id, cancellationToken);
 
                 // reload current state
-                (l, c) = await store.GetLockAsync(id);
-                (d, f, t, m) = await store.GetDataAsync(id);
+                (l, c) = await store.GetLockAsync(id, cancellationToken);
+                (d, f, t, m) = await store.GetDataAsync(id, cancellationToken);
             }
 
             // no data sent
@@ -146,25 +147,25 @@ namespace AspNetStateService.Core
             }
 
             // save new data
-            await store.SetDataAsync(id, data, flag, time);
-            (d, f, t, m) = await store.GetDataAsync(id);
+            await store.SetDataAsync(id, data, flag, time, cancellationToken);
+            (d, f, t, m) = await store.GetDataAsync(id, cancellationToken);
 
             r.Status = ResponseStatus.Ok;
             r.Timeout = (m + t) - DateTime.UtcNow;
 
             // ensure we auto expire
             if (r.Timeout > TimeSpan.Zero)
-                await store.SetTimeoutAsync(id, r.Timeout);
+                await store.SetTimeoutAsync(id, r.Timeout, cancellationToken);
 
             return r;
         }
 
-        public async Task<Response> ReleaseExclusive(uint cookie)
+        public async Task<Response> ReleaseExclusive(uint cookie, CancellationToken cancellationToken)
         {
             var r = new Response();
 
-            var (l, c) = await store.GetLockAsync(id);
-            var (d, f, t, m) = await store.GetDataAsync(id);
+            var (l, c) = await store.GetLockAsync(id, cancellationToken);
+            var (d, f, t, m) = await store.GetDataAsync(id, cancellationToken);
 
             r.LockCookie = l;
             r.LockTime = c;
@@ -183,17 +184,17 @@ namespace AspNetStateService.Core
             }
 
             // remov any locks
-            await store.RemoveLockAsync(id);
+            await store.RemoveLockAsync(id, cancellationToken);
             r.Status = ResponseStatus.Ok;
             return r;
         }
 
-        public async Task<Response> Remove(uint? cookie)
+        public async Task<Response> Remove(uint? cookie, CancellationToken cancellationToken)
         {
             var r = new Response();
 
-            var (l, c) = await store.GetLockAsync(id);
-            var (d, f, t, m) = await store.GetDataAsync(id);
+            var (l, c) = await store.GetLockAsync(id, cancellationToken);
+            var (d, f, t, m) = await store.GetDataAsync(id, cancellationToken);
 
             r.LockCookie = l;
             r.LockTime = c;
@@ -211,17 +212,17 @@ namespace AspNetStateService.Core
                 return r;
             }
 
-            await store.RemoveDataAsync(id);
+            await store.RemoveDataAsync(id, cancellationToken);
             r.Status = ResponseStatus.Ok;
             return r;
         }
 
-        public async Task<Response> ResetTimeout()
+        public async Task<Response> ResetTimeout(CancellationToken cancellationToken)
         {
             var r = new Response();
 
-            var (l, c) = await store.GetLockAsync(id);
-            var (d, f, t, m) = await store.GetDataAsync(id);
+            var (l, c) = await store.GetLockAsync(id, cancellationToken);
+            var (d, f, t, m) = await store.GetDataAsync(id, cancellationToken);
 
             r.LockCookie = l;
             r.LockTime = c;
@@ -234,15 +235,15 @@ namespace AspNetStateService.Core
             }
 
             // refresh data, which refreshes timeout
-            await store.SetDataAsync(id, d, f, t);
-            (d, f, t, m) = await store.GetDataAsync(id);
+            await store.SetDataAsync(id, d, f, t, cancellationToken);
+            (d, f, t, m) = await store.GetDataAsync(id, cancellationToken);
 
             r.Status = ResponseStatus.Ok;
             r.Timeout = (m + t) - DateTime.UtcNow;
 
             // ensure we auto expire
             if (r.Timeout > TimeSpan.Zero)
-                await store.SetTimeoutAsync(id, r.Timeout);
+                await store.SetTimeoutAsync(id, r.Timeout, cancellationToken);
 
             return r;
         }

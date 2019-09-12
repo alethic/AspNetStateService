@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 
 using AspNetStateService.Fabric.Interfaces;
@@ -24,34 +25,34 @@ namespace AspNetStateService.Fabric.Core
             this.actor = actor ?? throw new ArgumentNullException(nameof(actor));
         }
 
-        public Task<DataResponse> Get()
+        public Task<DataResponse> Get(CancellationToken cancellationToken)
         {
-            return actor.Get();
+            return actor.Get(cancellationToken);
         }
 
-        public Task<DataResponse> GetExclusive()
+        public Task<DataResponse> GetExclusive(CancellationToken cancellationToken)
         {
-            return actor.GetExclusive();
+            return actor.GetExclusive(cancellationToken);
         }
 
-        public Task<Response> Set(uint? cookie, byte[] data, uint? extraFlags, TimeSpan? timeout)
+        public Task<Response> Set(uint? cookie, byte[] data, uint? extraFlags, TimeSpan? timeout, CancellationToken cancellationToken)
         {
-            return actor.Set(cookie, data, extraFlags, timeout);
+            return actor.Set(cookie, data, extraFlags, timeout, cancellationToken);
         }
 
-        public Task<Response> ReleaseExclusive(uint cookie)
+        public Task<Response> ReleaseExclusive(uint cookie, CancellationToken cancellationToken)
         {
-            return actor.ReleaseExclusive(cookie);
+            return actor.ReleaseExclusive(cookie, cancellationToken);
         }
 
-        public Task<Response> Remove(uint? cookie)
+        public Task<Response> Remove(uint? cookie, CancellationToken cancellationToken)
         {
-            return actor.Remove(cookie);
+            return actor.Remove(cookie, cancellationToken);
         }
 
-        public Task<Response> ResetTimeout()
+        public Task<Response> ResetTimeout(CancellationToken cancellationToken)
         {
-            return actor.ResetTimeout();
+            return actor.ResetTimeout(cancellationToken);
         }
 
     }
