@@ -6,6 +6,8 @@ using AspNetStateService.Interfaces;
 
 using Cogito.Autofac;
 
+using Serilog;
+
 namespace AspNetStateService.Console
 {
 
@@ -15,19 +17,22 @@ namespace AspNetStateService.Console
     {
 
         readonly IStateObjectDataStore store;
+        readonly ILogger logger;
 
         /// <summary>
         /// Initializes a new instance.
         /// </summary>
         /// <param name="store"></param>
-        public StateObjectProvider(IStateObjectDataStore store)
+        /// <param name="logger"></param>
+        public StateObjectProvider(IStateObjectDataStore store, ILogger logger)
         {
             this.store = store ?? throw new ArgumentNullException(nameof(store));
+            this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         public Task<IStateObject> GetStateObjectAsync(string id)
         {
-            return Task.FromResult<IStateObject>(new StateObject(id, store));
+            return Task.FromResult<IStateObject>(new StateObject(id, store, logger));
         }
 
     }

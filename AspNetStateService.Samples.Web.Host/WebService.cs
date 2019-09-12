@@ -42,7 +42,7 @@ namespace AspNetStateService.Samples.Web.Host
         protected override IEnumerable<ServiceInstanceListener> CreateServiceInstanceListeners()
         {
             yield return new ServiceInstanceListener(ctx =>
-                new AppHostCommunicationListener(ctx, "ServiceEndpoint", (protocol, bindingInformation, path, listener) =>
+                new AppHostCommunicationListener(ctx, "ServiceEndpoint", (bindings, path, listener) =>
                     new AppHostBuilder()
                         .ConfigureWeb(LoadXmlResource("Web.config"), w => w
                             .SystemWeb(s => s
@@ -53,7 +53,7 @@ namespace AspNetStateService.Samples.Web.Host
                         .ConfigureApp(LoadXmlResource("ApplicationHost.config"), c => c
                             .Site(1, s => s
                                 .RemoveBindings()
-                                .AddBinding(protocol, bindingInformation)
+                                .AddBindings(bindings)
                                 .Application(path, a => a
                                     .VirtualDirectory("/", v => v.UsePhysicalPath(Path.Combine(Path.GetDirectoryName(typeof(WebService).Assembly.Location), "site"))))))
                         .Build()));
