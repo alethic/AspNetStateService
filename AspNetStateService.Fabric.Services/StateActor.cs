@@ -8,6 +8,7 @@ using AspNetStateService.Interfaces;
 
 using Microsoft.ServiceFabric.Actors;
 using Microsoft.ServiceFabric.Actors.Runtime;
+using Serilog;
 
 namespace AspNetStateService.Fabric.Services
 {
@@ -30,16 +31,19 @@ namespace AspNetStateService.Fabric.Services
         public const string LOCK_TIME_FIELD = "Lock-Time";
 
         readonly IStateObject state;
+        readonly ILogger logger;
 
         /// <summary>
         /// Initializes a new instance.
         /// </summary>
         /// <param name="actorService"></param>
         /// <param name="actorId"></param>
-        public StateActor(ActorService actorService, ActorId actorId) :
+        /// <param name="logger"></param>
+        public StateActor(ActorService actorService, ActorId actorId, ILogger logger) :
             base(actorService, actorId)
         {
-            this.state = new StateObject(actorId.GetStringId(), new StateActorDataStore(this));
+            this.state = new StateObject(actorId.GetStringId(), new StateActorDataStore(this), logger);
+            this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         /// <summary>

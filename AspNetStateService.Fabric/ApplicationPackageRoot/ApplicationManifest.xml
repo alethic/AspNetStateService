@@ -2,6 +2,8 @@
 <ApplicationManifest xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ApplicationTypeName="AspNetStateService" ApplicationTypeVersion="1.0.0" xmlns="http://schemas.microsoft.com/2011/01/fabric">
   <Parameters>
     <Parameter Name="Port" DefaultValue="42424" />
+    <Parameter Name="Seq:ServerUrl" DefaultValue="" />
+    <Parameter Name="Seq:ApiKey" DefaultValue="" />
     <Parameter Name="StateWebService_InstanceCount" DefaultValue="-1" />
     <Parameter Name="StateActorService_PartitionCount" DefaultValue="16" />
     <Parameter Name="StateActorService_MinReplicaSetSize" DefaultValue="2" />
@@ -9,6 +11,16 @@
   </Parameters>
   <ServiceManifestImport>
     <ServiceManifestRef ServiceManifestName="AspNetStateService.Fabric.ServicesPkg" ServiceManifestVersion="1.0.0" />
+    <ConfigOverrides>
+      <ConfigOverride Name="Config">
+        <Settings>
+          <Section Name="Seq">
+            <Parameter Name="ServerUrl" Value="[Seq:ServerUrl]" />
+            <Parameter Name="ApiKey" Value="[Seq:ApiKey]" />
+          </Section>
+        </Settings>
+      </ConfigOverride>
+    </ConfigOverrides>
     <ResourceOverrides>
       <Endpoints>
         <Endpoint Name="HttpServiceEndpoint" Port="[Port]" />

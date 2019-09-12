@@ -10,25 +10,30 @@ using Microsoft.ServiceFabric.Actors.Client;
 using Microsoft.ServiceFabric.Actors.Query;
 using Microsoft.ServiceFabric.Actors.Runtime;
 
+using Serilog;
+
 namespace AspNetStateService.Fabric.Services
 {
 
     public class StateActorService : ActorService
     {
 
+        readonly ILogger logger;
+
         /// <summary>
         /// Initializes a new instance.
         /// </summary>
         /// <param name="context"></param>
         /// <param name="actorTypeInfo"></param>
+        /// <param name="logger"></param>
         /// <param name="actorFactory"></param>
         /// <param name="stateManagerFactory"></param>
         /// <param name="stateProvider"></param>
         /// <param name="settings"></param>
-        public StateActorService(FabricClient fabric, StatefulServiceContext context, ActorTypeInformation actorTypeInfo, Func<ActorService, ActorId, ActorBase> actorFactory = null, Func<ActorBase, IActorStateProvider, IActorStateManager> stateManagerFactory = null, IActorStateProvider stateProvider = null, ActorServiceSettings settings = null) :
+        public StateActorService(StatefulServiceContext context, ActorTypeInformation actorTypeInfo, ILogger logger, Func<ActorService, ActorId, ActorBase> actorFactory = null, Func<ActorBase, IActorStateProvider, IActorStateManager> stateManagerFactory = null, IActorStateProvider stateProvider = null, ActorServiceSettings settings = null) :
             base(context, actorTypeInfo, actorFactory, stateManagerFactory, stateProvider, settings)
         {
-
+            this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         /// <summary>
@@ -86,8 +91,11 @@ namespace AspNetStateService.Fabric.Services
         /// <returns></returns>
         async Task PurgeActorsAsync(CancellationToken cancellationToken)
         {
+            logger.Information("Running state actor purge.");
+
             var more = (ContinuationToken)null;
-            var nact = 0;
+            var keep = 0;
+            var remv = 0;
 
             do
             {
@@ -97,13 +105,16 @@ namespace AspNetStateService.Fabric.Services
 
                 // potentially purge actors
                 foreach (var actorId in page.Items)
-                    if (await TryPurgeActorAsync(actorId, cancellationToken) == false)
-                        nact++;
+                    if (await TryPurgeActorAsync(actorId, cancellationToken))
+                        remv++;
+                    else
+                        keep++;
             }
             while (more != null && cancellationToken.IsCancellationRequested == false);
-
+            
             // report count of known active actors
-            Partition.ReportLoad(new[] { new LoadMetric("ActiveSessionCount", nact) });
+            logger.Information("Removed {RemovedCount} actors during purge, kept {KeepCount} actors.", remv, keep);
+            Partition.ReportLoad(new[] { new LoadMetric("ActiveSessionCount", keep) });
         }
 
         /// <summary>
@@ -136,6 +147,7 @@ namespace AspNetStateService.Fabric.Services
         {
             if (await IsExpiredAsync(actorId, cancellationToken))
             {
+                logger.Verbose("Purging actor {ActorId}.", actorId);
                 await ((IActorService)this).DeleteActorAsync(actorId, cancellationToken);
                 return true;
             }
