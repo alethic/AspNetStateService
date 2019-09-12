@@ -5,6 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Cogito.Autofac" Version="1.2.19" />
     <PackageReference Include="Cogito.Serilog.Autofac" Version="1.0.1" />
     <PackageReference Include="Cogito.Extensions.Configuration.Autofac" Version="1.2.3" />
     <PackageReference Include="Cogito.Extensions.Logging.Serilog.Autofac" Version="1.1.2" />
