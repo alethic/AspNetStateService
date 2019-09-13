@@ -4,7 +4,7 @@
     <StatelessServiceType ServiceTypeName="StateWebService" />
     <StatefulServiceType ServiceTypeName="StateActorServiceType">
       <LoadMetrics>
-        <LoadMetric Name="ActiveSessionCount" Weight="High" />
+        <LoadMetric Name="AspNetStateService.ActiveSessionCount" Weight="High" />
       </LoadMetrics>
       <Extensions>
         <Extension Name="__GeneratedServiceType__" GeneratedId="2d68d4f9-898b-4b26-a391-154cd47cfcfd|Volatile">

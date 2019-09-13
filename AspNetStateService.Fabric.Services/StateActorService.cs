@@ -64,7 +64,7 @@ namespace AspNetStateService.Fabric.Services
 
             // zero out load
             if (newRole != ReplicaRole.Primary)
-                Partition.ReportLoad(new[] { new LoadMetric("ActiveSessionCount", 0) });
+                Partition.ReportLoad(new[] { new LoadMetric("AspNetStateService.ActiveSessionCount", 0) });
         }
 
         /// <summary>
@@ -114,7 +114,7 @@ namespace AspNetStateService.Fabric.Services
             
             // report count of known active actors
             logger.Information("Removed {RemovedCount} actors during purge, kept {KeepCount} actors.", remv, keep);
-            Partition.ReportLoad(new[] { new LoadMetric("ActiveSessionCount", keep) });
+            Partition.ReportLoad(new[] { new LoadMetric("AspNetStateService.ActiveSessionCount", keep) });
         }
 
         /// <summary>
