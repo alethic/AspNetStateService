@@ -33,7 +33,7 @@
         <SingletonPartition />
       </StatelessService>
     </Service>
-    <Service Name="StateActorService" GeneratedIdRef="2d68d4f9-898b-4b26-a391-154cd47cfcfd|Volatile">
+    <Service Name="StateActorService" GeneratedIdRef="2d68d4f9-898b-4b26-a391-154cd47cfcfd|Volatile" ServicePackageActivationMode="ExclusiveProcess">
       <StatefulService ServiceTypeName="StateActorServiceType" TargetReplicaSetSize="[StateActorService_TargetReplicaSetSize]" MinReplicaSetSize="[StateActorService_MinReplicaSetSize]">
         <UniformInt64Partition PartitionCount="[StateActorService_PartitionCount]" LowKey="-9223372036854775808" HighKey="9223372036854775807" />
       </StatefulService>
