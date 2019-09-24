@@ -14,7 +14,7 @@
             <ReplicatorConfigSection Name="StateActorServiceReplicatorConfig" />
             <ReplicatorSecurityConfigSection Name="StateActorServiceReplicatorSecurityConfig" />
             <StoreConfigSection Name="StateActorServiceLocalStoreConfig" />
-            <ServiceEndpoint Name="StateActorServiceEndpoint" />
+            <ServiceEndpointV2 Name="StateActorServiceEndpointV2" />
           </GeneratedNames>
         </Extension>
       </Extensions>
@@ -32,8 +32,8 @@
     <Endpoints>
       <Endpoint Name="HttpServiceEndpoint" Protocol="http" Type="Input" Port="42424" />
       <Endpoint Name="StateObjectActorServiceEndpointV2" />
-      <Endpoint Name="StateActorServiceEndpoint" />
       <Endpoint Name="StateActorServiceReplicatorEndpoint" />
+      <Endpoint Name="StateActorServiceEndpointV2" />
     </Endpoints>
   </Resources>
 </ServiceManifest>
