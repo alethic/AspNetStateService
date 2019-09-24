@@ -31,7 +31,6 @@
   <Resources>
     <Endpoints>
       <Endpoint Name="HttpServiceEndpoint" Protocol="http" Type="Input" Port="42424" />
-      <Endpoint Name="StateObjectActorServiceEndpointV2" />
       <Endpoint Name="StateActorServiceReplicatorEndpoint" />
       <Endpoint Name="StateActorServiceEndpointV2" />
     </Endpoints>
