@@ -8,6 +8,7 @@ using AspNetStateService.Interfaces;
 
 using Microsoft.ServiceFabric.Actors;
 using Microsoft.ServiceFabric.Actors.Runtime;
+
 using Serilog;
 
 namespace AspNetStateService.Fabric.Services

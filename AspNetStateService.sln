@@ -26,16 +26,18 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{EB5A276D-627F-4DB9-959D-0B6ED3AB3A5D}"
 	ProjectSection(SolutionItems) = preProject
 		appveyor.yml = appveyor.yml
+		Directory.Build.props = Directory.Build.props
+		Directory.Build.targets = Directory.Build.targets
 		Update-PackageVersion.ps1 = Update-PackageVersion.ps1
 	EndProjectSection
 EndProject
 Project("{A07B5EB6-E848-4116-A8D0-A826331D98C6}") = "AspNetStateService.Samples.Fabric", "AspNetStateService.Samples.Fabric\AspNetStateService.Samples.Fabric.sfproj", "{4F438B61-202E-45E7-89EB-DD3C212088E2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AspNetStateService.Samples.Web.Host", "AspNetStateService.Samples.Web.Host\AspNetStateService.Samples.Web.Host.csproj", "{7BF4789B-CB2B-4104-ADE7-5173CB0799E5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AspNetStateService.Samples.Web.Host", "AspNetStateService.Samples.Web.Host\AspNetStateService.Samples.Web.Host.csproj", "{7BF4789B-CB2B-4104-ADE7-5173CB0799E5}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AspNetStateService.Samples.Web", "AspNetStateService.Samples.Web\AspNetStateService.Samples.Web.csproj", "{2C12C177-264C-464B-8C26-611D160E8057}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AspNetStateService.Fabric.Core", "AspNetStateService.Fabric.Core\AspNetStateService.Fabric.Core.csproj", "{65A3E39D-7CD8-47DD-90E3-F855CD2DB1AC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AspNetStateService.Fabric.Core", "AspNetStateService.Fabric.Core\AspNetStateService.Fabric.Core.csproj", "{65A3E39D-7CD8-47DD-90E3-F855CD2DB1AC}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AspNetStateService.Fabric.Client", "AspNetStateService.Fabric.Client\AspNetStateService.Fabric.Client.csproj", "{DE48F031-8775-4355-8087-14342925719D}"
 EndProject

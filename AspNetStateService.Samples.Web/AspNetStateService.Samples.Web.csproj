@@ -83,13 +83,13 @@
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="Cogito.Autofac">
-      <Version>1.2.19</Version>
+      <Version>2.2.0</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform">
       <Version>2.0.1</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.CSharp">
-      <Version>4.5.0</Version>
+      <Version>4.7.0</Version>
     </PackageReference>
   </ItemGroup>
   <PropertyGroup>
