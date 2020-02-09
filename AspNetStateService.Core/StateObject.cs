@@ -3,6 +3,9 @@ using System.Threading;
 using System.Threading.Tasks;
 
 using AspNetStateService.Interfaces;
+
+using Cogito.Threading;
+
 using Serilog;
 
 namespace AspNetStateService.Core
@@ -18,6 +21,9 @@ namespace AspNetStateService.Core
         readonly IStateObjectDataStore store;
         readonly ILogger logger;
 
+        readonly AsyncLock sync = new AsyncLock();
+        bool init = true;
+
         /// <summary>
         /// Initializes a new instance.
         /// </summary>
@@ -31,9 +37,27 @@ namespace AspNetStateService.Core
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
+        /// <summary>
+        /// Initializes the store if required.
+        /// </summary>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        async Task InitAsync(CancellationToken cancellationToken)
+        {
+            if (init)
+                using (await sync.LockAsync())
+                    if (init)
+                    {
+                        logger.Verbose("Init operation for store.");
+                        await store.InitAsync(cancellationToken);
+                        init = true;
+                    }
+        }
+
         public async Task<DataResponse> Get(CancellationToken cancellationToken)
         {
             logger.Verbose("Get operation for {StateId}.", id);
+            await InitAsync(cancellationToken);
 
             var r = new DataResponse();
 
@@ -92,6 +116,7 @@ namespace AspNetStateService.Core
         public async Task<DataResponse> GetExclusive(CancellationToken cancellationToken)
         {
             logger.Verbose("GetExclusive operation for {StateId}.", id);
+            await InitAsync(cancellationToken);
 
             var r = await Get(cancellationToken);
 
@@ -110,6 +135,7 @@ namespace AspNetStateService.Core
         public async Task<Response> Set(uint? cookie, byte[] data, uint? flag, TimeSpan? time, CancellationToken cancellationToken)
         {
             logger.Verbose("Set operation for {StateId} with {DataSize} bytes of data.", id, data?.Length);
+            await InitAsync(cancellationToken);
 
             var r = new Response();
 
@@ -173,6 +199,7 @@ namespace AspNetStateService.Core
         public async Task<Response> ReleaseExclusive(uint cookie, CancellationToken cancellationToken)
         {
             logger.Verbose("ReleaseExclusive operation for {StateId}.", id);
+            await InitAsync(cancellationToken);
 
             var r = new Response();
 
@@ -204,6 +231,7 @@ namespace AspNetStateService.Core
         public async Task<Response> Remove(uint? cookie, CancellationToken cancellationToken)
         {
             logger.Verbose("Remove operation for {StateId}.", id);
+            await InitAsync(cancellationToken);
 
             var r = new Response();
 
@@ -234,6 +262,7 @@ namespace AspNetStateService.Core
         public async Task<Response> ResetTimeout(CancellationToken cancellationToken)
         {
             logger.Verbose("ResetTimeout operation for {StateId}.", id);
+            await InitAsync(cancellationToken);
 
             var r = new Response();
 

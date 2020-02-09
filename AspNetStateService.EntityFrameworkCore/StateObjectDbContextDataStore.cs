@@ -6,6 +6,8 @@ using AspNetStateService.Core;
 
 using Cogito.Autofac;
 
+using Microsoft.EntityFrameworkCore;
+
 namespace AspNetStateService.EntityFrameworkCore
 {
 
@@ -27,11 +29,21 @@ namespace AspNetStateService.EntityFrameworkCore
             this.dbContextProvider = dbContextProvider ?? throw new ArgumentNullException(nameof(dbContextProvider));
         }
 
+        /// <summary>
+        /// Initializes the data store.
+        /// </summary>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public Task InitAsync(CancellationToken cancellationToken)
+        {
+            return Task.CompletedTask;
+        }
+
         public async Task<(byte[] data, uint? extraFlags, TimeSpan? timeout, DateTime? altered)> GetDataAsync(string id, CancellationToken cancellationToken)
         {
             using (var db = await dbContextProvider.CreateDbContextAsync())
             {
-                var o = await db.FindAsync<StateObjectData>(id, cancellationToken);
+                var o = await db.Set<StateObjectData>().FirstOrDefaultAsync(i => i.Id == id, cancellationToken);
                 return (o?.Data, o?.ExtraFlags, o?.Timeout, o?.Altered);
             }
         }
@@ -40,7 +52,7 @@ namespace AspNetStateService.EntityFrameworkCore
         {
             using (var db = await dbContextProvider.CreateDbContextAsync())
             {
-                var o = await db.FindAsync<StateObjectData>(id, cancellationToken);
+                var o = await db.Set<StateObjectData>().FirstOrDefaultAsync(i => i.Id == id, cancellationToken);
                 return (o?.LockCookie, o?.LockTime);
             }
         }
@@ -49,7 +61,7 @@ namespace AspNetStateService.EntityFrameworkCore
         {
             using (var db = await dbContextProvider.CreateDbContextAsync())
             {
-                var o = await db.FindAsync<StateObjectData>(id, cancellationToken);
+                var o = await db.Set<StateObjectData>().FirstOrDefaultAsync(i => i.Id == id, cancellationToken);
                 if (o != null)
                 {
                     o.Data = null;
@@ -66,7 +78,7 @@ namespace AspNetStateService.EntityFrameworkCore
         {
             using (var db = await dbContextProvider.CreateDbContextAsync())
             {
-                var o = await db.FindAsync<StateObjectData>(id, cancellationToken);
+                var o = await db.Set<StateObjectData>().FirstOrDefaultAsync(i => i.Id == id, cancellationToken);
                 if (o != null)
                 {
                     o.LockCookie = null;
@@ -81,7 +93,7 @@ namespace AspNetStateService.EntityFrameworkCore
         {
             using (var db = await dbContextProvider.CreateDbContextAsync())
             {
-                var o = await db.FindAsync<StateObjectData>(id, cancellationToken);
+                var o = await db.Set<StateObjectData>().FirstOrDefaultAsync(i => i.Id == id, cancellationToken);
                 if (o == null)
                     db.StateObjects.Add(o = new StateObjectData() { Id = id });
 
@@ -98,7 +110,7 @@ namespace AspNetStateService.EntityFrameworkCore
         {
             using (var db = await dbContextProvider.CreateDbContextAsync())
             {
-                var o = await db.FindAsync<StateObjectData>(id, cancellationToken);
+                var o = await db.Set<StateObjectData>().FirstOrDefaultAsync(i => i.Id == id, cancellationToken);
                 if (o == null)
                     db.StateObjects.Add(o = new StateObjectData() { Id = id });
 
@@ -112,7 +124,7 @@ namespace AspNetStateService.EntityFrameworkCore
         {
             using (var db = await dbContextProvider.CreateDbContextAsync())
             {
-                var o = await db.FindAsync<StateObjectData>(id, cancellationToken);
+                var o = await db.Set<StateObjectData>().FirstOrDefaultAsync(i => i.Id == id, cancellationToken);
                 if (o == null)
                     db.StateObjects.Add(o = new StateObjectData() { Id = id });
 
@@ -127,7 +139,7 @@ namespace AspNetStateService.EntityFrameworkCore
         {
             using (var db = await dbContextProvider.CreateDbContextAsync())
             {
-                var o = await db.FindAsync<StateObjectData>(id, cancellationToken);
+                var o = await db.Set<StateObjectData>().FirstOrDefaultAsync(i => i.Id == id, cancellationToken);
                 if (o == null)
                     db.StateObjects.Add(o = new StateObjectData() { Id = id });
 

@@ -7,6 +7,8 @@ using Autofac;
 using Cogito.AspNetCore;
 using Cogito.AspNetCore.Autofac;
 using Cogito.Autofac;
+using Cogito.Extensions.Configuration;
+using Cogito.Extensions.Configuration.Autofac;
 
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -18,6 +20,20 @@ namespace AspNetStateService.Console
     {
 
         /// <summary>
+        /// Applies debug configuration for the console.
+        /// </summary>
+        [RegisterAs(typeof(IConfigurationBuilderConfiguration))]
+        public class DebugConfigurationBuilderConfiguration : IConfigurationBuilderConfiguration
+        {
+
+            public IConfigurationBuilder Apply(IConfigurationBuilder builder)
+            {
+                return builder.AddParentJsonFiles("App.config.json");
+            }
+
+        }
+
+        /// <summary>
         /// Main application entry point.
         /// </summary>
         /// <param name="args"></param>
@@ -26,7 +42,6 @@ namespace AspNetStateService.Console
         {
             var builder = new ContainerBuilder();
             builder.RegisterAllAssemblyModules();
-            builder.RegisterInstance(new ConfigurationBuilder().AddJsonFile("appsettings.json", true).Build());
 
             using (var container = builder.Build())
             using (var hostScope = container.BeginLifetimeScope())

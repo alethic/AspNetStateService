@@ -63,6 +63,16 @@ namespace AspNetStateService.Fabric.Services
         }
 
         /// <summary>
+        /// Initializes the data store.
+        /// </summary>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public Task InitAsync(CancellationToken cancellationToken)
+        {
+            return Task.CompletedTask;
+        }
+
+        /// <summary>
         /// Sets the data fields.
         /// </summary>
         /// <param name="id"></param>

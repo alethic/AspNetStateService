@@ -12,6 +12,13 @@ namespace AspNetStateService.Core
     {
 
         /// <summary>
+        /// Initializes the store, if required.
+        /// </summary>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        Task InitAsync(CancellationToken cancellationToken);
+
+        /// <summary>
         /// Sets the data fields.
         /// </summary>
         /// <param name="id"></param>

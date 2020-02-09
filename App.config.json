@@ -1,0 +1,6 @@
+{
+    "AspNetStateService.Azure.Cosmos.Table": {
+        "ConnectionString": "UseDevelopmentStorage=true",
+        "TableName": "state"
+    }
+}

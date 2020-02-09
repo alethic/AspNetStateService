@@ -25,6 +25,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AspNetStateService.EntityFr
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{EB5A276D-627F-4DB9-959D-0B6ED3AB3A5D}"
 	ProjectSection(SolutionItems) = preProject
+		App.config.json = App.config.json
 		appveyor.yml = appveyor.yml
 		Directory.Build.props = Directory.Build.props
 		Directory.Build.targets = Directory.Build.targets
@@ -40,6 +41,8 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AspNetStateService.Fabric.Core", "AspNetStateService.Fabric.Core\AspNetStateService.Fabric.Core.csproj", "{65A3E39D-7CD8-47DD-90E3-F855CD2DB1AC}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AspNetStateService.Fabric.Client", "AspNetStateService.Fabric.Client\AspNetStateService.Fabric.Client.csproj", "{DE48F031-8775-4355-8087-14342925719D}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AspNetStateService.Azure.Cosmos.Table", "AspNetStateService.Azure.Cosmos.Table\AspNetStateService.Azure.Cosmos.Table.csproj", "{11589AED-623E-493B-81AC-FFC7532041C9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -109,6 +112,10 @@ Global
 		{DE48F031-8775-4355-8087-14342925719D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DE48F031-8775-4355-8087-14342925719D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DE48F031-8775-4355-8087-14342925719D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{11589AED-623E-493B-81AC-FFC7532041C9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{11589AED-623E-493B-81AC-FFC7532041C9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{11589AED-623E-493B-81AC-FFC7532041C9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{11589AED-623E-493B-81AC-FFC7532041C9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

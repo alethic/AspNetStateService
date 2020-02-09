@@ -7,10 +7,10 @@ using Harmony;
 namespace AspNetStateService.AspNetCore.Kestrel
 {
 
-    public class AssemblyModule : Module
+    public class AssemblyModule : ModuleBase
     {
 
-        protected override void Load(ContainerBuilder builder)
+        protected override void Register(ContainerBuilder builder)
         {
             builder.RegisterFromAttributes(typeof(AssemblyModule).Assembly);
             builder.RegisterCallback(i => Patch());
