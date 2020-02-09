@@ -1,6 +1,6 @@
 ﻿using Cogito.Extensions.Options.ConfigurationExtensions.Autofac;
 
-namespace AspNetStateService.Azure.Cosmos.Table
+namespace AspNetStateService.Azure.Storage.Table
 {
 
     [RegisterOptions("AspNetStateService.Azure.Cosmos.Table")]

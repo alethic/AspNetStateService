@@ -2,7 +2,7 @@
 
 using Cogito.Autofac;
 
-namespace AspNetStateService.Core.Properties
+namespace AspNetStateService.Core
 {
 
     public class AssemblyModule : ModuleBase

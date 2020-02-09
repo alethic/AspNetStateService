@@ -11,7 +11,7 @@ using Cogito.Autofac;
 using Microsoft.Azure.Cosmos.Table;
 using Microsoft.Extensions.Options;
 
-namespace AspNetStateService.Azure.Cosmos.Table
+namespace AspNetStateService.Azure.Storage.Table
 {
 
     /// <summary>

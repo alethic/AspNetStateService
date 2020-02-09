@@ -1,16 +1,13 @@
 ﻿using System;
-using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Xml.Linq;
 
 using Autofac;
 using Autofac.Integration.ServiceFabric;
 
 using Cogito.Autofac;
-using Cogito.HostedWebCore;
+using Cogito.IIS.Configuration;
 using Cogito.ServiceFabric;
-using Cogito.Web.Configuration;
 
 namespace AspNetStateService.Samples.Web.Host
 {
@@ -25,18 +22,7 @@ namespace AspNetStateService.Samples.Web.Host
         /// <returns></returns>
         public static Task Main(string[] args)
         {
-            return FabricEnvironment.IsFabric ? RunFabric(args) : Task.Run(() => RunConsole(args));
-        }
-
-        /// <summary>
-        /// Loads the XML resource with the specified name.
-        /// </summary>
-        /// <param name="name"></param>
-        /// <returns></returns>
-        static XDocument LoadXmlResource(string name)
-        {
-            using (var stm = typeof(WebService).Assembly.GetManifestResourceStream($"AspNetStateService.Samples.Web.Host.{name}"))
-                return XDocument.Load(stm);
+            return FabricEnvironment.IsFabric ? RunFabric(args) : RunConsole(args);
         }
 
         /// <summary>
@@ -49,21 +35,8 @@ namespace AspNetStateService.Samples.Web.Host
             var builder = new ContainerBuilder();
             builder.RegisterAllAssemblyModules();
 
-            await new AppHostBuilder()
-                .ConfigureWeb(LoadXmlResource("Web.config"), w => w
-                    .SystemWeb(s => s
-                        .SessionState(z => z
-                            .Mode(WebSystemWebSessionStateMode.StateServer)
-                            .StateNetworkTimeout(TimeSpan.FromMinutes(2))
-                            .Timeout(TimeSpan.FromMinutes(20)))))
-                .ConfigureApp(LoadXmlResource("ApplicationHost.config"), c => c
-                    .Site(1, s => s
-                        .RemoveBindings()
-                        .AddBinding("http", "*:4521:")
-                        .Application("/", a => a
-                            .VirtualDirectory("/", v => v.UsePhysicalPath(Path.Combine(Path.GetDirectoryName(typeof(Program).Assembly.Location), "site"))))))
-                .Build()
-                .RunAsync();
+            var binding = new BindingData("http", "*:4521:");
+            await AppHostUtil.BuildHost(new[] { binding }, "/").RunAsync();
 
 #if DEBUG
             Console.ReadLine();

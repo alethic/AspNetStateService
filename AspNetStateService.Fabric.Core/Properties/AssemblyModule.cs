@@ -2,7 +2,7 @@
 
 using Cogito.Autofac;
 
-namespace AspNetStateService.EntityFrameworkCore.InMemory
+namespace AspNetStateService.Fabric.Core
 {
 
     public class AssemblyModule : ModuleBase
@@ -10,7 +10,7 @@ namespace AspNetStateService.EntityFrameworkCore.InMemory
 
         protected override void Register(ContainerBuilder builder)
         {
-            builder.RegisterModule<AspNetStateService.EntityFrameworkCore.AssemblyModule>();
+            builder.RegisterModule<AspNetStateService.Core.AssemblyModule>();
             builder.RegisterFromAttributes(typeof(AssemblyModule).Assembly);
         }
 

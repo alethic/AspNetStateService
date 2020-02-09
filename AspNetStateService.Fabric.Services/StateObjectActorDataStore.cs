@@ -12,7 +12,7 @@ namespace AspNetStateService.Fabric.Services
     /// <summary>
     /// Implements a <see cref="IStateObjectDataStore"/> against a <see cref="IActorStateManager"/>.
     /// </summary>
-    public class StateActorDataStore : IStateObjectDataStore
+    public class StateObjectActorDataStore : IStateObjectDataStore
     {
 
         readonly StateActor actor;
@@ -21,7 +21,7 @@ namespace AspNetStateService.Fabric.Services
         /// Initializes a new instance.
         /// </summary>
         /// <param name="actor"></param>
-        public StateActorDataStore(StateActor actor)
+        public StateObjectActorDataStore(StateActor actor)
         {
             this.actor = actor ?? throw new ArgumentNullException(nameof(actor));
         }

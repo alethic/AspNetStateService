@@ -110,7 +110,7 @@
           <IISUrl>http://localhost:32155/</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>True</UseCustomServer>
-          <CustomServerUrl>http://localhost/</CustomServerUrl>
+          <CustomServerUrl>http://localhost:4521</CustomServerUrl>
           <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
         </WebProjectProperties>
       </FlavorProperties>

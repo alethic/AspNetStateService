@@ -43,7 +43,7 @@ namespace AspNetStateService.Fabric.Services
         public StateActor(ActorService actorService, ActorId actorId, ILogger logger) :
             base(actorService, actorId)
         {
-            this.state = new StateObject(actorId.GetStringId(), new StateActorDataStore(this), logger);
+            this.state = new StateObject(actorId.GetStringId(), new StateObjectActorDataStore(this), logger);
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 

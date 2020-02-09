@@ -15,8 +15,8 @@
   <ItemGroup>
     <ProjectReference Include="..\AspNetStateService.AspNetCore.Kestrel\AspNetStateService.AspNetCore.Kestrel.csproj" />
     <ProjectReference Include="..\AspNetStateService.AspNetCore\AspNetStateService.AspNetCore.csproj" />
+    <ProjectReference Include="..\AspNetStateService.Azure.Storage.Table\AspNetStateService.Azure.Storage.Table.csproj" />
     <ProjectReference Include="..\AspNetStateService.Core\AspNetStateService.Core.csproj" />
-    <ProjectReference Include="..\AspNetStateService.Azure.Cosmos.Table\AspNetStateService.Azure.Cosmos.Table.csproj" />
   </ItemGroup>
 
 </Project>

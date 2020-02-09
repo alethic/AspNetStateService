@@ -4,7 +4,7 @@ using System.Text;
 
 using Cogito.Autofac;
 
-namespace AspNetStateService.Azure.Cosmos.Table
+namespace AspNetStateService.Azure.Storage.Table
 {
 
     /// <summary>

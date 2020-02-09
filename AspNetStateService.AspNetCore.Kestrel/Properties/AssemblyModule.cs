@@ -12,6 +12,7 @@ namespace AspNetStateService.AspNetCore.Kestrel
 
         protected override void Register(ContainerBuilder builder)
         {
+            builder.RegisterModule<AspNetStateService.AspNetCore.AssemblyModule>();
             builder.RegisterFromAttributes(typeof(AssemblyModule).Assembly);
             builder.RegisterCallback(i => Patch());
         }

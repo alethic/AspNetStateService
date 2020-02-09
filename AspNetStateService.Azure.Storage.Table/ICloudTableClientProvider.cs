@@ -1,6 +1,6 @@
 ﻿using Microsoft.Azure.Cosmos.Table;
 
-namespace AspNetStateService.Azure.Cosmos.Table
+namespace AspNetStateService.Azure.Storage.Table
 {
 
     /// <summary>

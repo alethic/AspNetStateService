@@ -10,6 +10,7 @@ namespace AspNetStateService.EntityFrameworkCore
 
         protected override void Register(ContainerBuilder builder)
         {
+            builder.RegisterModule<AspNetStateService.Core.AssemblyModule>();
             builder.RegisterFromAttributes(typeof(AssemblyModule).Assembly);
         }
 
