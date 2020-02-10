@@ -24,8 +24,8 @@ namespace AspNetStateService.AspNetCore
     /// <summary>
     /// Base ASP.Net Core Web Service implementation around a <see cref="IStateObject"/>.
     /// </summary>
-    [RegisterAs(typeof(StateWebService))]
-    public class StateWebService
+    [RegisterAs(typeof(StateWebServiceStartup))]
+    public class StateWebServiceStartup
     {
 
         const string DefaultStoreName = "EntityFrameworkCore";
@@ -40,7 +40,7 @@ namespace AspNetStateService.AspNetCore
         /// </summary>
         /// <param name="parent"></param>
         /// <param name="options"></param>
-        public StateWebService(ILifetimeScope parent, IOptions<StateWebServiceOptions> options)
+        public StateWebServiceStartup(ILifetimeScope parent, IOptions<StateWebServiceOptions> options)
         {
             this.parent = parent ?? throw new ArgumentNullException(nameof(parent));
             this.options = options ?? throw new ArgumentNullException(nameof(options));

@@ -5,6 +5,14 @@
     <TargetFramework>net47</TargetFramework>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+
   <ItemGroup>
       <PackageReference Include="Cogito.AspNetCore.Autofac" Version="2.0.6" />
       <PackageReference Include="Cogito.Extensions.Configuration.Autofac" Version="2.0.5" />

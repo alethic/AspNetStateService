@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 
 using AspNetStateService.AspNetCore;
+using AspNetStateService.AspNetCore.Kestrel;
 
 using Autofac;
 
@@ -46,10 +47,12 @@ namespace AspNetStateService.Console
             using (var container = builder.Build())
             using (var hostScope = container.BeginLifetimeScope())
                 await new WebHostBuilder()
-                    .UseStartup<StateWebService>(hostScope)
+                    .UseStartup<StateWebServiceStartup>(hostScope)
                     .UseKestrel(o => o.ListenLocalhost(42424))
+                    .UseKestrelPatch()
                     .BuildAndRunAsync();
         }
+
 
     }
 
