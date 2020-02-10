@@ -44,9 +44,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AspNetStateService.Fabric.C
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AspNetStateService.Azure.Storage.Table", "AspNetStateService.Azure.Storage.Table\AspNetStateService.Azure.Storage.Table.csproj", "{21DE95A9-437E-4689-A0F6-6ACF63302858}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AspNetStateService.Azure.Storage.Blob", "AspNetStateService.Azure.Storage.Blob\AspNetStateService.Azure.Storage.Blob.csproj", "{223C100A-993F-4843-B4D0-BDAF71ED6188}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AspNetStateService.Azure.Storage.Blob", "AspNetStateService.Azure.Storage.Blob\AspNetStateService.Azure.Storage.Blob.csproj", "{223C100A-993F-4843-B4D0-BDAF71ED6188}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AspNetStateService.Redis", "AspNetStateService.Redis\AspNetStateService.Redis.csproj", "{F168EEE0-F1F8-4102-82A3-7F725A11E433}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AspNetStateService.Redis", "AspNetStateService.Redis\AspNetStateService.Redis.csproj", "{F168EEE0-F1F8-4102-82A3-7F725A11E433}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -72,10 +72,10 @@ Global
 		{C8338E08-759A-4B10-ACAD-A35BE6FC4AF9}.Debug|Any CPU.Build.0 = Debug|x64
 		{C8338E08-759A-4B10-ACAD-A35BE6FC4AF9}.Release|Any CPU.ActiveCfg = Release|x64
 		{C8338E08-759A-4B10-ACAD-A35BE6FC4AF9}.Release|Any CPU.Build.0 = Release|x64
-		{D44550A8-E401-4D1C-B6E7-899946C4A52A}.Debug|Any CPU.ActiveCfg = Debug|x64
-		{D44550A8-E401-4D1C-B6E7-899946C4A52A}.Debug|Any CPU.Build.0 = Debug|x64
-		{D44550A8-E401-4D1C-B6E7-899946C4A52A}.Release|Any CPU.ActiveCfg = Release|x64
-		{D44550A8-E401-4D1C-B6E7-899946C4A52A}.Release|Any CPU.Build.0 = Release|x64
+		{D44550A8-E401-4D1C-B6E7-899946C4A52A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D44550A8-E401-4D1C-B6E7-899946C4A52A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D44550A8-E401-4D1C-B6E7-899946C4A52A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D44550A8-E401-4D1C-B6E7-899946C4A52A}.Release|Any CPU.Build.0 = Release|Any CPU
 		{F163486F-C920-4C4A-A9D3-FF9D418092C8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{F163486F-C920-4C4A-A9D3-FF9D418092C8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F163486F-C920-4C4A-A9D3-FF9D418092C8}.Release|Any CPU.ActiveCfg = Release|Any CPU

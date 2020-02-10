@@ -1,41 +1,41 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <OutputType>Exe</OutputType>
-    <TargetFramework>net472</TargetFramework>
-    <IsServiceFabricServiceProject>True</IsServiceFabricServiceProject>
-    <RuntimeIdentifier>win7-x64</RuntimeIdentifier>
-    <UpdateServiceFabricManifestEnabled>True</UpdateServiceFabricManifestEnabled>
-    <ServicePackagePath>PackageRoot</ServicePackagePath>
-    <ServicePackagePrefix>$(MSBuildProjectName)</ServicePackagePrefix>
-    <FabActUtilWorkingDir>$(BaseIntermediateOutputPath)\FabActUtilTemp</FabActUtilWorkingDir>
-    <Platforms>AnyCPU;x64</Platforms>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <PlatformTarget>x64</PlatformTarget>
-  </PropertyGroup>
+    <PropertyGroup>
+        <TargetFramework>netcoreapp2.2</TargetFramework>
+        <OutputType>Exe</OutputType>
+        <IsServiceFabricServiceProject>True</IsServiceFabricServiceProject>
+        <ServerGarbageCollection>True</ServerGarbageCollection>
+        <RuntimeIdentifier>win7-x64</RuntimeIdentifier>
+        <SelfContained>true</SelfContained>
+        <TargetLatestRuntimePatch>False</TargetLatestRuntimePatch>
+        <ServicePackagePath>PackageRoot</ServicePackagePath>
+        <ServicePackagePrefix>$(MSBuildProjectName)</ServicePackagePrefix>
+        <FabActUtilWorkingDir>$(BaseIntermediateOutputPath)\FabActUtilTemp</FabActUtilWorkingDir>
+        <UpdateServiceFabricManifestEnabled>False</UpdateServiceFabricManifestEnabled>
+    </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Autofac" Version="5.0.0" />
-    <PackageReference Include="Autofac.ServiceFabric" Version="2.3.0-develop-00003" />
-    <PackageReference Include="Cogito.AspNetCore.Autofac" Version="2.0.6" />
-    <PackageReference Include="Cogito.Extensions.Configuration.Autofac" Version="2.0.5" />
-    <PackageReference Include="Cogito.Extensions.Logging.Serilog.Autofac" Version="2.0.4" />
-    <PackageReference Include="Cogito.Extensions.Options.ConfigurationExtensions.Autofac" Version="1.0.1" />
-    <PackageReference Include="Cogito.ServiceFabric.Configuration.Autofac" Version="2.0.9" />
-    <PackageReference Include="Cogito.ServiceFabric.AspNetCore.Kestrel.Autofac" Version="2.0.9" />
-    <PackageReference Include="Microsoft.ServiceFabric.Services" Version="4.0.466" />
-    <PackageReference Include="Microsoft.ServiceFabric.Actors" Version="4.0.466" />
-    <PackageReference Include="Microsoft.ServiceFabric.AspNetCore.Abstractions" Version="4.0.466" />
-    <PackageReference Include="Microsoft.ServiceFabric.AspNetCore.Kestrel" Version="4.0.466" />
-  </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="Autofac" Version="5.0.0" />
+        <PackageReference Include="Autofac.ServiceFabric" Version="2.3.0-develop-00003" />
+        <PackageReference Include="Cogito.AspNetCore.Autofac" Version="2.0.6" />
+        <PackageReference Include="Cogito.Extensions.Configuration.Autofac" Version="2.0.5" />
+        <PackageReference Include="Cogito.Extensions.Logging.Serilog.Autofac" Version="2.0.4" />
+        <PackageReference Include="Cogito.Extensions.Options.ConfigurationExtensions.Autofac" Version="1.0.1" />
+        <PackageReference Include="Cogito.ServiceFabric.Configuration.Autofac" Version="2.0.9" />
+        <PackageReference Include="Cogito.ServiceFabric.AspNetCore.Kestrel.Autofac" Version="2.0.9" />
+        <PackageReference Include="Microsoft.ServiceFabric.Services" Version="4.0.466" />
+        <PackageReference Include="Microsoft.ServiceFabric.Actors" Version="4.0.466" />
+        <PackageReference Include="Microsoft.ServiceFabric.AspNetCore.Abstractions" Version="4.0.466" />
+        <PackageReference Include="Microsoft.ServiceFabric.AspNetCore.Kestrel" Version="4.0.466" />
+    </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\AspNetStateService.AspNetCore.Kestrel\AspNetStateService.AspNetCore.Kestrel.csproj" />
-    <ProjectReference Include="..\AspNetStateService.AspNetCore\AspNetStateService.AspNetCore.csproj" />
-    <ProjectReference Include="..\AspNetStateService.Core\AspNetStateService.Core.csproj" />
-    <ProjectReference Include="..\AspNetStateService.Fabric.Core\AspNetStateService.Fabric.Core.csproj" />
-    <ProjectReference Include="..\AspNetStateService.Fabric.Interfaces\AspNetStateService.Fabric.Interfaces.csproj" />
-    <ProjectReference Include="..\AspNetStateService.Interfaces\AspNetStateService.Interfaces.csproj" />
-  </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\AspNetStateService.AspNetCore.Kestrel\AspNetStateService.AspNetCore.Kestrel.csproj" />
+        <ProjectReference Include="..\AspNetStateService.AspNetCore\AspNetStateService.AspNetCore.csproj" />
+        <ProjectReference Include="..\AspNetStateService.Core\AspNetStateService.Core.csproj" />
+        <ProjectReference Include="..\AspNetStateService.Fabric.Core\AspNetStateService.Fabric.Core.csproj" />
+        <ProjectReference Include="..\AspNetStateService.Fabric.Interfaces\AspNetStateService.Fabric.Interfaces.csproj" />
+        <ProjectReference Include="..\AspNetStateService.Interfaces\AspNetStateService.Interfaces.csproj" />
+    </ItemGroup>
 
 </Project>
