@@ -15,7 +15,7 @@ namespace AspNetStateService.Azure.Storage.Table
 {
 
     /// <summary>
-    /// Implements a <see cref="IStateObjectDataStore"/> using Entity Framework Core.
+    /// Implements a <see cref="IStateObjectDataStore"/> using Azure Storage Tables.
     /// </summary>
     [RegisterAs(typeof(IStateObjectDataStore))]
     [RegisterSingleInstance]

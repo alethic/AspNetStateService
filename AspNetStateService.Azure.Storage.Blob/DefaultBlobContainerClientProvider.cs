@@ -13,7 +13,6 @@ namespace AspNetStateService.Azure.Storage.Blob
     /// Default provider of <see cref="BlobContainerClient"/> instances.
     /// </summary>
     [RegisterAs(typeof(IBlobContainerClientProvider))]
-    [RegisterSingleInstance]
     public class DefaultBlobContainerClientProvider : IBlobContainerClientProvider
     {
 

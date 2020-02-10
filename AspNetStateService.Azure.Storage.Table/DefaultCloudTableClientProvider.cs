@@ -13,7 +13,6 @@ namespace AspNetStateService.Azure.Storage.Table
     /// Default provider of <see cref="CloudTableClient"/> instances.
     /// </summary>
     [RegisterAs(typeof(ICloudTableClientProvider))]
-    [RegisterSingleInstance]
     [RegisterWithAttributeFiltering]
     public class DefaultCloudTableClientProvider : ICloudTableClientProvider
     {

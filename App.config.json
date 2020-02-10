@@ -6,5 +6,8 @@
     "AspNetStateService.Azure.Storage.Blob": {
         "ConnectionString": "UseDevelopmentStorage=true",
         "ContainerName": "state"
+    },
+    "AspNetStateService.Redis": {
+        "Configuration": "localhost"
     }
 }

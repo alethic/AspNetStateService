@@ -20,7 +20,7 @@ namespace AspNetStateService.Azure.Storage.Blob
 {
 
     /// <summary>
-    /// Implements a <see cref="IStateObjectDataStore"/> using Entity Framework Core.
+    /// Implements a <see cref="IStateObjectDataStore"/> using Azure Storage Blobs.
     /// </summary>
     [RegisterAs(typeof(IStateObjectDataStore))]
     [RegisterWithAttributeFiltering]
@@ -57,6 +57,7 @@ namespace AspNetStateService.Azure.Storage.Blob
         public async Task InitAsync(CancellationToken cancellationToken)
         {
             logger.Verbose("InitAsync()");
+
             await client.CreateIfNotExistsAsync();
         }
 

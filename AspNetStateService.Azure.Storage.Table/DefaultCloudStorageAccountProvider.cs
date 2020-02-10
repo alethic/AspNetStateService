@@ -12,7 +12,6 @@ namespace AspNetStateService.Azure.Storage.Table
     /// Default provider of <see cref="CloudStorageAccount"/> instances.
     /// </summary>
     [RegisterAs(typeof(ICloudStorageAccountProvider))]
-    [RegisterSingleInstance]
     [RegisterWithAttributeFiltering]
     public class DefaultCloudStorageAccountProvider : ICloudStorageAccountProvider
     {
