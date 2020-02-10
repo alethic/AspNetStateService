@@ -1,6 +1,10 @@
 {
-    "AspNetStateService.Azure.Cosmos.Table": {
+    "AspNetStateService.Azure.Storage.Table": {
         "ConnectionString": "UseDevelopmentStorage=true",
         "TableName": "state"
+    },
+    "AspNetStateService.Azure.Storage.Blob": {
+        "ConnectionString": "UseDevelopmentStorage=true",
+        "ContainerName": "state"
     }
 }

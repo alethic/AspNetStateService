@@ -1,17 +1,21 @@
 ﻿using System;
+using System.IO;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 
 using AspNetStateService.Core;
 
 using Autofac.Features.AttributeFilters;
+using Azure;
+using Azure.Storage.Blobs;
+using Azure.Storage.Blobs.Models;
 
 using Cogito.Autofac;
 
-using Microsoft.Azure.Cosmos.Table;
 using Microsoft.Extensions.Options;
 
-namespace AspNetStateService.Azure.Storage.Table
+namespace AspNetStateService.Azure.Storage.Blob
 {
 
     /// <summary>
@@ -20,27 +24,25 @@ namespace AspNetStateService.Azure.Storage.Table
     [RegisterAs(typeof(IStateObjectDataStore))]
     [RegisterSingleInstance]
     [RegisterWithAttributeFiltering]
-    public class StateObjectTableDataStore : IStateObjectDataStore
+    public class StateObjectBlobDataStore : IStateObjectDataStore
     {
 
-        public const string TypeNameKey = "AspNetStateService.Azure.Storage.Table";
+        public const string TypeNameKey = "AspNetStateService.Azure.Storage.Blob";
 
-        readonly CloudTableClient client;
-        readonly IStateKeyProvider partitioner;
-        readonly IOptions<StateObjectTableDataStoreOptions> options;
-
-        CloudTable table;
+        readonly BlobContainerClient client;
+        readonly IStatePathProvider pather;
+        readonly IOptions<StateObjectBlobDataStoreOptions> options;
 
         /// <summary>
         /// Initializes a new instance.
         /// </summary>
         /// <param name="client"></param>
-        /// <param name="partitioner"></param>
+        /// <param name="pather"></param>
         /// <param name="options"></param>
-        public StateObjectTableDataStore([KeyFilter(TypeNameKey)] CloudTableClient client, IStateKeyProvider partitioner, IOptions<StateObjectTableDataStoreOptions> options)
+        public StateObjectBlobDataStore([KeyFilter(TypeNameKey)] BlobContainerClient client, IStatePathProvider pather, IOptions<StateObjectBlobDataStoreOptions> options)
         {
             this.client = client ?? throw new ArgumentNullException(nameof(client));
-            this.partitioner = partitioner ?? throw new ArgumentNullException(nameof(partitioner));
+            this.pather = pather ?? throw new ArgumentNullException(nameof(pather));
             this.options = options ?? throw new ArgumentNullException(nameof(options));
         }
 
@@ -51,9 +53,7 @@ namespace AspNetStateService.Azure.Storage.Table
         /// <returns></returns>
         public async Task InitAsync(CancellationToken cancellationToken)
         {
-            var t = client.GetTableReference(options.Value.TableName ?? "state");
-            await t.CreateIfNotExistsAsync(cancellationToken);
-            table = t;
+            await client.CreateIfNotExistsAsync();
         }
 
         /// <summary>
@@ -67,10 +67,20 @@ namespace AspNetStateService.Azure.Storage.Table
             if (id is null)
                 throw new ArgumentNullException(nameof(id));
 
-            var get = TableOperation.Retrieve<StateObjectEntity>(partitioner.GetPartitionKey(id), partitioner.GetRowKey(id));
-            var rsl = await table.ExecuteAsync(get, cancellationToken);
-            if (rsl.Result is StateObjectEntity ent)
-                return ent;
+            var blb = client.GetBlobClient(pather.GetPath(id));
+            if (await blb.ExistsAsync(cancellationToken) == false)
+                return null;
+
+            try
+            {
+                var rsl = await blb.DownloadAsync(cancellationToken);
+                if (rsl.Value is BlobDownloadInfo ent)
+                    return await JsonSerializer.DeserializeAsync<StateObjectEntity>(ent.Content, null, cancellationToken);
+            }
+            catch (RequestFailedException e) when (e.ErrorCode == BlobErrorCode.BlobNotFound)
+            {
+                return null;
+            }
 
             return null;
         }
@@ -86,38 +96,32 @@ namespace AspNetStateService.Azure.Storage.Table
             if (entity is null)
                 throw new ArgumentNullException(nameof(entity));
 
-            var set = TableOperation.InsertOrReplace(entity);
-            await table.ExecuteAsync(set, cancellationToken);
-        }
+            using var stm = new MemoryStream();
+            using var wrt = new Utf8JsonWriter(stm);
+            JsonSerializer.Serialize(wrt, entity);
+            wrt.Dispose();
+            stm.Position = 0;
 
-        TimeSpan? FromLong(long? value)
-        {
-            return value != null ? (TimeSpan?)TimeSpan.FromTicks((long)value) : null;
+            var blb = client.GetBlobClient(pather.GetPath(entity.Id));
+            var rsl = await blb.UploadAsync(stm, true, cancellationToken);
+            if (rsl.Value is BlobContentInfo ent)
+                return;
         }
 
         public async Task<(byte[] data, uint? extraFlags, TimeSpan? timeout, DateTime? altered)> GetDataAsync(string id, CancellationToken cancellationToken)
         {
-            if (table == null)
-                throw new InvalidOperationException();
-
             var value = await GetStateObjectAsync(id, cancellationToken);
-            return (value?.Data, (uint?)value?.ExtraFlags, FromLong(value?.Timeout), value?.Altered);
+            return (value?.Data, value?.ExtraFlags, value?.Timeout, value?.Altered);
         }
 
         public async Task<(uint? cookie, DateTime? time)> GetLockAsync(string id, CancellationToken cancellationToken)
         {
-            if (table == null)
-                throw new InvalidOperationException();
-
             var value = await GetStateObjectAsync(id, cancellationToken);
-            return ((uint?)value?.LockCookie, value?.LockTime);
+            return (value?.LockCookie, value?.LockTime);
         }
 
         public async Task RemoveDataAsync(string id, CancellationToken cancellationToken)
         {
-            if (table == null)
-                throw new InvalidOperationException();
-
             var value = await GetStateObjectAsync(id, cancellationToken);
             if (value != null)
             {
@@ -132,9 +136,6 @@ namespace AspNetStateService.Azure.Storage.Table
 
         public async Task RemoveLockAsync(string id, CancellationToken cancellationToken)
         {
-            if (table == null)
-                throw new InvalidOperationException();
-
             var value = await GetStateObjectAsync(id, cancellationToken);
             if (value != null)
             {
@@ -147,16 +148,13 @@ namespace AspNetStateService.Azure.Storage.Table
 
         public async Task SetDataAsync(string id, byte[] data, uint? extraFlags, TimeSpan? timeout, CancellationToken cancellationToken)
         {
-            if (table == null)
-                throw new InvalidOperationException();
-
             var value = await GetStateObjectAsync(id, cancellationToken);
             if (value == null)
-                value = new StateObjectEntity(partitioner.GetPartitionKey(id), partitioner.GetRowKey(id), id);
+                value = new StateObjectEntity(id);
 
             value.Data = data;
-            value.ExtraFlags = (int?)extraFlags;
-            value.Timeout = timeout?.Ticks;
+            value.ExtraFlags = extraFlags;
+            value.Timeout = timeout;
             value.Altered = DateTime.UtcNow;
 
             await SetStateObjectAsync(value, cancellationToken);
@@ -164,28 +162,22 @@ namespace AspNetStateService.Azure.Storage.Table
 
         public async Task SetFlagAsync(string id, uint? extraFlags, CancellationToken cancellationToken)
         {
-            if (table == null)
-                throw new InvalidOperationException();
-
             var value = await GetStateObjectAsync(id, cancellationToken);
             if (value == null)
-                value = new StateObjectEntity(partitioner.GetPartitionKey(id), partitioner.GetRowKey(id), id);
+                value = new StateObjectEntity(id);
 
-            value.ExtraFlags = (int?)extraFlags;
+            value.ExtraFlags = extraFlags;
 
             await SetStateObjectAsync(value, cancellationToken);
         }
 
         public async Task SetLockAsync(string id, uint cookie, DateTime time, CancellationToken cancellationToken)
         {
-            if (table == null)
-                throw new InvalidOperationException();
-
             var value = await GetStateObjectAsync(id, cancellationToken);
             if (value == null)
-                value = new StateObjectEntity(partitioner.GetPartitionKey(id), partitioner.GetRowKey(id), id);
+                value = new StateObjectEntity(id);
 
-            value.LockCookie = (int)cookie;
+            value.LockCookie = cookie;
             value.LockTime = time;
 
             await SetStateObjectAsync(value, cancellationToken);
@@ -193,14 +185,11 @@ namespace AspNetStateService.Azure.Storage.Table
 
         public async Task SetTimeoutAsync(string id, TimeSpan? timeout, CancellationToken cancellationToken)
         {
-            if (table == null)
-                throw new InvalidOperationException();
-
             var value = await GetStateObjectAsync(id, cancellationToken);
             if (value == null)
-                value = new StateObjectEntity(partitioner.GetPartitionKey(id), partitioner.GetRowKey(id), id);
+                value = new StateObjectEntity(id);
 
-            value.Timeout = timeout?.Ticks;
+            value.Timeout = timeout;
 
             await SetStateObjectAsync(value, cancellationToken);
         }
