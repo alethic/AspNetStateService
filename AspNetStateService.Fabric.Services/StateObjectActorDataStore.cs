@@ -4,6 +4,8 @@ using System.Threading.Tasks;
 
 using AspNetStateService.Core;
 
+using Cogito.Autofac;
+
 using Microsoft.ServiceFabric.Actors.Runtime;
 
 namespace AspNetStateService.Fabric.Services
@@ -12,7 +14,7 @@ namespace AspNetStateService.Fabric.Services
     /// <summary>
     /// Implements a <see cref="IStateObjectDataStore"/> against a <see cref="IActorStateManager"/>.
     /// </summary>
-    public class StateObjectActorDataStore : IStateObjectDataStore
+    class StateObjectActorDataStore : IStateObjectDataStore
     {
 
         readonly StateActor actor;

@@ -50,7 +50,7 @@ namespace AspNetStateService.AspNetCore
         /// Resolve the appropriate <see cref="IStateObjectProvider"/> instance.
         /// </summary>
         /// <returns></returns>
-        IStateObjectProvider GetStateObjectProvider(IComponentContext context)
+        protected virtual IStateObjectProvider GetStateObjectProvider(IComponentContext context)
         {
             var store = options.Value.Store ?? DefaultStoreName;
             var param = TypedParameter.From(context.ResolveNamed<IStateObjectDataStore>(store));

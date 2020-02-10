@@ -5,8 +5,6 @@ using AspNetStateService.Fabric.Core;
 using AspNetStateService.Fabric.Interfaces;
 using AspNetStateService.Interfaces;
 
-using Cogito.Autofac;
-
 using Microsoft.ServiceFabric.Actors;
 using Microsoft.ServiceFabric.Actors.Client;
 
@@ -16,8 +14,7 @@ namespace AspNetStateService.Fabric.Services
     /// <summary>
     /// Provides <see cref="IStateObject"/> instances from Service Fabric Actors.
     /// </summary>
-    [RegisterAs(typeof(IStateObjectProvider))]
-    public class StateObjectProvider : IStateObjectProvider
+    class StateObjectActorProvider : IStateObjectProvider
     {
 
         /// <summary>
