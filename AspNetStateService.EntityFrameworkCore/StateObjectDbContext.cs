@@ -1,5 +1,5 @@
 ﻿using System;
-
+using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
@@ -43,13 +43,20 @@ namespace AspNetStateService.EntityFrameworkCore
         /// <param name="modelBuilder"></param>
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<StateObjectData>();
+            modelBuilder.Entity<SessionObject>()
+                .HasIndex(i => i.Key)
+                .IsUnique();
         }
 
         /// <summary>
         /// Gets the set of all available state objects data.
         /// </summary>
-        public DbSet<StateObjectData> StateObjects { get; set; }
+        public DbSet<SessionObject> Sessions { get; set; }
+
+        /// <summary>
+        /// Gets the set of all available state objects data.
+        /// </summary>
+        public DbSet<SessionDataObject> SessionData { get; set; }
 
     }
 

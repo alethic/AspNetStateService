@@ -6,7 +6,8 @@ using Cogito.Autofac;
 namespace AspNetStateService.EntityFrameworkCore.InMemory
 {
 
-    [RegisterAs(typeof(IStateObjectDbContextProvider))]
+    [RegisterNamed(typeof(IStateObjectDbContextProvider), "InMemory")]
+    [RegisterInstancePerLifetimeScope]
     public class InMemoryStateObjectDbContextProvider : IStateObjectDbContextProvider
     {
 
@@ -21,7 +22,7 @@ namespace AspNetStateService.EntityFrameworkCore.InMemory
             this.dbContextFactory = dbContextFactory ?? throw new ArgumentNullException(nameof(dbContextFactory));
         }
 
-        public Task<StateObjectDbContext> CreateDbContextAsync()
+        public Task<StateObjectDbContext> GetDbContextAsync()
         {
             return Task.FromResult<StateObjectDbContext>(dbContextFactory());
         }

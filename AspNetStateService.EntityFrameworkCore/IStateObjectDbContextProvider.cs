@@ -10,7 +10,7 @@ namespace AspNetStateService.EntityFrameworkCore
         /// Gets the <see cref="StateObjectDbContext"/> used to serve requests.
         /// </summary>
         /// <returns></returns>
-        Task<StateObjectDbContext> CreateDbContextAsync();
+        Task<StateObjectDbContext> GetDbContextAsync();
 
     }
 

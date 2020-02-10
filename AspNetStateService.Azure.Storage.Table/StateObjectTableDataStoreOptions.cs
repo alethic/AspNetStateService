@@ -3,7 +3,7 @@
 namespace AspNetStateService.Azure.Storage.Table
 {
 
-    [RegisterOptions("AspNetStateService.Azure.Cosmos.Table")]
+    [RegisterOptions("AspNetStateService.Azure.Storage.Table")]
     public class StateObjectTableDataStoreOptions
     {
 

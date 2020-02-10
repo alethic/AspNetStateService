@@ -1,6 +1,6 @@
 ﻿using Cogito.Extensions.Options.ConfigurationExtensions.Autofac;
 
-namespace AspNetStateService.Azure.Storage.Blob
+namespace AspNetStateService.EntityFrameworkCore
 {
 
     [RegisterOptions("AspNetStateService.EntityFrameworkCore")]

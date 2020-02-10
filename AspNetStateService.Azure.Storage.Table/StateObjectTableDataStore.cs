@@ -7,9 +7,12 @@ using AspNetStateService.Core;
 using Autofac.Features.AttributeFilters;
 
 using Cogito.Autofac;
+using Cogito.Threading;
 
 using Microsoft.Azure.Cosmos.Table;
 using Microsoft.Extensions.Options;
+
+using Serilog;
 
 namespace AspNetStateService.Azure.Storage.Table
 {
@@ -18,6 +21,7 @@ namespace AspNetStateService.Azure.Storage.Table
     /// Implements a <see cref="IStateObjectDataStore"/> using Azure Storage Tables.
     /// </summary>
     [RegisterNamed(typeof(IStateObjectDataStore), "Azure.Storage.Table")]
+    [RegisterSingleInstance]
     [RegisterWithAttributeFiltering]
     public class StateObjectTableDataStore : IStateObjectDataStore
     {
@@ -27,7 +31,10 @@ namespace AspNetStateService.Azure.Storage.Table
         readonly CloudTableClient client;
         readonly IStateKeyProvider partitioner;
         readonly IOptions<StateObjectTableDataStoreOptions> options;
+        readonly ILogger logger;
+        readonly AsyncLock sync = new AsyncLock();
 
+        bool init = true;
         CloudTable table;
 
         /// <summary>
@@ -36,11 +43,31 @@ namespace AspNetStateService.Azure.Storage.Table
         /// <param name="client"></param>
         /// <param name="partitioner"></param>
         /// <param name="options"></param>
-        public StateObjectTableDataStore([KeyFilter(TypeNameKey)] CloudTableClient client, IStateKeyProvider partitioner, IOptions<StateObjectTableDataStoreOptions> options)
+        /// <param name="logger"></param>
+        public StateObjectTableDataStore([KeyFilter(TypeNameKey)] CloudTableClient client, IStateKeyProvider partitioner, IOptions<StateObjectTableDataStoreOptions> options, ILogger logger)
         {
             this.client = client ?? throw new ArgumentNullException(nameof(client));
             this.partitioner = partitioner ?? throw new ArgumentNullException(nameof(partitioner));
             this.options = options ?? throw new ArgumentNullException(nameof(options));
+            this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
+        }
+
+        /// <summary>
+        /// Does the actual work of initialization.
+        /// </summary>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        async Task InitInternalAsync(CancellationToken cancellationToken)
+        {
+            logger.Verbose("InitInternalAsync()");
+
+            var n = options.Value.TableName ?? "state";
+            logger.Verbose("Creating storage table {TableName}.", n);
+
+            table = client.GetTableReference(n);
+            await table.CreateIfNotExistsAsync(cancellationToken);
+
+            init = false;
         }
 
         /// <summary>
@@ -50,9 +77,12 @@ namespace AspNetStateService.Azure.Storage.Table
         /// <returns></returns>
         public async Task InitAsync(CancellationToken cancellationToken)
         {
-            var t = client.GetTableReference(options.Value.TableName ?? "state");
-            await t.CreateIfNotExistsAsync(cancellationToken);
-            table = t;
+            logger.Verbose("InitAsync()");
+
+            if (init)
+                using (await sync.LockAsync())
+                    if (init)
+                        await InitInternalAsync(cancellationToken);
         }
 
         /// <summary>

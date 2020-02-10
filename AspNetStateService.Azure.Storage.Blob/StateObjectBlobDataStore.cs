@@ -11,6 +11,7 @@ using Autofac.Features.AttributeFilters;
 using Azure.Storage.Blobs;
 
 using Cogito.Autofac;
+using Cogito.Threading;
 
 using Microsoft.Extensions.Options;
 
@@ -23,6 +24,7 @@ namespace AspNetStateService.Azure.Storage.Blob
     /// Implements a <see cref="IStateObjectDataStore"/> using Azure Storage Blobs.
     /// </summary>
     [RegisterNamed(typeof(IStateObjectDataStore), "Azure.Storage.Blob")]
+    [RegisterSingleInstance]
     [RegisterWithAttributeFiltering]
     public class StateObjectBlobDataStore : IStateObjectDataStore
     {
@@ -33,6 +35,9 @@ namespace AspNetStateService.Azure.Storage.Blob
         readonly IStatePathProvider pather;
         readonly IOptions<StateObjectBlobDataStoreOptions> options;
         readonly ILogger logger;
+        readonly AsyncLock sync = new AsyncLock();
+
+        bool init = true;
 
         /// <summary>
         /// Initializes a new instance.
@@ -50,6 +55,18 @@ namespace AspNetStateService.Azure.Storage.Blob
         }
 
         /// <summary>
+        /// Does the actual work of initialization.
+        /// </summary>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        async Task InitInternalAsync(CancellationToken cancellationToken)
+        {
+            logger.Verbose("InitInternalAsync()");
+            await client.CreateIfNotExistsAsync(cancellationToken: cancellationToken);
+            init = false;
+        }
+
+        /// <summary>
         /// Initializes the table store.
         /// </summary>
         /// <param name="cancellationToken"></param>
@@ -58,7 +75,10 @@ namespace AspNetStateService.Azure.Storage.Blob
         {
             logger.Verbose("InitAsync()");
 
-            await client.CreateIfNotExistsAsync();
+            if (init)
+                using (await sync.LockAsync())
+                    if (init)
+                        await InitInternalAsync(cancellationToken);
         }
 
         /// <summary>

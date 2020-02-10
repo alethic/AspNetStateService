@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using AspNetStateService.Core;
 
 using Cogito.Autofac;
+using Cogito.Threading;
 
 using Microsoft.Extensions.Options;
 
@@ -19,26 +20,29 @@ namespace AspNetStateService.Redis
     /// Implements a <see cref="IStateObjectDataStore"/> using Redis.
     /// </summary>
     [RegisterNamed(typeof(IStateObjectDataStore), "Redis")]
+    [RegisterSingleInstance]
     [RegisterWithAttributeFiltering]
     public class StateObjectRedisDataStore : IStateObjectDataStore
     {
 
         const string DATA_KEY = "Data";
-        const string EXTRAFLAGS_KEY = "ExtraFlags";
+        const string EXTRA_FLAGS_KEY = "ExtraFlags";
         const string TIMEOUT_KEY = "Timeout";
         const string ALTERED_KEY = "Altered";
-        const string LOCKCOOKIE_KEY = "LockCookie";
-        const string LOCKTIME_KEY = "LockTime";
+        const string LOCK_COOKIE_KEY = "LockCookie";
+        const string LOCK_TIME_KEY = "LockTime";
 
-        static readonly RedisValue[] GETDATA_KEYS = new RedisValue[] { DATA_KEY, EXTRAFLAGS_KEY, TIMEOUT_KEY, ALTERED_KEY };
-        static readonly RedisValue[] GETLOCK_KEYS = new RedisValue[] { LOCKCOOKIE_KEY, LOCKTIME_KEY };
-        static readonly RedisValue[] REMOVEDATA_KEYS = new RedisValue[] { DATA_KEY, EXTRAFLAGS_KEY, TIMEOUT_KEY, ALTERED_KEY };
-        static readonly RedisValue[] REMOVELOCK_KEYS = new RedisValue[] { LOCKCOOKIE_KEY, LOCKTIME_KEY };
+        static readonly RedisValue[] GETDATA_KEYS = new RedisValue[] { DATA_KEY, EXTRA_FLAGS_KEY, TIMEOUT_KEY, ALTERED_KEY };
+        static readonly RedisValue[] GETLOCK_KEYS = new RedisValue[] { LOCK_COOKIE_KEY, LOCK_TIME_KEY };
+        static readonly RedisValue[] REMOVEDATA_KEYS = new RedisValue[] { DATA_KEY, EXTRA_FLAGS_KEY, TIMEOUT_KEY, ALTERED_KEY };
+        static readonly RedisValue[] REMOVELOCK_KEYS = new RedisValue[] { LOCK_COOKIE_KEY, LOCK_TIME_KEY };
 
         readonly IRedisConnectionProvider connections;
         readonly IOptions<StateObjectRedisDataStoreOptions> options;
         readonly ILogger logger;
+        readonly AsyncLock sync = new AsyncLock();
 
+        bool init = true;
         IConnectionMultiplexer connection;
         IDatabase database;
 
@@ -56,6 +60,20 @@ namespace AspNetStateService.Redis
         }
 
         /// <summary>
+        /// Does the actual work of initialization.
+        /// </summary>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        async Task InitInternalAsync(CancellationToken cancellationToken)
+        {
+            logger.Verbose("InitInternalAsync()");
+
+            connection = await connections.GetConnectionAsync();
+            database = connection.GetDatabase(options.Value.DatabaseId ?? -1);
+            init = false;
+        }
+
+        /// <summary>
         /// Initializes the table store.
         /// </summary>
         /// <param name="cancellationToken"></param>
@@ -64,8 +82,10 @@ namespace AspNetStateService.Redis
         {
             logger.Verbose("InitAsync()");
 
-            connection = await connections.GetConnectionAsync();
-            database = connection.GetDatabase(options.Value.DatabaseId ?? -1);
+            if (init)
+                using (await sync.LockAsync())
+                    if (init)
+                        await InitInternalAsync(cancellationToken);
         }
 
         public async Task<(byte[] data, uint? extraFlags, TimeSpan? timeout, DateTime? altered)> GetDataAsync(string id, CancellationToken cancellationToken)
@@ -106,7 +126,7 @@ namespace AspNetStateService.Redis
             logger.Verbose("SetDataAsync({Id}, {ExtraFlags}, {Timeout})", id, extraFlags, timeout);
 
             var batch = database.CreateBatch();
-            var t1 = batch.HashSetAsync(id, new HashEntry[] { new HashEntry(DATA_KEY, data), new HashEntry(EXTRAFLAGS_KEY, extraFlags), new HashEntry(TIMEOUT_KEY, timeout?.Ticks), new HashEntry(ALTERED_KEY, DateTime.UtcNow.Ticks) });
+            var t1 = batch.HashSetAsync(id, new HashEntry[] { new HashEntry(DATA_KEY, data), new HashEntry(EXTRA_FLAGS_KEY, extraFlags), new HashEntry(TIMEOUT_KEY, timeout?.Ticks), new HashEntry(ALTERED_KEY, DateTime.UtcNow.Ticks) });
             var t2 = batch.KeyExpireAsync(id, timeout + TimeSpan.FromMinutes(1) ?? TimeSpan.FromMinutes(20));
             batch.Execute();
             await Task.WhenAll(t1, t2);
@@ -116,7 +136,7 @@ namespace AspNetStateService.Redis
         {
             logger.Verbose("SetFlagAsync({Id}, {ExtraFlags})", id, extraFlags);
 
-            await database.HashSetAsync(id, new HashEntry[] { new HashEntry(EXTRAFLAGS_KEY, extraFlags) });
+            await database.HashSetAsync(id, new HashEntry[] { new HashEntry(EXTRA_FLAGS_KEY, extraFlags) });
 
         }
 
@@ -124,7 +144,7 @@ namespace AspNetStateService.Redis
         {
             logger.Verbose("SetLockAsync({Id}, {Cookie}, {Time})", id, cookie, time);
 
-            await database.HashSetAsync(id, new HashEntry[] { new HashEntry(LOCKCOOKIE_KEY, cookie), new HashEntry(LOCKTIME_KEY, time.Ticks) });
+            await database.HashSetAsync(id, new HashEntry[] { new HashEntry(LOCK_COOKIE_KEY, cookie), new HashEntry(LOCK_TIME_KEY, time.Ticks) });
         }
 
         public async Task SetTimeoutAsync(string id, TimeSpan? timeout, CancellationToken cancellationToken)

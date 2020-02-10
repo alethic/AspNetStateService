@@ -17,6 +17,7 @@ namespace AspNetStateService.AspNetCore
     /// Provides objects for managing individual session state against a shared store.
     /// </summary>
     [RegisterAs(typeof(IStateObjectProvider))]
+    [RegisterInstancePerLifetimeScope]
     class StateObjectProvider : IStateObjectProvider
     {
 

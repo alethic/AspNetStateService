@@ -1,6 +1,9 @@
 {
     "AspNetStateService.AspNetCore": {
-        "Store": "Redis"
+        "Store": "EntityFrameworkCore"
+    },
+    "AspNetStateService.EntityFrameworkCore": {
+        "Provider": "InMemory"
     },
     "AspNetStateService.Azure.Storage.Table": {
         "ConnectionString": "UseDevelopmentStorage=true",

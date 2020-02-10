@@ -32,7 +32,6 @@ namespace AspNetStateService.AspNetCore
 
         readonly ILifetimeScope parent;
         readonly IOptions<StateWebServiceOptions> options;
-        readonly Lazy<IStateObjectProvider> stateObjectProvider;
 
         ILifetimeScope scope;
 
@@ -45,20 +44,17 @@ namespace AspNetStateService.AspNetCore
         {
             this.parent = parent ?? throw new ArgumentNullException(nameof(parent));
             this.options = options ?? throw new ArgumentNullException(nameof(options));
-
-            // maintains a lazy initialized instance of the object provider
-            stateObjectProvider = new Lazy<IStateObjectProvider>(GetProvider);
         }
 
         /// <summary>
         /// Resolve the appropriate <see cref="IStateObjectProvider"/> instance.
         /// </summary>
         /// <returns></returns>
-        IStateObjectProvider GetProvider()
+        IStateObjectProvider GetStateObjectProvider(IComponentContext context)
         {
             var store = options.Value.Store ?? DefaultStoreName;
-            var param = TypedParameter.From(parent.ResolveNamed<IStateObjectDataStore>(store));
-            return parent.Resolve<IStateObjectProvider>(param);
+            var param = TypedParameter.From(context.ResolveNamed<IStateObjectDataStore>(store));
+            return context.Resolve<IStateObjectProvider>(param);
         }
 
         /// <summary>
@@ -79,7 +75,8 @@ namespace AspNetStateService.AspNetCore
         {
             var str = context.Request.Path.Value.TrimStart('/');
             var uri = WebUtility.UrlDecode(str);
-            return stateObjectProvider.Value.GetStateObjectAsync(uri, context.RequestAborted);
+            var ctx = context.RequestServices.GetRequiredService<IComponentContext>();
+            return GetStateObjectProvider(ctx).GetStateObjectAsync(uri, context.RequestAborted);
         }
 
         /// <summary>

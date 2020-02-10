@@ -6,9 +6,10 @@ namespace AspNetStateService.EntityFrameworkCore
 {
 
     /// <summary>
-    /// Data object of a state object.
+    /// Represents the state object.
     /// </summary>
-    public class StateObjectData
+    [Table("Session")]
+    public class SessionObject
     {
 
         /// <summary>
@@ -16,14 +17,20 @@ namespace AspNetStateService.EntityFrameworkCore
         /// </summary>
         [Key]
         [Column("Id")]
-        [DatabaseGenerated(DatabaseGeneratedOption.None)]
-        public virtual string Id { get; set; }
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public virtual Guid Id { get; set; }
 
         /// <summary>
-        /// Persisted data.
+        /// Unique session key.
         /// </summary>
-        [Column("Data")]
-        public virtual byte[] Data { get; set; }
+        [Column("Key")]
+        public virtual string Key { get; set; }
+
+        /// <summary>
+        /// Persisted data entity.
+        /// </summary>
+        [ForeignKey(nameof(Id))]
+        public virtual SessionDataObject Data { get; set; }
 
         /// <summary>
         /// ExtraFlags set on the state object.

@@ -7,6 +7,7 @@ namespace AspNetStateService.EntityFrameworkCore.InMemory
 {
 
     [RegisterAs(typeof(InMemoryStateObjectDbContext))]
+    [RegisterInstancePerLifetimeScope]
     public class InMemoryStateObjectDbContext : StateObjectDbContext
     {
 
