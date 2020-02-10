@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Threading;
+using System.Threading.Tasks;
 
 using AspNetStateService.Fabric.Core;
 using AspNetStateService.Fabric.Interfaces;
@@ -23,8 +24,9 @@ namespace AspNetStateService.Fabric.Services
         /// Gets a new state object by resolving an <see cref="ActorProxy"/>.
         /// </summary>
         /// <param name="id"></param>
+        /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public Task<IStateObject> GetStateObjectAsync(string id)
+        public Task<IStateObject> GetStateObjectAsync(string id, CancellationToken cancellationToken)
         {
             return Task.FromResult<IStateObject>(new StateActorProxyObject(ActorProxy.Create<IStateActor>(new ActorId(id))));
         }

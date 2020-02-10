@@ -1,4 +1,7 @@
 {
+    "AspNetStateService.AspNetCore": {
+        "Store": "Redis"
+    },
     "AspNetStateService.Azure.Storage.Table": {
         "ConnectionString": "UseDevelopmentStorage=true",
         "TableName": "state"

@@ -18,7 +18,7 @@ namespace AspNetStateService.Redis
     /// <summary>
     /// Implements a <see cref="IStateObjectDataStore"/> using Redis.
     /// </summary>
-    [RegisterAs(typeof(IStateObjectDataStore))]
+    [RegisterNamed(typeof(IStateObjectDataStore), "Redis")]
     [RegisterWithAttributeFiltering]
     public class StateObjectRedisDataStore : IStateObjectDataStore
     {

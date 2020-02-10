@@ -14,7 +14,8 @@ namespace AspNetStateService.EntityFrameworkCore
     /// <summary>
     /// Implements a <see cref="IStateObjectDataStore"/> using Entity Framework Core.
     /// </summary>
-    [RegisterAs(typeof(IStateObjectDataStore))]
+    [RegisterNamed(typeof(IStateObjectDataStore), "EntityFrameworkCore")]
+    [RegisterWithAttributeFiltering]
     public class StateObjectDbContextDataStore : IStateObjectDataStore
     {
 

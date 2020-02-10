@@ -15,7 +15,11 @@
   <ItemGroup>
     <ProjectReference Include="..\AspNetStateService.AspNetCore.Kestrel\AspNetStateService.AspNetCore.Kestrel.csproj" />
     <ProjectReference Include="..\AspNetStateService.AspNetCore\AspNetStateService.AspNetCore.csproj" />
+    <ProjectReference Include="..\AspNetStateService.Azure.Storage.Blob\AspNetStateService.Azure.Storage.Blob.csproj" />
+    <ProjectReference Include="..\AspNetStateService.Azure.Storage.Table\AspNetStateService.Azure.Storage.Table.csproj" />
     <ProjectReference Include="..\AspNetStateService.Core\AspNetStateService.Core.csproj" />
+    <ProjectReference Include="..\AspNetStateService.EntityFrameworkCore.InMemory\AspNetStateService.EntityFrameworkCore.InMemory.csproj" />
+    <ProjectReference Include="..\AspNetStateService.EntityFrameworkCore\AspNetStateService.EntityFrameworkCore.csproj" />
     <ProjectReference Include="..\AspNetStateService.Redis\AspNetStateService.Redis.csproj" />
   </ItemGroup>
 

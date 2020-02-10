@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Threading;
+using System.Threading.Tasks;
 
 namespace AspNetStateService.Interfaces
 {
@@ -9,7 +10,7 @@ namespace AspNetStateService.Interfaces
     public interface IStateObjectProvider
     {
 
-        Task<IStateObject> GetStateObjectAsync(string id);
+        Task<IStateObject> GetStateObjectAsync(string id, CancellationToken cancellationToken);
 
     }
 

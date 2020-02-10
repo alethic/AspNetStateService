@@ -3,6 +3,7 @@ using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 
+using AspNetStateService.Core;
 using AspNetStateService.Interfaces;
 
 using Autofac;
@@ -15,6 +16,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 
 namespace AspNetStateService.AspNetCore
 {
@@ -26,7 +28,10 @@ namespace AspNetStateService.AspNetCore
     public class StateWebService
     {
 
+        const string DefaultStoreName = "EntityFrameworkCore";
+
         readonly ILifetimeScope parent;
+        readonly IOptions<StateWebServiceOptions> options;
         readonly Lazy<IStateObjectProvider> stateObjectProvider;
 
         ILifetimeScope scope;
@@ -35,11 +40,25 @@ namespace AspNetStateService.AspNetCore
         /// Initializes a new instance.
         /// </summary>
         /// <param name="parent"></param>
-        /// <param name="stateObjectProvider"></param>
-        public StateWebService(ILifetimeScope parent)
+        /// <param name="options"></param>
+        public StateWebService(ILifetimeScope parent, IOptions<StateWebServiceOptions> options)
         {
             this.parent = parent ?? throw new ArgumentNullException(nameof(parent));
-            this.stateObjectProvider = new Lazy<IStateObjectProvider>(() => scope.Resolve<IStateObjectProvider>());
+            this.options = options ?? throw new ArgumentNullException(nameof(options));
+
+            // maintains a lazy initialized instance of the object provider
+            stateObjectProvider = new Lazy<IStateObjectProvider>(GetProvider);
+        }
+
+        /// <summary>
+        /// Resolve the appropriate <see cref="IStateObjectProvider"/> instance.
+        /// </summary>
+        /// <returns></returns>
+        IStateObjectProvider GetProvider()
+        {
+            var store = options.Value.Store ?? DefaultStoreName;
+            var param = TypedParameter.From(parent.ResolveNamed<IStateObjectDataStore>(store));
+            return parent.Resolve<IStateObjectProvider>(param);
         }
 
         /// <summary>
@@ -60,7 +79,7 @@ namespace AspNetStateService.AspNetCore
         {
             var str = context.Request.Path.Value.TrimStart('/');
             var uri = WebUtility.UrlDecode(str);
-            return stateObjectProvider.Value.GetStateObjectAsync(uri);
+            return stateObjectProvider.Value.GetStateObjectAsync(uri, context.RequestAborted);
         }
 
         /// <summary>

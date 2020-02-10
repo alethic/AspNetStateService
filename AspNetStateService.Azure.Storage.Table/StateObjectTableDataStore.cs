@@ -17,8 +17,7 @@ namespace AspNetStateService.Azure.Storage.Table
     /// <summary>
     /// Implements a <see cref="IStateObjectDataStore"/> using Azure Storage Tables.
     /// </summary>
-    [RegisterAs(typeof(IStateObjectDataStore))]
-    [RegisterSingleInstance]
+    [RegisterNamed(typeof(IStateObjectDataStore), "Azure.Storage.Table")]
     [RegisterWithAttributeFiltering]
     public class StateObjectTableDataStore : IStateObjectDataStore
     {

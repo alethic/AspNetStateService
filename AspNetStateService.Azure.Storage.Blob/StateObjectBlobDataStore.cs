@@ -22,7 +22,7 @@ namespace AspNetStateService.Azure.Storage.Blob
     /// <summary>
     /// Implements a <see cref="IStateObjectDataStore"/> using Azure Storage Blobs.
     /// </summary>
-    [RegisterAs(typeof(IStateObjectDataStore))]
+    [RegisterNamed(typeof(IStateObjectDataStore), "Azure.Storage.Blob")]
     [RegisterWithAttributeFiltering]
     public class StateObjectBlobDataStore : IStateObjectDataStore
     {
