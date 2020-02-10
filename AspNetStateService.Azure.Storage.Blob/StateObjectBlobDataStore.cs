@@ -13,6 +13,7 @@ using Azure.Storage.Blobs;
 using Cogito.Autofac;
 
 using Microsoft.Extensions.Options;
+
 using Serilog;
 
 namespace AspNetStateService.Azure.Storage.Blob

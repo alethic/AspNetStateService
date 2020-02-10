@@ -3,7 +3,7 @@
 namespace AspNetStateService.Azure.Storage.Blob
 {
 
-    public struct StateObjectMetadata
+    struct StateObjectMetadata
     {
 
         /// <summary>
