@@ -1,20 +1,27 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
-  </PropertyGroup>
+    <PropertyGroup>
+        <TargetFrameworks>netstandard2.0;netcoreapp3.1</TargetFrameworks>
+    </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="6.0.0" />
-    <PackageReference Include="Cogito.Autofac" Version="2.2.0" />
-    <PackageReference Include="Cogito.Core" Version="3.0.11" />
-    <PackageReference Include="Microsoft.AspNetCore.Hosting.Abstractions" Version="2.2.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
-  </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="6.0.0" />
+        <PackageReference Include="Cogito.Autofac" Version="2.2.0" />
+        <PackageReference Include="Cogito.Core" Version="3.0.11" />
+    </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\AspNetStateService.Core\AspNetStateService.Core.csproj" />
-    <ProjectReference Include="..\AspNetStateService.Interfaces\AspNetStateService.Interfaces.csproj" />
-  </ItemGroup>
+    <ItemGroup Condition=" '$(TargetFramework)' == 'netcoreapp3.1' ">
+        <FrameworkReference Include="Microsoft.AspNetCore.App" />
+    </ItemGroup>
+
+    <ItemGroup Condition=" '$(TargetFramework)' != 'netcoreapp3.1' ">
+        <PackageReference Include="Microsoft.AspNetCore.Hosting.Abstractions" Version="2.2.0" />
+        <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\AspNetStateService.Core\AspNetStateService.Core.csproj" />
+        <ProjectReference Include="..\AspNetStateService.Interfaces\AspNetStateService.Interfaces.csproj" />
+    </ItemGroup>
 
 </Project>

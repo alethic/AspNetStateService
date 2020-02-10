@@ -49,6 +49,15 @@ namespace AspNetStateService.AspNetCore.Kestrel
         /// <summary>
         /// Initializes a new instance.
         /// </summary>
+        public HttpParserWithPatch() :
+            base()
+        {
+
+        }
+
+        /// <summary>
+        /// Initializes a new instance.
+        /// </summary>
         /// <param name="showErrorDetails"></param>
         public HttpParserWithPatch(bool showErrorDetails = true) :
             base(showErrorDetails)
@@ -130,7 +139,7 @@ namespace AspNetStateService.AspNetCore.Kestrel
             }
             else if (TryGetNewLine(buffer, out var found))
             {
-                span = buffer.Slice(consumed, found).ToSpan();
+                span = ToSpan(buffer.Slice(consumed, found));
                 consumed = found;
             }
             else
@@ -143,6 +152,15 @@ namespace AspNetStateService.AspNetCore.Kestrel
 
             examined = consumed;
             return true;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        static ReadOnlySpan<byte> ToSpan(ReadOnlySequence<byte> buffer)
+        {
+            if (buffer.IsSingleSegment)
+                return buffer.First.Span;
+            else
+                return BuffersExtensions.ToArray(buffer);
         }
 
         [MethodImpl(MethodImplOptions.NoInlining)]

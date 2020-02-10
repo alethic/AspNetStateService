@@ -1,11 +1,10 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Reflection;
 
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Hosting.Server;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
-using Microsoft.AspNetCore.Server.Kestrel.Core.Internal;
-using Microsoft.AspNetCore.Server.Kestrel.Core.Internal.Http;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace AspNetStateService.AspNetCore.Kestrel
@@ -37,8 +36,11 @@ namespace AspNetStateService.AspNetCore.Kestrel
         /// <returns></returns>
         static KestrelServer PatchKestrel(KestrelServer server)
         {
-            var ctx = typeof(KestrelServer).GetProperty("ServiceContext", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(server);
-            typeof(ServiceContext).GetProperty(nameof(ServiceContext.HttpParser)).SetValue(ctx, new HttpParserWithPatch<Http1ParsingHandler>());
+            var ctxType = typeof(KestrelServer).Assembly.GetType("Microsoft.AspNetCore.Server.Kestrel.Core.Internal.ServiceContext");
+            var hndType = typeof(KestrelServer).Assembly.GetType("Microsoft.AspNetCore.Server.Kestrel.Core.Internal.Http.Http1ParsingHandler");
+            var prsType = typeof(HttpParserWithPatch<>).MakeGenericType(hndType);
+            var ctxProp = typeof(KestrelServer).GetProperty("ServiceContext", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(server);
+            ctxType.GetProperty("HttpParser").SetValue(ctxProp, Activator.CreateInstance(prsType));
             return server;
         }
 

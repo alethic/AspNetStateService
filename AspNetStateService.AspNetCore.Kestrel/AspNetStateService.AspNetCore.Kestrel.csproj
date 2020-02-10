@@ -1,12 +1,19 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>netstandard2.0</TargetFramework>
+        <TargetFrameworks>netstandard2.0;netcoreapp3.1</TargetFrameworks>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     </PropertyGroup>
 
     <ItemGroup>
         <PackageReference Include="Cogito.Autofac" Version="2.2.0" />
+    </ItemGroup>
+
+    <ItemGroup Condition=" '$(TargetFramework)' == 'netcoreapp3.1' ">
+        <FrameworkReference Include="Microsoft.AspNetCore.App" />
+    </ItemGroup>
+
+    <ItemGroup Condition=" '$(TargetFramework)' != 'netcoreapp3.1' ">
         <PackageReference Include="Microsoft.AspNetCore.Server.Kestrel" Version="2.2.0" />
     </ItemGroup>
 
