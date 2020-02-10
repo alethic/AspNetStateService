@@ -1,19 +1,19 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
-using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 
 using AspNetStateService.Core;
 
 using Autofac.Features.AttributeFilters;
-using Azure;
+
 using Azure.Storage.Blobs;
-using Azure.Storage.Blobs.Models;
 
 using Cogito.Autofac;
 
 using Microsoft.Extensions.Options;
+using Serilog;
 
 namespace AspNetStateService.Azure.Storage.Blob
 {
@@ -22,7 +22,6 @@ namespace AspNetStateService.Azure.Storage.Blob
     /// Implements a <see cref="IStateObjectDataStore"/> using Entity Framework Core.
     /// </summary>
     [RegisterAs(typeof(IStateObjectDataStore))]
-    [RegisterSingleInstance]
     [RegisterWithAttributeFiltering]
     public class StateObjectBlobDataStore : IStateObjectDataStore
     {
@@ -32,6 +31,7 @@ namespace AspNetStateService.Azure.Storage.Blob
         readonly BlobContainerClient client;
         readonly IStatePathProvider pather;
         readonly IOptions<StateObjectBlobDataStoreOptions> options;
+        readonly ILogger logger;
 
         /// <summary>
         /// Initializes a new instance.
@@ -39,11 +39,13 @@ namespace AspNetStateService.Azure.Storage.Blob
         /// <param name="client"></param>
         /// <param name="pather"></param>
         /// <param name="options"></param>
-        public StateObjectBlobDataStore([KeyFilter(TypeNameKey)] BlobContainerClient client, IStatePathProvider pather, IOptions<StateObjectBlobDataStoreOptions> options)
+        /// <param name="logger"></param>
+        public StateObjectBlobDataStore([KeyFilter(TypeNameKey)] BlobContainerClient client, IStatePathProvider pather, IOptions<StateObjectBlobDataStoreOptions> options, ILogger logger)
         {
             this.client = client ?? throw new ArgumentNullException(nameof(client));
             this.pather = pather ?? throw new ArgumentNullException(nameof(pather));
             this.options = options ?? throw new ArgumentNullException(nameof(options));
+            this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         /// <summary>
@@ -53,145 +55,177 @@ namespace AspNetStateService.Azure.Storage.Blob
         /// <returns></returns>
         public async Task InitAsync(CancellationToken cancellationToken)
         {
+            logger.Verbose("InitAsync()");
             await client.CreateIfNotExistsAsync();
         }
 
         /// <summary>
-        /// Attempts to retrieve the state object from the table.
+        /// Attempts to parse the given metadata values.
         /// </summary>
-        /// <param name="id"></param>
-        /// <param name="cancellationToken"></param>
+        /// <param name="properties"></param>
         /// <returns></returns>
-        async Task<StateObjectEntity> GetStateObjectAsync(string id, CancellationToken cancellationToken)
+        StateObjectMetadata GetMetadata(IDictionary<string, string> properties)
         {
-            if (id is null)
-                throw new ArgumentNullException(nameof(id));
-
-            var blb = client.GetBlobClient(pather.GetPath(id));
-            if (await blb.ExistsAsync(cancellationToken) == false)
-                return null;
-
-            try
-            {
-                var rsl = await blb.DownloadAsync(cancellationToken);
-                if (rsl.Value is BlobDownloadInfo ent)
-                    return await JsonSerializer.DeserializeAsync<StateObjectEntity>(ent.Content, null, cancellationToken);
-            }
-            catch (RequestFailedException e) when (e.ErrorCode == BlobErrorCode.BlobNotFound)
-            {
-                return null;
-            }
-
-            return null;
+            var metadata = new StateObjectMetadata();
+            metadata.ExtraFlags = properties.TryGetValue("ExtraFlags", out var fd) && uint.TryParse(fd, out var fv) ? (uint?)fv : null;
+            metadata.Timeout = properties.TryGetValue("Timeout", out var td) && TimeSpan.TryParse(td, out var tv) ? (TimeSpan?)tv : null;
+            metadata.Altered = properties.TryGetValue("Altered", out var ad) && DateTime.TryParse(ad, out var av) ? (DateTime?)av : null;
+            metadata.LockCookie = properties.TryGetValue("LockCookie", out var cd) && uint.TryParse(cd, out var cv) ? (uint?)cv : null;
+            metadata.LockTime = properties.TryGetValue("LockTime", out var ld) && DateTime.TryParse(ld, out var lv) ? (DateTime?)lv : null;
+            return metadata;
         }
 
         /// <summary>
-        /// Attempts to update the state object in the table.
+        /// Sets the metadata on the dictionary.
         /// </summary>
-        /// <param name="entity"></param>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
-        async Task SetStateObjectAsync(StateObjectEntity entity, CancellationToken cancellationToken)
+        /// <param name="metadata"></param>
+        /// <param name="properties"></param>
+        void SetMetadata(StateObjectMetadata metadata, IDictionary<string, string> properties)
         {
-            if (entity is null)
-                throw new ArgumentNullException(nameof(entity));
-
-            using var stm = new MemoryStream();
-            using var wrt = new Utf8JsonWriter(stm);
-            JsonSerializer.Serialize(wrt, entity);
-            wrt.Dispose();
-            stm.Position = 0;
-
-            var blb = client.GetBlobClient(pather.GetPath(entity.Id));
-            var rsl = await blb.UploadAsync(stm, true, cancellationToken);
-            if (rsl.Value is BlobContentInfo ent)
-                return;
+            properties["ExtraFlags"] = metadata.ExtraFlags?.ToString() ?? "";
+            properties["Timeout"] = metadata.Timeout?.ToString() ?? "";
+            properties["Altered"] = metadata.Altered?.ToString() ?? "";
+            properties["LockCookie"] = metadata.LockCookie?.ToString() ?? "";
+            properties["LockTime"] = metadata.LockTime?.ToString() ?? "";
         }
 
         public async Task<(byte[] data, uint? extraFlags, TimeSpan? timeout, DateTime? altered)> GetDataAsync(string id, CancellationToken cancellationToken)
         {
-            var value = await GetStateObjectAsync(id, cancellationToken);
-            return (value?.Data, value?.ExtraFlags, value?.Timeout, value?.Altered);
+            logger.Verbose("GetDataAsync({Id})", id);
+
+            var blb = client.GetBlobClient(pather.GetPath(id));
+            if (await blb.ExistsAsync(cancellationToken) == false)
+                return default;
+
+            var stm = new MemoryStream();
+            var prp = await blb.GetPropertiesAsync(null, cancellationToken);
+            if (prp.Value.ContentLength > 0)
+                await blb.DownloadToAsync(stm, cancellationToken);
+
+            var met = GetMetadata(prp.Value.Metadata);
+            return (stm.ToArray(), met.ExtraFlags, met.Timeout, met.Altered);
         }
 
         public async Task<(uint? cookie, DateTime? time)> GetLockAsync(string id, CancellationToken cancellationToken)
         {
-            var value = await GetStateObjectAsync(id, cancellationToken);
-            return (value?.LockCookie, value?.LockTime);
+            logger.Verbose("GetLockAsync({Id})", id);
+
+            var blb = client.GetBlobClient(pather.GetPath(id));
+            if (await blb.ExistsAsync(cancellationToken) == false)
+                return default;
+
+            var prp = await blb.GetPropertiesAsync(null, cancellationToken);
+            var met = GetMetadata(prp.Value.Metadata);
+            return (met.LockCookie, met.LockTime);
         }
 
         public async Task RemoveDataAsync(string id, CancellationToken cancellationToken)
         {
-            var value = await GetStateObjectAsync(id, cancellationToken);
-            if (value != null)
-            {
-                value.Data = null;
-                value.ExtraFlags = null;
-                value.Timeout = null;
-                value.Altered = null;
-            }
+            logger.Verbose("RemoveDataAsync({Id})", id);
 
-            await SetStateObjectAsync(value, cancellationToken);
+            var blb = client.GetBlobClient(pather.GetPath(id));
+            if (await blb.ExistsAsync(cancellationToken) == false)
+                return;
+
+            var prp = await blb.GetPropertiesAsync(null, cancellationToken);
+            if (prp.Value.ContentLength > 0)
+                await blb.UploadAsync(new MemoryStream(), true, cancellationToken);
+
+            var met = GetMetadata(prp.Value.Metadata);
+            met.ExtraFlags = null;
+            met.Timeout = null;
+            met.Altered = null;
+
+            var dir = new Dictionary<string, string>();
+            SetMetadata(met, dir);
+            await blb.SetMetadataAsync(dir, null, cancellationToken);
         }
 
         public async Task RemoveLockAsync(string id, CancellationToken cancellationToken)
         {
-            var value = await GetStateObjectAsync(id, cancellationToken);
-            if (value != null)
-            {
-                value.LockCookie = null;
-                value.LockTime = null;
-            }
+            logger.Verbose("RemoveLockAsync({Id})", id);
 
-            await SetStateObjectAsync(value, cancellationToken);
+            var blb = client.GetBlobClient(pather.GetPath(id));
+            if (await blb.ExistsAsync(cancellationToken) == false)
+                return;
+
+            var prp = await blb.GetPropertiesAsync(null, cancellationToken);
+            var met = GetMetadata(prp.Value.Metadata);
+            met.LockCookie = null;
+            met.LockTime = null;
+
+            var dir = new Dictionary<string, string>();
+            SetMetadata(met, dir);
+            await blb.SetMetadataAsync(dir, null, cancellationToken);
         }
 
         public async Task SetDataAsync(string id, byte[] data, uint? extraFlags, TimeSpan? timeout, CancellationToken cancellationToken)
         {
-            var value = await GetStateObjectAsync(id, cancellationToken);
-            if (value == null)
-                value = new StateObjectEntity(id);
+            logger.Verbose("SetDataAsync({Id}, {ExtraFlags}, {Timeout})", id, extraFlags, timeout);
 
-            value.Data = data;
-            value.ExtraFlags = extraFlags;
-            value.Timeout = timeout;
-            value.Altered = DateTime.UtcNow;
+            var blb = client.GetBlobClient(pather.GetPath(id));
+            await blb.UploadAsync(new MemoryStream(data), true, cancellationToken);
 
-            await SetStateObjectAsync(value, cancellationToken);
+            var prp = await blb.GetPropertiesAsync(null, cancellationToken);
+            var met = GetMetadata(prp.Value.Metadata);
+            met.ExtraFlags = extraFlags;
+            met.Timeout = timeout;
+            met.Altered = DateTime.UtcNow;
+
+            var dir = new Dictionary<string, string>();
+            SetMetadata(met, dir);
+            await blb.SetMetadataAsync(dir, null, cancellationToken);
         }
 
         public async Task SetFlagAsync(string id, uint? extraFlags, CancellationToken cancellationToken)
         {
-            var value = await GetStateObjectAsync(id, cancellationToken);
-            if (value == null)
-                value = new StateObjectEntity(id);
+            logger.Verbose("SetFlagAsync({Id}, {ExtraFlags})", id, extraFlags);
 
-            value.ExtraFlags = extraFlags;
+            var blb = client.GetBlobClient(pather.GetPath(id));
+            if (await blb.ExistsAsync(cancellationToken) == false)
+                await blb.UploadAsync(new MemoryStream(), true, cancellationToken);
 
-            await SetStateObjectAsync(value, cancellationToken);
+            var prp = await blb.GetPropertiesAsync(null, cancellationToken);
+            var met = GetMetadata(prp.Value.Metadata);
+            met.ExtraFlags = extraFlags;
+
+            var dir = new Dictionary<string, string>();
+            SetMetadata(met, dir);
+            await blb.SetMetadataAsync(dir, null, cancellationToken);
         }
 
         public async Task SetLockAsync(string id, uint cookie, DateTime time, CancellationToken cancellationToken)
         {
-            var value = await GetStateObjectAsync(id, cancellationToken);
-            if (value == null)
-                value = new StateObjectEntity(id);
+            logger.Verbose("SetLockAsync({Id}, {Cookie}, {Time})", id, cookie, time);
 
-            value.LockCookie = cookie;
-            value.LockTime = time;
+            var blb = client.GetBlobClient(pather.GetPath(id));
+            if (await blb.ExistsAsync(cancellationToken) == false)
+                await blb.UploadAsync(new MemoryStream(), true, cancellationToken);
 
-            await SetStateObjectAsync(value, cancellationToken);
+            var prp = await blb.GetPropertiesAsync(null, cancellationToken);
+            var met = GetMetadata(prp.Value.Metadata);
+            met.LockCookie = cookie;
+            met.LockTime = time;
+            var dir = new Dictionary<string, string>();
+            SetMetadata(met, dir);
+            await blb.SetMetadataAsync(dir, null, cancellationToken);
         }
 
         public async Task SetTimeoutAsync(string id, TimeSpan? timeout, CancellationToken cancellationToken)
         {
-            var value = await GetStateObjectAsync(id, cancellationToken);
-            if (value == null)
-                value = new StateObjectEntity(id);
+            logger.Verbose("SetTimeoutAsync({Id}, {Timeout})", id, timeout);
 
-            value.Timeout = timeout;
+            var blb = client.GetBlobClient(pather.GetPath(id));
+            if (await blb.ExistsAsync(cancellationToken) == false)
+                await blb.UploadAsync(new MemoryStream(), true, cancellationToken);
 
-            await SetStateObjectAsync(value, cancellationToken);
+            var prp = await blb.GetPropertiesAsync(null, cancellationToken);
+            var met = GetMetadata(prp.Value.Metadata);
+            met.Timeout = timeout;
+
+            var dir = new Dictionary<string, string>();
+            SetMetadata(met, dir);
+            await blb.SetMetadataAsync(dir, null, cancellationToken);
         }
 
     }
