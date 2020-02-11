@@ -1,10 +1,14 @@
-image: Visual Studio 2017
+image: Visual Studio 2019
 configuration: Release
 platform: Any CPU
 
+cache:
+  - packages
+  - $(USERPROFILE)\.nuget\packages
+
 install:
   - choco install gitversion.portable -pre -y
-  - nuget sources add -Name wasabi -Source https://www.myget.org/F/wasabi/api/v3/index.json
+  - nuget sources add -Name github -Source %nuget_github_feed% -UserName %nuget_github_user% -Password %nuget_github_pass%
 
 before_build:
   - ps: gitversion /l console /output buildserver
