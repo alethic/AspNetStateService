@@ -10,6 +10,8 @@
         <UpdateServiceFabricManifestEnabled>False</UpdateServiceFabricManifestEnabled>
         <ServicePackagePath>PackageRoot</ServicePackagePath>
         <ServicePackagePrefix>$(MSBuildProjectName)</ServicePackagePrefix>
+        <PublishReadyToRun>true</PublishReadyToRun>
+        <PublishSingleFile>true</PublishSingleFile>
     </PropertyGroup>
 
     <ItemGroup>
