@@ -1,13 +1,13 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ServiceManifest
-    Name="AspNetStateService.Samples.Web.Host"
+    Name="AspNetStateService.Samples.Web"
     Version="1.0.0"
     xmlns="http://schemas.microsoft.com/2011/01/fabric"
     xmlns:xsd="http://www.w3.org/2001/XMLSchema"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 
     <ServiceTypes>
-        <StatelessServiceType ServiceTypeName="AspNetStateService.Samples.Web.Host" />
+        <StatelessServiceType ServiceTypeName="AspNetStateService.Samples.Web" />
     </ServiceTypes>
 
     <CodePackage Name="Code" Version="1.0.0">
@@ -31,7 +31,7 @@
 
     <Resources>
         <Endpoints>
-            <Endpoint Name="ServiceEndpoint" UriScheme="http" />
+            <Endpoint Name="ServiceEndpoint" UriScheme="http" Protocol="tcp" />
         </Endpoints>
     </Resources>
 </ServiceManifest>

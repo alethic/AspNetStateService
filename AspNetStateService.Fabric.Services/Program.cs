@@ -1,13 +1,9 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 
-using AspNetStateService.AspNetCore;
-
 using Autofac;
-using Autofac.Integration.ServiceFabric;
 
 using Cogito.Autofac;
-using Cogito.ServiceFabric.AspNetCore.Kestrel.Autofac;
 
 namespace AspNetStateService.Fabric.Services
 {
@@ -24,9 +20,6 @@ namespace AspNetStateService.Fabric.Services
         {
             var builder = new ContainerBuilder();
             builder.RegisterAllAssemblyModules();
-            builder.RegisterServiceFabricSupport();
-            builder.RegisterStatelessKestrelWebService<StateActorWebService, StateActorWebServiceStartup>("StateWebService", "HttpServiceEndpoint");
-            builder.RegisterActor<StateActor>(typeof(StateActorService));
 
             using (builder.Build())
                 await Task.Delay(Timeout.Infinite);

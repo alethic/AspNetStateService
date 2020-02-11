@@ -6,6 +6,8 @@ using AspNetStateService.Core;
 using AspNetStateService.Fabric.Interfaces;
 using AspNetStateService.Interfaces;
 
+using Cogito.ServiceFabric.Actors.Autofac;
+
 using Microsoft.ServiceFabric.Actors;
 using Microsoft.ServiceFabric.Actors.Runtime;
 
@@ -17,6 +19,7 @@ namespace AspNetStateService.Fabric.Services
     /// <summary>
     /// Hosts the <see cref="StateObject"/> in a Service Fabric Actor, using the Actor state.
     /// </summary>
+    [RegisterActor(typeof(StateActorService))]
     [StatePersistence(StatePersistence.Volatile)]
     public class StateActor : Actor, IStateActor
     {
@@ -76,7 +79,6 @@ namespace AspNetStateService.Fabric.Services
         /// <summary>
         /// Processes a non-exclusive get request.
         /// </summary>
-        /// <param name="cookie"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
         public Task<DataResponse> Get(CancellationToken cancellationToken)
@@ -87,7 +89,6 @@ namespace AspNetStateService.Fabric.Services
         /// <summary>
         /// Processes an exclusive get request.
         /// </summary>
-        /// <param name="cookie"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
         public Task<DataResponse> GetExclusive(CancellationToken cancellationToken)

@@ -1,18 +1,17 @@
 ﻿using System.Threading.Tasks;
 
-using AspNetStateService.AspNetCore;
 using AspNetStateService.AspNetCore.Kestrel;
 
 using Autofac;
+using Autofac.Extensions.DependencyInjection;
 
-using Cogito.AspNetCore;
-using Cogito.AspNetCore.Autofac;
 using Cogito.Autofac;
 using Cogito.Extensions.Configuration;
 using Cogito.Extensions.Configuration.Autofac;
 
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Hosting;
 
 namespace AspNetStateService.Console
 {
@@ -45,12 +44,12 @@ namespace AspNetStateService.Console
             builder.RegisterAllAssemblyModules();
 
             using (var container = builder.Build())
-            using (var hostScope = container.BeginLifetimeScope())
-                await new WebHostBuilder()
-                    .UseStartup<StateWebServiceStartup>(hostScope)
-                    .UseKestrel(o => o.ListenLocalhost(42424))
-                    .UseKestrelPatch()
-                    .BuildAndRunAsync();
+                await new HostBuilder()
+                    .UseServiceProviderFactory(new AutofacChildLifetimeScopeServiceProviderFactory(container))
+                    .ConfigureWebHost(w => w
+                        .UseKestrelStateServer(o => o.ListenLocalhost(42424)))
+                    .Build()
+                    .RunAsync();
         }
 
 

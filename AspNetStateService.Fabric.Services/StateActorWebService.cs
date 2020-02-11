@@ -4,16 +4,16 @@ using AspNetStateService.AspNetCore.Kestrel;
 
 using Autofac;
 
-using Cogito.Autofac;
-using Cogito.ServiceFabric.AspNetCore;
+using Cogito.ServiceFabric;
 using Cogito.ServiceFabric.AspNetCore.Kestrel.Autofac;
+using Cogito.ServiceFabric.Services.Autofac;
 
 using Microsoft.AspNetCore.Hosting;
 
 namespace AspNetStateService.Fabric.Services
 {
 
-    [RegisterAs(typeof(StateActorWebService))]
+    [RegisterStatelessService("StateWebService", DefaultEndpointName = "HttpServiceEndpoint")]
     public class StateActorWebService : StatelessKestrelWebService<StateActorWebServiceStartup>
     {
 
@@ -23,7 +23,7 @@ namespace AspNetStateService.Fabric.Services
         /// <param name="context"></param>
         /// <param name="scope"></param>
         /// <param name="endpoint"></param>
-        public StateActorWebService(StatelessServiceContext context, ILifetimeScope scope, WebServiceEndpoint endpoint = null) :
+        public StateActorWebService(StatelessServiceContext context, ILifetimeScope scope, DefaultServiceEndpoint endpoint = null) :
             base(context, scope, endpoint)
         {
 
@@ -31,7 +31,7 @@ namespace AspNetStateService.Fabric.Services
 
         protected override IWebHostBuilder ConfigureWebHostBuilder(IWebHostBuilder builder)
         {
-            return base.ConfigureWebHostBuilder(builder).UseKestrelPatch();
+            return base.ConfigureWebHostBuilder(builder).UseKestrelStateServer<StateActorWebServiceStartup>();
         }
 
     }

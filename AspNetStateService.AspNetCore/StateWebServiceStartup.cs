@@ -7,15 +7,13 @@ using AspNetStateService.Core;
 using AspNetStateService.Interfaces;
 
 using Autofac;
-using Autofac.Extensions.DependencyInjection;
 
-using Cogito.Autofac;
 using Cogito.IO;
 
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 
 namespace AspNetStateService.AspNetCore
@@ -24,27 +22,10 @@ namespace AspNetStateService.AspNetCore
     /// <summary>
     /// Base ASP.Net Core Web Service implementation around a <see cref="IStateObject"/>.
     /// </summary>
-    [RegisterAs(typeof(StateWebServiceStartup))]
     public class StateWebServiceStartup
     {
 
         const string DefaultStoreName = "EntityFrameworkCore";
-
-        readonly ILifetimeScope parent;
-        readonly IOptions<StateWebServiceOptions> options;
-
-        ILifetimeScope scope;
-
-        /// <summary>
-        /// Initializes a new instance.
-        /// </summary>
-        /// <param name="parent"></param>
-        /// <param name="options"></param>
-        public StateWebServiceStartup(ILifetimeScope parent, IOptions<StateWebServiceOptions> options)
-        {
-            this.parent = parent ?? throw new ArgumentNullException(nameof(parent));
-            this.options = options ?? throw new ArgumentNullException(nameof(options));
-        }
 
         /// <summary>
         /// Resolve the appropriate <see cref="IStateObjectProvider"/> instance.
@@ -52,18 +33,9 @@ namespace AspNetStateService.AspNetCore
         /// <returns></returns>
         protected virtual IStateObjectProvider GetStateObjectProvider(IComponentContext context)
         {
-            var store = options.Value.Store ?? DefaultStoreName;
+            var store = context.ResolveOptional<IOptions<StateWebServiceOptions>>()?.Value?.Store ?? DefaultStoreName;
             var param = TypedParameter.From(context.ResolveNamed<IStateObjectDataStore>(store));
             return context.Resolve<IStateObjectProvider>(param);
-        }
-
-        /// <summary>
-        /// Registers framework dependencies.
-        /// </summary>
-        /// <param name="services"></param>
-        public IServiceProvider ConfigureServices(IServiceCollection services)
-        {
-            return new AutofacServiceProvider(scope = parent.BeginLifetimeScope(builder => builder.Populate(services)));
         }
 
         /// <summary>
@@ -75,6 +47,7 @@ namespace AspNetStateService.AspNetCore
         {
             var str = context.Request.Path.Value.TrimStart('/');
             var uri = WebUtility.UrlDecode(str);
+            
             var ctx = context.RequestServices.GetRequiredService<IComponentContext>();
             return GetStateObjectProvider(ctx).GetStateObjectAsync(uri, context.RequestAborted);
         }
@@ -84,7 +57,7 @@ namespace AspNetStateService.AspNetCore
         /// </summary>
         /// <param name="app"></param>
         /// <param name="applicationLifetime"></param>
-        public void Configure(IApplicationBuilder app, IApplicationLifetime applicationLifetime)
+        public virtual void Configure(IApplicationBuilder app, IHostApplicationLifetime applicationLifetime)
         {
             app.Use(async (ctx, next) =>
             {
@@ -116,8 +89,6 @@ namespace AspNetStateService.AspNetCore
 
                 await next();
             });
-
-            applicationLifetime.ApplicationStopped.Register(() => scope.Dispose());
         }
 
         /// <summary>

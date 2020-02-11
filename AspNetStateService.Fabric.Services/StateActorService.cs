@@ -111,7 +111,7 @@ namespace AspNetStateService.Fabric.Services
                         keep++;
             }
             while (more != null && cancellationToken.IsCancellationRequested == false);
-            
+
             // report count of known active actors
             logger.Information("Removed {RemovedCount} actors during purge, kept {KeepCount} actors.", remv, keep);
             Partition.ReportLoad(new[] { new LoadMetric("AspNetStateService.ActiveSessionCount", keep) });
@@ -164,13 +164,29 @@ namespace AspNetStateService.Fabric.Services
         async Task<bool> IsExpiredAsync(ActorId actorId, CancellationToken cancellationToken)
         {
             // check state directly before bothering to contact actor itself
-            var altered = await StateProvider.LoadStateAsync<DateTime?>(actorId, StateActor.ALTERED_FIELD, cancellationToken) ?? DateTime.MinValue;
-            var timeout = await StateProvider.LoadStateAsync<TimeSpan?>(actorId, StateActor.TIMEOUT_FIELD, cancellationToken) ?? StateActor.DEFAULT_TIMEOUT;
+            var altered = await GetStateOrDefaultAsync<DateTime?>(actorId, StateActor.ALTERED_FIELD, cancellationToken) ?? DateTime.MinValue;
+            var timeout = await GetStateOrDefaultAsync<TimeSpan?>(actorId, StateActor.TIMEOUT_FIELD, cancellationToken) ?? StateActor.DEFAULT_TIMEOUT;
             if (altered < DateTime.UtcNow - timeout || altered < DateTime.UtcNow - StateActor.MAXIMUM_TIMEOUT)
                 if (await ActorProxy.Create<IStateActor>(actorId).IsExpired(cancellationToken))
                     return true;
 
             return false;
+        }
+
+        /// <summary>
+        /// Loads the state with the specified name or returns default.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="actorId"></param>
+        /// <param name="stateName"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        async Task<T> GetStateOrDefaultAsync<T>(ActorId actorId, string stateName, CancellationToken cancellationToken)
+        {
+            if (await StateProvider.ContainsStateAsync(actorId, stateName, cancellationToken))
+                return await StateProvider.LoadStateAsync<T>(actorId, stateName, cancellationToken);
+            else
+                return default;
         }
 
     }

@@ -3,7 +3,6 @@ using System.Threading;
 using System.Threading.Tasks;
 
 using Autofac;
-using Autofac.Integration.ServiceFabric;
 
 using Cogito.Autofac;
 using Cogito.IIS.Configuration;
@@ -51,8 +50,6 @@ namespace AspNetStateService.Samples.Web.Host
         {
             var builder = new ContainerBuilder();
             builder.RegisterAllAssemblyModules();
-            builder.RegisterServiceFabricSupport();
-            builder.RegisterStatelessService<WebService>("AspNetStateService.Samples.Web.Host");
 
             using (var container = builder.Build())
                 await Task.Delay(Timeout.Infinite);

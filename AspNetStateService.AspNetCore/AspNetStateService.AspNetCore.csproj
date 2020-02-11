@@ -1,22 +1,16 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFrameworks>netstandard2.0;netcoreapp3.1</TargetFrameworks>
+        <TargetFramework>netcoreapp3.1</TargetFramework>
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="6.0.0" />
-        <PackageReference Include="Cogito.Autofac" Version="2.2.0" />
-        <PackageReference Include="Cogito.Core" Version="3.0.11" />
-    </ItemGroup>
-
-    <ItemGroup Condition=" '$(TargetFramework)' == 'netcoreapp3.1' ">
         <FrameworkReference Include="Microsoft.AspNetCore.App" />
     </ItemGroup>
 
-    <ItemGroup Condition=" '$(TargetFramework)' != 'netcoreapp3.1' ">
-        <PackageReference Include="Microsoft.AspNetCore.Hosting.Abstractions" Version="2.2.0" />
-        <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
+    <ItemGroup>
+        <PackageReference Include="Cogito.AspNetCore.Autofac" Version="2.0.6" />
+        <PackageReference Include="Cogito.Extensions.Options.Configuration.Autofac" Version="2.0.7" />
     </ItemGroup>
 
     <ItemGroup>

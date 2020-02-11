@@ -2,14 +2,15 @@
 using System.Fabric;
 
 using Cogito.HostedWebCore.ServiceFabric;
+using Cogito.ServiceFabric.Services.Autofac;
 
 using Microsoft.ServiceFabric.Services.Communication.Runtime;
-using Microsoft.ServiceFabric.Services.Runtime;
 
 namespace AspNetStateService.Samples.Web.Host
 {
 
-    public class WebService : StatelessService
+    [RegisterStatelessService("AspNetStateService.Samples.Web")]
+    public class WebService : Cogito.ServiceFabric.Services.StatelessService
     {
 
         /// <summary>
