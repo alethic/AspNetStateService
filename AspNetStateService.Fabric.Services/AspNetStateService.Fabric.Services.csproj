@@ -18,11 +18,11 @@
         <PackageReference Include="Cogito.AspNetCore.Autofac" Version="2.0.6" />
         <PackageReference Include="Cogito.Extensions.Configuration.Autofac" Version="2.0.6" />
         <PackageReference Include="Cogito.Extensions.Logging.Serilog.Autofac" Version="2.0.4" />
-        <PackageReference Include="Cogito.ServiceFabric.Autofac" Version="2.0.26" />
-        <PackageReference Include="Cogito.ServiceFabric.Actors.Autofac" Version="2.0.26" />
-        <PackageReference Include="Cogito.ServiceFabric.Configuration.Autofac" Version="2.0.26" />
-        <PackageReference Include="Cogito.ServiceFabric.AspNetCore.Kestrel.Autofac" Version="2.0.26" />
-        <PackageReference Include="Cogito.ServiceFabric.Services.Autofac" Version="2.0.26" />
+        <PackageReference Include="Cogito.ServiceFabric.Autofac" Version="2.0.29" />
+        <PackageReference Include="Cogito.ServiceFabric.Actors.Autofac" Version="2.0.29" />
+        <PackageReference Include="Cogito.ServiceFabric.Configuration.Autofac" Version="2.0.29" />
+        <PackageReference Include="Cogito.ServiceFabric.AspNetCore.Kestrel.Autofac" Version="2.0.29" />
+        <PackageReference Include="Cogito.ServiceFabric.Services.Autofac" Version="2.0.29" />
     </ItemGroup>
 
     <ItemGroup>
