@@ -12,6 +12,11 @@ namespace AspNetStateService.EntityFrameworkCore
         /// </summary>
         public string Provider { get; set; }
 
+        /// <summary>
+        /// Gets whether logging of sensitive data is enabled.
+        /// </summary>
+        public bool? EnableSensitiveDataLogging { get; set; }
+
     }
 
 }

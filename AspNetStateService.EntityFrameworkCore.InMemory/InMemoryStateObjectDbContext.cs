@@ -2,6 +2,7 @@
 
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 
 namespace AspNetStateService.EntityFrameworkCore.InMemory
 {
@@ -15,8 +16,9 @@ namespace AspNetStateService.EntityFrameworkCore.InMemory
         /// Initializes a new instance.
         /// </summary>
         /// <param name="loggerFactory"></param>
-        public InMemoryStateObjectDbContext(ILoggerFactory loggerFactory) :
-            base(loggerFactory)
+        /// <param name="options"></param>
+        public InMemoryStateObjectDbContext(ILoggerFactory loggerFactory, IOptions<StateObjectDbContextDataStoreOptions> options) :
+            base(loggerFactory, options)
         {
 
         }
@@ -24,7 +26,6 @@ namespace AspNetStateService.EntityFrameworkCore.InMemory
         protected override void OnConfiguringDatabase(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseInMemoryDatabase("AspNetStateService");
-            optionsBuilder.EnableSensitiveDataLogging();
         }
 
     }

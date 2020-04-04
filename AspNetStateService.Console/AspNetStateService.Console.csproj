@@ -18,6 +18,8 @@
     <ProjectReference Include="..\AspNetStateService.Azure.Storage.Table\AspNetStateService.Azure.Storage.Table.csproj" />
     <ProjectReference Include="..\AspNetStateService.Core\AspNetStateService.Core.csproj" />
     <ProjectReference Include="..\AspNetStateService.EntityFrameworkCore.InMemory\AspNetStateService.EntityFrameworkCore.InMemory.csproj" />
+    <ProjectReference Include="..\AspNetStateService.EntityFrameworkCore.PostgreSQL\AspNetStateService.EntityFrameworkCore.PostgreSQL.csproj" />
+    <ProjectReference Include="..\AspNetStateService.EntityFrameworkCore.SqlServer\AspNetStateService.EntityFrameworkCore.SqlServer.csproj" />
     <ProjectReference Include="..\AspNetStateService.EntityFrameworkCore\AspNetStateService.EntityFrameworkCore.csproj" />
     <ProjectReference Include="..\AspNetStateService.Redis\AspNetStateService.Redis.csproj" />
   </ItemGroup>

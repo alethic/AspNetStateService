@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Threading.Tasks;
+
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 
 namespace AspNetStateService.EntityFrameworkCore
 {
@@ -14,21 +16,29 @@ namespace AspNetStateService.EntityFrameworkCore
     {
 
         readonly ILoggerFactory loggerFactory;
+        readonly IOptions<StateObjectDbContextDataStoreOptions> options;
 
         /// <summary>
         /// Initializes a new instance.
         /// </summary>
         /// <param name="loggerFactory"></param>
-        public StateObjectDbContext(ILoggerFactory loggerFactory) :
+        public StateObjectDbContext(ILoggerFactory loggerFactory, IOptions<StateObjectDbContextDataStoreOptions> options) :
             base()
         {
             this.loggerFactory = loggerFactory ?? throw new ArgumentNullException(nameof(loggerFactory));
+            this.options = options ?? throw new ArgumentNullException(nameof(options));
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             OnConfiguringDatabase(optionsBuilder);
+
+            // tie into logging infrastructure
             optionsBuilder.UseLoggerFactory(loggerFactory);
+
+            // user might want to log sensntive data
+            if (options.Value.EnableSensitiveDataLogging != null)
+                optionsBuilder.EnableSensitiveDataLogging((bool)options.Value.EnableSensitiveDataLogging);
         }
 
         /// <summary>
