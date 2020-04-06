@@ -30,11 +30,11 @@
         </PackageReference>
         <PackageReference Include="Cogito.Autofac" Version="2.2.5" />
         <PackageReference Include="Cogito.HostedWebCore.ServiceFabric" Version="1.3.2" />
-        <PackageReference Include="Cogito.ServiceFabric" Version="2.0.31" />
-        <PackageReference Include="Cogito.ServiceFabric.Services.Autofac" Version="2.0.31" />
-        <PackageReference Include="Microsoft.ServiceFabric.Actors" Version="4.0.466" />
-        <PackageReference Include="Microsoft.ServiceFabric.Diagnostics.Internal" Version="4.0.466" />
-        <PackageReference Include="Microsoft.ServiceFabric.Services.Remoting" Version="4.0.466" />
+        <PackageReference Include="Cogito.ServiceFabric" Version="2.0.32" />
+        <PackageReference Include="Cogito.ServiceFabric.Services.Autofac" Version="2.0.32" />
+        <PackageReference Include="Microsoft.ServiceFabric.Actors" Version="4.0.470" />
+        <PackageReference Include="Microsoft.ServiceFabric.Diagnostics.Internal" Version="4.0.470" />
+        <PackageReference Include="Microsoft.ServiceFabric.Services.Remoting" Version="4.0.470" />
     </ItemGroup>
 
     <ItemGroup>
