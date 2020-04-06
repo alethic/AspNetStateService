@@ -48,9 +48,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AspNetStateService.Azure.St
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AspNetStateService.Redis", "AspNetStateService.Redis\AspNetStateService.Redis.csproj", "{F168EEE0-F1F8-4102-82A3-7F725A11E433}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AspNetStateService.EntityFrameworkCore.SqlServer", "AspNetStateService.EntityFrameworkCore.SqlServer\AspNetStateService.EntityFrameworkCore.SqlServer.csproj", "{8B75E8D1-AFB7-452F-A441-A464EE5B9F0A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AspNetStateService.EntityFrameworkCore.SqlServer", "AspNetStateService.EntityFrameworkCore.SqlServer\AspNetStateService.EntityFrameworkCore.SqlServer.csproj", "{8B75E8D1-AFB7-452F-A441-A464EE5B9F0A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AspNetStateService.EntityFrameworkCore.PostgreSQL", "AspNetStateService.EntityFrameworkCore.PostgreSQL\AspNetStateService.EntityFrameworkCore.PostgreSQL.csproj", "{6FD31EA3-3A2E-4413-84C8-960FD7674294}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AspNetStateService.EntityFrameworkCore.PostgreSQL", "AspNetStateService.EntityFrameworkCore.PostgreSQL\AspNetStateService.EntityFrameworkCore.PostgreSQL.csproj", "{6FD31EA3-3A2E-4413-84C8-960FD7674294}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AspNetStateService.MongoDB", "AspNetStateService.MongoDB\AspNetStateService.MongoDB.csproj", "{24D84CCD-03A2-43EA-B326-EDF211E2E87F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -140,6 +142,10 @@ Global
 		{6FD31EA3-3A2E-4413-84C8-960FD7674294}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6FD31EA3-3A2E-4413-84C8-960FD7674294}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6FD31EA3-3A2E-4413-84C8-960FD7674294}.Release|Any CPU.Build.0 = Release|Any CPU
+		{24D84CCD-03A2-43EA-B326-EDF211E2E87F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{24D84CCD-03A2-43EA-B326-EDF211E2E87F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{24D84CCD-03A2-43EA-B326-EDF211E2E87F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{24D84CCD-03A2-43EA-B326-EDF211E2E87F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

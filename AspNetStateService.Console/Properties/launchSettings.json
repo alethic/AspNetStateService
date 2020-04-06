@@ -1,0 +1,10 @@
+{
+    "profiles": {
+        "AspNetStateService.Console": {
+            "commandName": "Project"
+        },
+        "Docker": {
+            "commandName": "Docker"
+        }
+    }
+}

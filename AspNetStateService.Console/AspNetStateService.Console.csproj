@@ -1,27 +1,28 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <OutputType>Exe</OutputType>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
-  </PropertyGroup>
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>netcoreapp3.1</TargetFramework>
+    </PropertyGroup>
 
-  <ItemGroup>
-      <PackageReference Include="Cogito.AspNetCore.Autofac" Version="2.0.8" />
-      <PackageReference Include="Cogito.Extensions.Configuration.Autofac" Version="2.0.7" />
-      <PackageReference Include="Cogito.Extensions.Logging.Serilog.Autofac" Version="2.0.5" />
-  </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="Cogito.AspNetCore.Autofac" Version="2.0.8" />
+        <PackageReference Include="Cogito.Extensions.Configuration.Autofac" Version="2.0.7" />
+        <PackageReference Include="Cogito.Extensions.Logging.Serilog.Autofac" Version="2.0.5" />
+    </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\AspNetStateService.AspNetCore.Kestrel\AspNetStateService.AspNetCore.Kestrel.csproj" />
-    <ProjectReference Include="..\AspNetStateService.AspNetCore\AspNetStateService.AspNetCore.csproj" />
-    <ProjectReference Include="..\AspNetStateService.Azure.Storage.Blob\AspNetStateService.Azure.Storage.Blob.csproj" />
-    <ProjectReference Include="..\AspNetStateService.Azure.Storage.Table\AspNetStateService.Azure.Storage.Table.csproj" />
-    <ProjectReference Include="..\AspNetStateService.Core\AspNetStateService.Core.csproj" />
-    <ProjectReference Include="..\AspNetStateService.EntityFrameworkCore.InMemory\AspNetStateService.EntityFrameworkCore.InMemory.csproj" />
-    <ProjectReference Include="..\AspNetStateService.EntityFrameworkCore.PostgreSQL\AspNetStateService.EntityFrameworkCore.PostgreSQL.csproj" />
-    <ProjectReference Include="..\AspNetStateService.EntityFrameworkCore.SqlServer\AspNetStateService.EntityFrameworkCore.SqlServer.csproj" />
-    <ProjectReference Include="..\AspNetStateService.EntityFrameworkCore\AspNetStateService.EntityFrameworkCore.csproj" />
-    <ProjectReference Include="..\AspNetStateService.Redis\AspNetStateService.Redis.csproj" />
-  </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\AspNetStateService.AspNetCore.Kestrel\AspNetStateService.AspNetCore.Kestrel.csproj" />
+        <ProjectReference Include="..\AspNetStateService.AspNetCore\AspNetStateService.AspNetCore.csproj" />
+        <ProjectReference Include="..\AspNetStateService.Azure.Storage.Blob\AspNetStateService.Azure.Storage.Blob.csproj" />
+        <ProjectReference Include="..\AspNetStateService.Azure.Storage.Table\AspNetStateService.Azure.Storage.Table.csproj" />
+        <ProjectReference Include="..\AspNetStateService.Core\AspNetStateService.Core.csproj" />
+        <ProjectReference Include="..\AspNetStateService.EntityFrameworkCore.InMemory\AspNetStateService.EntityFrameworkCore.InMemory.csproj" />
+        <ProjectReference Include="..\AspNetStateService.EntityFrameworkCore.PostgreSQL\AspNetStateService.EntityFrameworkCore.PostgreSQL.csproj" />
+        <ProjectReference Include="..\AspNetStateService.EntityFrameworkCore.SqlServer\AspNetStateService.EntityFrameworkCore.SqlServer.csproj" />
+        <ProjectReference Include="..\AspNetStateService.EntityFrameworkCore\AspNetStateService.EntityFrameworkCore.csproj" />
+        <ProjectReference Include="..\AspNetStateService.MongoDB\AspNetStateService.MongoDB.csproj" />
+        <ProjectReference Include="..\AspNetStateService.Redis\AspNetStateService.Redis.csproj" />
+    </ItemGroup>
 
 </Project>

@@ -47,7 +47,7 @@ namespace AspNetStateService.AspNetCore
         async Task EnsureInitAsync(CancellationToken cancellationToken)
         {
             if (init)
-                using (sync.LockAsync())
+                using (sync.LockAsync(cancellationToken))
                     if (init)
                         await InitAsync(cancellationToken);
         }

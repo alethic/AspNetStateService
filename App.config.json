@@ -1,6 +1,6 @@
 {
     "AspNetStateService.AspNetCore": {
-        "Store": "EntityFrameworkCore"
+        "Store": "MongoDB"
     },
     "AspNetStateService.EntityFrameworkCore": {
         "Provider": "InMemory"
@@ -12,6 +12,9 @@
     "AspNetStateService.Azure.Storage.Blob": {
         "ConnectionString": "UseDevelopmentStorage=true",
         "ContainerName": "state"
+    },
+    "AspNetStateService.MongoDB": {
+        "ConnectionString": "mongodb://localhost:27017"
     },
     "AspNetStateService.Redis": {
         "Configuration": "localhost"
