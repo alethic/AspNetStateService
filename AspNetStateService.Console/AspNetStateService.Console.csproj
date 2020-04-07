@@ -13,6 +13,7 @@
     </ItemGroup>
 
     <ItemGroup>
+        <ProjectReference Include="..\AspNetStateService.Amazon.S3\AspNetStateService.Amazon.S3.csproj" />
         <ProjectReference Include="..\AspNetStateService.AspNetCore.Kestrel\AspNetStateService.AspNetCore.Kestrel.csproj" />
         <ProjectReference Include="..\AspNetStateService.AspNetCore\AspNetStateService.AspNetCore.csproj" />
         <ProjectReference Include="..\AspNetStateService.Azure.Storage.Blob\AspNetStateService.Azure.Storage.Blob.csproj" />

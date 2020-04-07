@@ -1,6 +1,6 @@
 {
     "AspNetStateService.AspNetCore": {
-        "Store": "MongoDB"
+        "Store": "Amazon.S3"
     },
     "AspNetStateService.EntityFrameworkCore": {
         "Provider": "InMemory"
@@ -18,5 +18,11 @@
     },
     "AspNetStateService.Redis": {
         "Configuration": "localhost"
+    },
+    "AspNetStateService.Amazon.S3": {
+        "AwsAccessKeyId": "AKIAJ7MOHJMFKWI3VETA",
+        "AwsSecretAccessKey": "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",
+        "RegionEndpointName": "us-east-1",
+        "BucketName": "cogito-test"
     }
 }
