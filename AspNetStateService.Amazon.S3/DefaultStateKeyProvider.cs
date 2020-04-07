@@ -23,6 +23,7 @@ namespace AspNetStateService.Amazon.S3
         {
             switch (c)
             {
+                case '/':
                 case '\\':
                 case '^':
                 case '`':

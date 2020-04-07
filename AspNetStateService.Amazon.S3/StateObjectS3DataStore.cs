@@ -31,7 +31,7 @@ namespace AspNetStateService.Amazon.S3
     public class StateObjectS3DataStore : IStateObjectDataStore
     {
 
-        public const string TypeNameKey = "AspNetStateService.Amazon S3";
+        public const string TypeNameKey = "AspNetStateService.Amazon.S3";
 
         readonly IAmazonS3 client;
         readonly IStateKeyProvider keyer;
