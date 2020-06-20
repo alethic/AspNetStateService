@@ -20,8 +20,8 @@
         "Configuration": "localhost"
     },
     "AspNetStateService.Amazon.S3": {
-        "AwsAccessKeyId": "AKIAJVI3BRLB3QX6LMQQ",
-        "AwsSecretAccessKey": "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",
+        "AwsAccessKeyId": "",
+        "AwsSecretAccessKey": "",
         "RegionEndpointName": "us-east-1",
         "BucketName": "cogito-test"
     }
