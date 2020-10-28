@@ -5,8 +5,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Cogito.Autofac" Version="2.2.5" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.5" />
+    <PackageReference Include="Cogito.Autofac" Version="3.0.2" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.9" />
   </ItemGroup>
 
   <ItemGroup>

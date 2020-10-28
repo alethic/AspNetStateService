@@ -1,6 +1,6 @@
 {
     "AspNetStateService.AspNetCore": {
-        "Store": "Amazon.S3"
+        "Store": "EntityFrameworkCore"
     },
     "AspNetStateService.EntityFrameworkCore": {
         "Provider": "InMemory"

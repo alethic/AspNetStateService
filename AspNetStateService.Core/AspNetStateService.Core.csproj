@@ -5,10 +5,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Cogito.Autofac" Version="2.2.5" />
-    <PackageReference Include="Cogito.Serilog.Autofac" Version="2.0.5" />
-    <PackageReference Include="Cogito.Extensions.Configuration.Autofac" Version="2.0.7" />
-    <PackageReference Include="Cogito.Extensions.Logging.Serilog.Autofac" Version="2.0.5" />
+    <PackageReference Include="Cogito.Autofac" Version="3.0.2" />
+    <PackageReference Include="Cogito.Serilog.Autofac" Version="2.0.15" />
+    <PackageReference Include="Cogito.Extensions.Configuration.Autofac" Version="2.1.12" />
+    <PackageReference Include="Cogito.Extensions.Logging.Serilog.Autofac" Version="2.0.15" />
     <PackageReference Include="Cogito.Extensions.Options.ConfigurationExtensions.Autofac" Version="1.0.1" />
     <PackageReference Include="Serilog.Enrichers.Environment" Version="2.1.3" />
     <PackageReference Include="Serilog.Enrichers.Memory" Version="1.0.4" />

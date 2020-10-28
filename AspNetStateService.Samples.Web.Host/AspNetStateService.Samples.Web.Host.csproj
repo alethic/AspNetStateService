@@ -28,13 +28,13 @@
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="Cogito.Autofac" Version="2.2.5" />
+        <PackageReference Include="Cogito.Autofac" Version="3.0.2" />
         <PackageReference Include="Cogito.HostedWebCore.ServiceFabric" Version="1.3.2" />
-        <PackageReference Include="Cogito.ServiceFabric" Version="2.0.32" />
-        <PackageReference Include="Cogito.ServiceFabric.Services.Autofac" Version="2.0.32" />
-        <PackageReference Include="Microsoft.ServiceFabric.Actors" Version="4.0.470" />
-        <PackageReference Include="Microsoft.ServiceFabric.Diagnostics.Internal" Version="4.0.470" />
-        <PackageReference Include="Microsoft.ServiceFabric.Services.Remoting" Version="4.0.470" />
+        <PackageReference Include="Cogito.ServiceFabric" Version="3.0.0-alpha0009" />
+        <PackageReference Include="Cogito.ServiceFabric.Services.Autofac" Version="3.0.0-alpha0009" />
+        <PackageReference Include="Microsoft.ServiceFabric.Actors" Version="4.1.458" />
+        <PackageReference Include="Microsoft.ServiceFabric.Diagnostics.Internal" Version="4.1.458" />
+        <PackageReference Include="Microsoft.ServiceFabric.Services.Remoting" Version="4.1.458" />
     </ItemGroup>
 
     <ItemGroup>
