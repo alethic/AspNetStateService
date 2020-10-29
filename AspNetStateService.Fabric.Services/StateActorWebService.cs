@@ -1,7 +1,5 @@
 ﻿using System.Fabric;
 
-using AspNetStateService.AspNetCore.Kestrel;
-
 using Autofac;
 
 using Cogito.ServiceFabric;
@@ -31,7 +29,12 @@ namespace AspNetStateService.Fabric.Services
 
         protected override IWebHostBuilder ConfigureWebHostBuilder(IWebHostBuilder builder)
         {
-            return base.ConfigureWebHostBuilder(builder).UseKestrelStateServer<StateActorWebServiceStartup>();
+            return base.ConfigureWebHostBuilder(builder);
+        }
+
+        protected override void ConfigureContainer(ContainerBuilder builder)
+        {
+            base.ConfigureContainer(builder);
         }
 
     }

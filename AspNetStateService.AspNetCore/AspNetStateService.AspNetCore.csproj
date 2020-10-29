@@ -9,7 +9,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Cogito.AspNetCore.Autofac" Version="2.0.30" />
+        <PackageReference Include="Cogito.AspNetCore.Autofac" Version="2.0.35" />
         <PackageReference Include="Cogito.Extensions.Options.Configuration.Autofac" Version="2.0.19" />
     </ItemGroup>
 

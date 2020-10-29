@@ -1,15 +1,20 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <OutputType>Exe</OutputType>
         <TargetFramework>netcoreapp3.1</TargetFramework>
+        <OutputType>Exe</OutputType>
         <ServerGarbageCollection>True</ServerGarbageCollection>
+        <PlatformTarget>x64</PlatformTarget>
+        <RuntimeIdentifier>win7-x64</RuntimeIdentifier>
+        <TargetLatestRuntimePatch>False</TargetLatestRuntimePatch>
+        <PublishReadyToRun>true</PublishReadyToRun>
+        <PublishSingleFile>true</PublishSingleFile>
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Cogito.AspNetCore.Autofac" Version="2.0.30" />
-        <PackageReference Include="Cogito.Extensions.Configuration.Autofac" Version="2.1.12" />
-        <PackageReference Include="Cogito.Extensions.Logging.Serilog.Autofac" Version="2.0.15" />
+        <PackageReference Include="Cogito.AspNetCore.Autofac" Version="2.0.35" />
+        <PackageReference Include="Cogito.Extensions.Configuration.Autofac" Version="2.1.14" />
+        <PackageReference Include="Cogito.Extensions.Logging.Serilog.Autofac" Version="2.0.20" />
     </ItemGroup>
 
     <ItemGroup>

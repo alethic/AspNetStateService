@@ -36,12 +36,12 @@ namespace AspNetStateService.Console
         /// </summary>
         /// <param name="args"></param>
         /// <returns></returns>
-        public static async Task Main(string[] args) => await new HostBuilder()
-            .UseServiceProviderFactory(new AutofacServiceProviderFactory(b => b.RegisterAllAssemblyModules()))
-            .ConfigureWebHost(w => w
-                .UseKestrelStateServer(o => o.ListenLocalhost(42424)))
-            .RunConsoleAsync();
-
+        public static async Task Main(string[] args) =>
+            await Host.CreateDefaultBuilder(args)
+                .UseServiceProviderFactory(new AutofacServiceProviderFactory(b => b.RegisterAllAssemblyModules()))
+                .ConfigureWebHost(w => w
+                    .UseKestrelStateServer(o => o.ListenLocalhost(42424)))
+                .RunConsoleAsync();
 
     }
 
