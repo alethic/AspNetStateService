@@ -24,5 +24,8 @@
         "AwsSecretAccessKey": "",
         "RegionEndpointName": "us-east-1",
         "BucketName": "cogito-test"
+    },
+    "AspNetStateService.Kademlia": {
+
     }
 }

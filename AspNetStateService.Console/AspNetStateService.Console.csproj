@@ -28,6 +28,7 @@
         <ProjectReference Include="..\AspNetStateService.EntityFrameworkCore.PostgreSQL\AspNetStateService.EntityFrameworkCore.PostgreSQL.csproj" />
         <ProjectReference Include="..\AspNetStateService.EntityFrameworkCore.SqlServer\AspNetStateService.EntityFrameworkCore.SqlServer.csproj" />
         <ProjectReference Include="..\AspNetStateService.EntityFrameworkCore\AspNetStateService.EntityFrameworkCore.csproj" />
+        <ProjectReference Include="..\AspNetStateService.Kademlia\AspNetStateService.Kademlia.csproj" />
         <ProjectReference Include="..\AspNetStateService.MongoDB\AspNetStateService.MongoDB.csproj" />
         <ProjectReference Include="..\AspNetStateService.Redis\AspNetStateService.Redis.csproj" />
     </ItemGroup>
