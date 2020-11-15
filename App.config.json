@@ -1,6 +1,6 @@
 {
     "AspNetStateService.AspNetCore": {
-        "Store": "EntityFrameworkCore"
+        "Store": "KeyShift"
     },
     "AspNetStateService.EntityFrameworkCore": {
         "Provider": "InMemory"
@@ -25,7 +25,7 @@
         "RegionEndpointName": "us-east-1",
         "BucketName": "cogito-test"
     },
-    "AspNetStateService.Kademlia": {
-
+    "AspNetStateService.KeyShift": {
+        "HostUri": "http://localhost:42428"
     }
 }

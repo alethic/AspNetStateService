@@ -20,15 +20,15 @@
         <PackageReference Include="Cogito.AspNetCore.Autofac" Version="2.0.35" />
         <PackageReference Include="Cogito.Extensions.Configuration.Autofac" Version="2.1.14" />
         <PackageReference Include="Cogito.Extensions.Logging.Serilog.Autofac" Version="2.0.20" />
-        <PackageReference Include="Cogito.ServiceFabric.Autofac" Version="3.0.10" />
-        <PackageReference Include="Cogito.ServiceFabric.Actors.Autofac" Version="3.0.10" />
-        <PackageReference Include="Cogito.ServiceFabric.Configuration.Autofac" Version="3.0.10" />
-        <PackageReference Include="Cogito.ServiceFabric.AspNetCore.Kestrel.Autofac" Version="3.0.10" />
-        <PackageReference Include="Cogito.ServiceFabric.Services.Autofac" Version="3.0.10" />
-        <PackageReference Include="Microsoft.Extensions.Configuration" Version="3.1.9" />
-        <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="3.1.9" />
-        <PackageReference Include="Microsoft.Extensions.Logging" Version="3.1.9" />
-        <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="3.1.9" />
+        <PackageReference Include="Cogito.ServiceFabric.Autofac" Version="3.0.11" />
+        <PackageReference Include="Cogito.ServiceFabric.Actors.Autofac" Version="3.0.11" />
+        <PackageReference Include="Cogito.ServiceFabric.Configuration.Autofac" Version="3.0.11" />
+        <PackageReference Include="Cogito.ServiceFabric.AspNetCore.Kestrel.Autofac" Version="3.0.11" />
+        <PackageReference Include="Cogito.ServiceFabric.Services.Autofac" Version="3.0.11" />
+        <PackageReference Include="Microsoft.Extensions.Configuration" Version="3.1.10" />
+        <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="3.1.10" />
+        <PackageReference Include="Microsoft.Extensions.Logging" Version="3.1.10" />
+        <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="3.1.10" />
         <PackageReference Include="Microsoft.ServiceFabric.Services" Version="4.1.458" />
     </ItemGroup>
 

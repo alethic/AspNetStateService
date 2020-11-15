@@ -42,7 +42,7 @@ namespace AspNetStateService.Redis
         readonly ILogger logger;
         readonly AsyncLock sync = new AsyncLock();
 
-        bool init = true;
+        bool started;
         IConnectionMultiplexer connection;
         IDatabase database;
 
@@ -60,32 +60,64 @@ namespace AspNetStateService.Redis
         }
 
         /// <summary>
-        /// Does the actual work of initialization.
+        /// Starts the table store.
         /// </summary>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        async Task InitInternalAsync(CancellationToken cancellationToken)
+        public async Task StartAsync(CancellationToken cancellationToken)
         {
-            logger.Verbose("InitInternalAsync()");
+            logger.Verbose("StartAsync()");
 
-            connection = await connections.GetConnectionAsync();
-            database = connection.GetDatabase(options.Value.DatabaseId ?? -1);
-            init = false;
+            if (started == false)
+                using (await sync.LockAsync())
+                    if (started == false)
+                        await StartImplAsync(cancellationToken);
         }
 
         /// <summary>
-        /// Initializes the table store.
+        /// Does the actual work of starting the store.
         /// </summary>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task InitAsync(CancellationToken cancellationToken)
+        async Task StartImplAsync(CancellationToken cancellationToken)
         {
-            logger.Verbose("InitAsync()");
+            logger.Verbose("StartImplAsync()");
 
-            if (init)
+            connection = await connections.GetConnectionAsync();
+            database = connection.GetDatabase(options.Value.DatabaseId ?? -1);
+            started = true;
+        }
+
+        /// <summary>
+        /// Stops the table store.
+        /// </summary>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public async Task StopAsync(CancellationToken cancellationToken)
+        {
+            logger.Verbose("StopAsync()");
+
+            if (started)
                 using (await sync.LockAsync())
-                    if (init)
-                        await InitInternalAsync(cancellationToken);
+                    if (started)
+                        await StopImplAsync(cancellationToken);
+        }
+
+        /// <summary>
+        /// Does the actual work of stopping the store.
+        /// </summary>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        async Task StopImplAsync(CancellationToken cancellationToken)
+        {
+            logger.Verbose("StopImplAsync()");
+
+            if (connection != null)
+                connection.Dispose();
+
+            connection = null;
+            database = null;
+            started = false;
         }
 
         public async Task<(byte[] data, uint? extraFlags, TimeSpan? timeout, DateTime? altered)> GetDataAsync(string id, CancellationToken cancellationToken)

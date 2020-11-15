@@ -4,8 +4,6 @@ using System.Threading.Tasks;
 
 using AspNetStateService.Interfaces;
 
-using Cogito.Threading;
-
 using Serilog;
 
 namespace AspNetStateService.Core
@@ -20,8 +18,6 @@ namespace AspNetStateService.Core
         readonly string id;
         readonly IStateObjectDataStore store;
         readonly ILogger logger;
-
-        readonly AsyncLock sync = new AsyncLock();
 
         /// <summary>
         /// Initializes a new instance.

@@ -1,6 +1,9 @@
 ﻿using Autofac;
 
 using Cogito.Autofac;
+using Cogito.Autofac.DependencyInjection;
+
+using Microsoft.Extensions.DependencyInjection;
 
 namespace AspNetStateService.Console
 {
@@ -11,6 +14,7 @@ namespace AspNetStateService.Console
         protected override void Register(ContainerBuilder builder)
         {
             builder.RegisterFromAttributes(typeof(AssemblyModule).Assembly);
+            builder.Populate(s => s.AddHttpClient());
         }
 
     }

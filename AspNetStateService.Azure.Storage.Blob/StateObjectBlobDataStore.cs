@@ -37,7 +37,7 @@ namespace AspNetStateService.Azure.Storage.Blob
         readonly ILogger logger;
         readonly AsyncLock sync = new AsyncLock();
 
-        bool init = true;
+        bool started;
 
         /// <summary>
         /// Initializes a new instance.
@@ -55,15 +55,30 @@ namespace AspNetStateService.Azure.Storage.Blob
         }
 
         /// <summary>
+        /// Initializes the table store.
+        /// </summary>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public async Task StartAsync(CancellationToken cancellationToken)
+        {
+            logger.Verbose("StartAsync()");
+
+            if (started == false)
+                using (await sync.LockAsync())
+                    if (started == false)
+                        await StartImplAsync(cancellationToken);
+        }
+
+        /// <summary>
         /// Does the actual work of initialization.
         /// </summary>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        async Task InitInternalAsync(CancellationToken cancellationToken)
+        async Task StartImplAsync(CancellationToken cancellationToken)
         {
-            logger.Verbose("InitInternalAsync()");
+            logger.Verbose("StartImplAsync()");
             await client.CreateIfNotExistsAsync(cancellationToken: cancellationToken);
-            init = false;
+            started = true;
         }
 
         /// <summary>
@@ -71,14 +86,25 @@ namespace AspNetStateService.Azure.Storage.Blob
         /// </summary>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task InitAsync(CancellationToken cancellationToken)
+        public async Task StopAsync(CancellationToken cancellationToken)
         {
-            logger.Verbose("InitAsync()");
+            logger.Verbose("StopAsync()");
 
-            if (init)
+            if (started)
                 using (await sync.LockAsync())
-                    if (init)
-                        await InitInternalAsync(cancellationToken);
+                    if (started)
+                        await StopImplAsync(cancellationToken);
+        }
+
+        /// <summary>
+        /// Does the actual work of initialization.
+        /// </summary>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        async Task StopImplAsync(CancellationToken cancellationToken)
+        {
+            logger.Verbose("StopImplAsync()");
+            started = false;
         }
 
         /// <summary>

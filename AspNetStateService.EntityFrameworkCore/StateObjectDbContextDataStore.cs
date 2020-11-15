@@ -55,11 +55,21 @@ namespace AspNetStateService.EntityFrameworkCore
         IStateObjectDbContextProvider DbContextProvider => dbContextProvider.Value;
 
         /// <summary>
-        /// Initializes the data store.
+        /// Starts the store.
         /// </summary>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public Task InitAsync(CancellationToken cancellationToken)
+        public Task StartAsync(CancellationToken cancellationToken)
+        {
+            return Task.CompletedTask;
+        }
+
+        /// <summary>
+        /// Stops the store.
+        /// </summary>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public Task StopAsync(CancellationToken cancellationToken)
         {
             return Task.CompletedTask;
         }

@@ -13,7 +13,6 @@ using Autofac.Features.AttributeFilters;
 
 using Cogito.Autofac;
 using Cogito.IO;
-using Cogito.Threading;
 
 using Microsoft.Extensions.Options;
 
@@ -37,9 +36,6 @@ namespace AspNetStateService.Amazon.S3
         readonly IStateKeyProvider keyer;
         readonly IOptions<StateObjectS3DataStoreOptions> options;
         readonly ILogger logger;
-        readonly AsyncLock sync = new AsyncLock();
-
-        bool init = true;
 
         /// <summary>
         /// Initializes a new instance.
@@ -57,30 +53,25 @@ namespace AspNetStateService.Amazon.S3
         }
 
         /// <summary>
-        /// Does the actual work of initialization.
+        /// Starts the store.
         /// </summary>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        async Task InitInternalAsync(CancellationToken cancellationToken)
+        public async Task StartAsync(CancellationToken cancellationToken)
         {
-            logger.Verbose("InitInternalAsync()");
+            logger.Verbose("StartAsync()");
             await client.EnsureBucketExistsAsync(options.Value.BucketName);
-            init = false;
         }
 
         /// <summary>
-        /// Initializes the table store.
+        /// Stops the store.
         /// </summary>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task InitAsync(CancellationToken cancellationToken)
+        public Task StopAsync(CancellationToken cancellationToken)
         {
-            logger.Verbose("InitAsync()");
-
-            if (init)
-                using (await sync.LockAsync())
-                    if (init)
-                        await InitInternalAsync(cancellationToken);
+            logger.Verbose("StopAsync()");
+            return Task.CompletedTask;
         }
 
         /// <summary>

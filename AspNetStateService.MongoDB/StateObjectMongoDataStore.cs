@@ -40,7 +40,6 @@ namespace AspNetStateService.MongoDB
         readonly ILogger logger;
         readonly AsyncLock sync = new AsyncLock();
 
-        bool init = true;
         IMongoClient client;
         IMongoDatabase database;
         IMongoCollection<BsonDocument> collection;
@@ -59,13 +58,13 @@ namespace AspNetStateService.MongoDB
         }
 
         /// <summary>
-        /// Does the actual work of initialization.
+        /// Starts the store.
         /// </summary>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        async Task InitInternalAsync(CancellationToken cancellationToken)
+        public async Task StartAsync(CancellationToken cancellationToken)
         {
-            logger.Verbose("InitInternalAsync()");
+            logger.Verbose("StartAsync()");
 
             // initialize connection objects
             client = clients.CreateClient();
@@ -77,23 +76,42 @@ namespace AspNetStateService.MongoDB
                 new CreateIndexModel<BsonDocument>(new BsonDocument(EXPIRE_AT_KEY, 1), new CreateIndexOptions() { ExpireAfter = new TimeSpan(0, 20, 0) }),
                 new CreateOneIndexOptions(),
                 cancellationToken);
-
-            init = false;
         }
 
         /// <summary>
-        /// Initializes the table store.
+        /// Stops the store.
         /// </summary>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task InitAsync(CancellationToken cancellationToken)
+        public Task StopAsync(CancellationToken cancellationToken)
         {
-            logger.Verbose("InitAsync()");
+            logger.Verbose("StopAsync()");
 
-            if (init)
-                using (await sync.LockAsync(cancellationToken))
-                    if (init)
-                        await InitInternalAsync(cancellationToken);
+            if (collection != null)
+            {
+                if (collection is IDisposable d)
+                    d.Dispose();
+
+                collection = null;
+            }
+
+            if (database != null)
+            {
+                if (database is IDisposable d)
+                    d.Dispose();
+
+                database = null;
+            }
+
+            if (client != null)
+            {
+                if (client is IDisposable d)
+                    d.Dispose();
+
+                client = null;
+            }
+
+            return Task.CompletedTask;
         }
 
         public async Task<(byte[] data, uint? extraFlags, TimeSpan? timeout, DateTime? altered)> GetDataAsync(string id, CancellationToken cancellationToken)

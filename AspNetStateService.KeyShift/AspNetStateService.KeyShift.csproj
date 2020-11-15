@@ -1,0 +1,22 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>netcoreapp3.1</TargetFramework>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Alethic.Kademlia" Version="1.0.3" />
+        <PackageReference Include="Alethic.Kademlia.InMemory" Version="1.0.3" />
+        <PackageReference Include="Alethic.Kademlia.Protobuf" Version="1.0.3" />
+        <PackageReference Include="Alethic.KeyShift" Version="0.2.0-alpha0005" />
+        <PackageReference Include="Alethic.KeyShift.AspNetCore" Version="0.2.0-alpha0005" />
+        <PackageReference Include="Alethic.KeyShift.InMemory" Version="0.2.0-alpha0005" />
+        <PackageReference Include="Alethic.KeyShift.Kademlia" Version="0.2.0-alpha0005" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\AspNetStateService.Core\AspNetStateService.Core.csproj" />
+        <ProjectReference Include="..\AspNetStateService.AspNetCore\AspNetStateService.AspNetCore.csproj" />
+    </ItemGroup>
+
+</Project>

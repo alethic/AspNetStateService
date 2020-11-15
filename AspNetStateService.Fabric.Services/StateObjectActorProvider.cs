@@ -18,6 +18,26 @@ namespace AspNetStateService.Fabric.Services
     {
 
         /// <summary>
+        /// Starts the provider.
+        /// </summary>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public Task StartAsync(CancellationToken cancellationToken)
+        {
+            return Task.CompletedTask;
+        }
+
+        /// <summary>
+        /// Stops the provider.
+        /// </summary>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public Task StopAsync(CancellationToken cancellationToken)
+        {
+            return Task.CompletedTask;
+        }
+
+        /// <summary>
         /// Gets a new state object by resolving an <see cref="ActorProxy"/>.
         /// </summary>
         /// <param name="id"></param>

@@ -6,7 +6,6 @@ using AspNetStateService.Core;
 using AspNetStateService.Interfaces;
 
 using Cogito.Autofac;
-using Cogito.Threading;
 
 using Serilog;
 
@@ -17,15 +16,11 @@ namespace AspNetStateService.AspNetCore
     /// Provides objects for managing individual session state against a shared store.
     /// </summary>
     [RegisterAs(typeof(IStateObjectProvider))]
-    [RegisterInstancePerLifetimeScope]
     class StateObjectProvider : IStateObjectProvider
     {
 
         readonly IStateObjectDataStore store;
         readonly ILogger logger;
-        readonly AsyncLock sync = new AsyncLock();
-
-        bool init = true;
 
         /// <summary>
         /// Initializes a new instance.
@@ -38,24 +33,37 @@ namespace AspNetStateService.AspNetCore
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
-        async Task InitAsync(CancellationToken cancellationToken)
+        /// <summary>
+        /// Starts the provider.
+        /// </summary>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public async Task StartAsync(CancellationToken cancellationToken)
         {
-            await store.InitAsync(cancellationToken);
-            init = false;
+            logger.Verbose("StartAsync()");
+            await store.StartAsync(cancellationToken);
         }
 
-        async Task EnsureInitAsync(CancellationToken cancellationToken)
+        /// <summary>
+        /// Stops the provider.
+        /// </summary>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public async Task StopAsync(CancellationToken cancellationToken)
         {
-            if (init)
-                using (sync.LockAsync(cancellationToken))
-                    if (init)
-                        await InitAsync(cancellationToken);
+            logger.Verbose("StopAsync()");
+            await store.StopAsync(cancellationToken);
         }
 
-        public async Task<IStateObject> GetStateObjectAsync(string id, CancellationToken cancellationToken)
+        /// <summary>
+        /// Gets the <see cref="IStateObject"/> for the particular ID.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public Task<IStateObject> GetStateObjectAsync(string id, CancellationToken cancellationToken)
         {
-            await EnsureInitAsync(cancellationToken);
-            return new StateObject(id, store, logger);
+            return Task.FromResult<IStateObject>(new StateObject(id, store, logger));
         }
 
     }

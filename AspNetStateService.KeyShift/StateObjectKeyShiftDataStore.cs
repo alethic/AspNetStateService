@@ -1,59 +1,59 @@
 ﻿using System;
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 
-using AspNetStateService.Core;
+using Alethic.Kademlia;
+using Alethic.KeyShift;
 
-using Autofac.Features.AttributeFilters;
+using AspNetStateService.Core;
 
 using Cogito.Autofac;
 using Cogito.Threading;
 
-using Microsoft.Azure.Cosmos.Table;
 using Microsoft.Extensions.Options;
+
+using Newtonsoft.Json;
 
 using Serilog;
 
-namespace AspNetStateService.Azure.Storage.Table
+namespace AspNetStateService.KeyShift
 {
 
     /// <summary>
-    /// Implements a <see cref="IStateObjectDataStore"/> using Azure Storage Tables.
+    /// Implements a <see cref="IStateObjectDataStore"/> using KeyShift.
     /// </summary>
-    [RegisterNamed(typeof(IStateObjectDataStore), "Azure.Storage.Table")]
+    [RegisterNamed(typeof(IStateObjectDataStore), "KeyShift")]
     [RegisterSingleInstance]
     [RegisterWithAttributeFiltering]
-    public class StateObjectTableDataStore : IStateObjectDataStore
+    public class StateObjectKeyShiftDataStore : IStateObjectDataStore
     {
 
-        public const string TypeNameKey = "AspNetStateService.Azure.Storage.Table";
-
-        readonly CloudTableClient client;
-        readonly IStateKeyProvider partitioner;
-        readonly IOptions<StateObjectTableDataStoreOptions> options;
+        readonly KHostedService kademlia;
+        readonly IKsHost<string> keyshift;
+        readonly IOptions<StateObjectKeyShiftDataStoreOptions> options;
         readonly ILogger logger;
         readonly AsyncLock sync = new AsyncLock();
 
-        bool started ;
-        CloudTable table;
+        bool started;
 
         /// <summary>
         /// Initializes a new instance.
         /// </summary>
-        /// <param name="client"></param>
-        /// <param name="partitioner"></param>
+        /// <param name="kademlia"></param>
+        /// <param name="keyshift"></param>
         /// <param name="options"></param>
         /// <param name="logger"></param>
-        public StateObjectTableDataStore([KeyFilter(TypeNameKey)] CloudTableClient client, IStateKeyProvider partitioner, IOptions<StateObjectTableDataStoreOptions> options, ILogger logger)
+        public StateObjectKeyShiftDataStore(KHostedService kademlia, IKsHost<string> keyshift, IOptions<StateObjectKeyShiftDataStoreOptions> options, ILogger logger)
         {
-            this.client = client ?? throw new ArgumentNullException(nameof(client));
-            this.partitioner = partitioner ?? throw new ArgumentNullException(nameof(partitioner));
+            this.kademlia = kademlia ?? throw new ArgumentNullException(nameof(kademlia));
+            this.keyshift = keyshift ?? throw new ArgumentNullException(nameof(keyshift));
             this.options = options ?? throw new ArgumentNullException(nameof(options));
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         /// <summary>
-        /// Starts the table store.
+        /// Starts the store.
         /// </summary>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
@@ -68,25 +68,19 @@ namespace AspNetStateService.Azure.Storage.Table
         }
 
         /// <summary>
-        /// Does the actual work of initialization.
+        /// Does the actual work of starting the store.
         /// </summary>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
         async Task StartImplAsync(CancellationToken cancellationToken)
         {
             logger.Verbose("StartImplAsync()");
-
-            var n = options.Value.TableName ?? "state";
-            logger.Verbose("Creating storage table {TableName}.", n);
-
-            table = client.GetTableReference(n);
-            await table.CreateIfNotExistsAsync(cancellationToken);
-
+            await kademlia.StartAsync(cancellationToken);
             started = true;
         }
 
         /// <summary>
-        /// Stops the table store.
+        /// Stops the store.
         /// </summary>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
@@ -94,84 +88,77 @@ namespace AspNetStateService.Azure.Storage.Table
         {
             logger.Verbose("StopAsync()");
 
-            if (started )
+            if (started)
                 using (await sync.LockAsync())
-                    if (started )
+                    if (started)
                         await StopImplAsync(cancellationToken);
         }
 
         /// <summary>
-        /// Does the actual work of stopping.
+        /// Does the actual work of stoping the store.
         /// </summary>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
         async Task StopImplAsync(CancellationToken cancellationToken)
         {
             logger.Verbose("StopImplAsync()");
+            await kademlia.StopAsync(cancellationToken);
             started = false;
         }
 
         /// <summary>
-        /// Attempts to retrieve the state object from the table.
+        /// Gets the current state.
         /// </summary>
         /// <param name="id"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
         async Task<StateObjectEntity> GetStateObjectAsync(string id, CancellationToken cancellationToken)
         {
-            if (id is null)
-                throw new ArgumentNullException(nameof(id));
+            var o = await keyshift.GetAsync(id, cancellationToken);
+            if (o == null)
+                return null;
 
-            var get = TableOperation.Retrieve<StateObjectEntity>(partitioner.GetPartitionKey(id), partitioner.GetRowKey(id));
-            var rsl = await table.ExecuteAsync(get, cancellationToken);
-            if (rsl.Result is StateObjectEntity ent)
-                return ent;
-
-            return null;
+            using var r = new JsonTextReader(new StreamReader(new MemoryStream(o)));
+            return JsonSerializer.CreateDefault().Deserialize<StateObjectEntity>(r);
         }
 
         /// <summary>
-        /// Attempts to update the state object in the table.
+        /// Sets the current state.
         /// </summary>
-        /// <param name="entity"></param>
+        /// <param name="id"></param>
+        /// <param name="state"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        async Task SetStateObjectAsync(StateObjectEntity entity, CancellationToken cancellationToken)
+        async Task SetStateObjectAsync(string id, StateObjectEntity state, CancellationToken cancellationToken)
         {
-            if (entity is null)
-                throw new ArgumentNullException(nameof(entity));
-
-            var set = TableOperation.InsertOrReplace(entity);
-            await table.ExecuteAsync(set, cancellationToken);
-        }
-
-        TimeSpan? FromLong(long? value)
-        {
-            return value != null ? (TimeSpan?)TimeSpan.FromTicks((long)value) : null;
+            using (var s = new MemoryStream())
+            using (var w = new JsonTextWriter(new StreamWriter(s)))
+            {
+                JsonSerializer.CreateDefault().Serialize(w, state);
+                await w.FlushAsync(cancellationToken);
+                await keyshift.SetAsync(id, s.ToArray(), cancellationToken);
+            }
         }
 
         public async Task<(byte[] data, uint? extraFlags, TimeSpan? timeout, DateTime? altered)> GetDataAsync(string id, CancellationToken cancellationToken)
         {
-            if (table == null)
-                throw new InvalidOperationException();
+            logger.Verbose("GetDataAsync({Id})", id);
 
             var value = await GetStateObjectAsync(id, cancellationToken);
-            return (value?.Data, (uint?)value?.ExtraFlags, FromLong(value?.Timeout), value?.Altered);
+            return (value?.Data, value?.ExtraFlags, value?.Timeout, value?.Altered);
         }
 
         public async Task<(uint? cookie, DateTime? time)> GetLockAsync(string id, CancellationToken cancellationToken)
         {
-            if (table == null)
-                throw new InvalidOperationException();
+            logger.Verbose("GetLockAsync({Id})", id);
 
             var value = await GetStateObjectAsync(id, cancellationToken);
-            return ((uint?)value?.LockCookie, value?.LockTime);
+            return (value?.LockCookie, value?.LockTime);
         }
 
         public async Task RemoveDataAsync(string id, CancellationToken cancellationToken)
         {
-            if (table == null)
-                throw new InvalidOperationException();
+            logger.Verbose("RemoveDataAsync({Id})", id);
 
             var value = await GetStateObjectAsync(id, cancellationToken);
             if (value != null)
@@ -182,13 +169,12 @@ namespace AspNetStateService.Azure.Storage.Table
                 value.Altered = null;
             }
 
-            await SetStateObjectAsync(value, cancellationToken);
+            await SetStateObjectAsync(id, value, cancellationToken);
         }
 
         public async Task RemoveLockAsync(string id, CancellationToken cancellationToken)
         {
-            if (table == null)
-                throw new InvalidOperationException();
+            logger.Verbose("RemoveLockAsync({Id})", id);
 
             var value = await GetStateObjectAsync(id, cancellationToken);
             if (value != null)
@@ -197,67 +183,64 @@ namespace AspNetStateService.Azure.Storage.Table
                 value.LockTime = null;
             }
 
-            await SetStateObjectAsync(value, cancellationToken);
+            await SetStateObjectAsync(id, value, cancellationToken);
         }
 
         public async Task SetDataAsync(string id, byte[] data, uint? extraFlags, TimeSpan? timeout, CancellationToken cancellationToken)
         {
-            if (table == null)
-                throw new InvalidOperationException();
+            logger.Verbose("SetDataAsync({Id}, {ExtraFlags}, {Timeout})", id, extraFlags, timeout);
 
             var value = await GetStateObjectAsync(id, cancellationToken);
             if (value == null)
-                value = new StateObjectEntity(partitioner.GetPartitionKey(id), partitioner.GetRowKey(id), id);
+                value = new StateObjectEntity();
 
             value.Data = data;
-            value.ExtraFlags = (int?)extraFlags;
-            value.Timeout = timeout?.Ticks;
+            value.ExtraFlags = extraFlags;
+            value.Timeout = timeout;
             value.Altered = DateTime.UtcNow;
 
-            await SetStateObjectAsync(value, cancellationToken);
+            await SetStateObjectAsync(id, value, cancellationToken);
         }
 
         public async Task SetFlagAsync(string id, uint? extraFlags, CancellationToken cancellationToken)
         {
-            if (table == null)
-                throw new InvalidOperationException();
+            logger.Verbose("SetFlagAsync({Id}, {ExtraFlags})", id, extraFlags);
 
             var value = await GetStateObjectAsync(id, cancellationToken);
             if (value == null)
-                value = new StateObjectEntity(partitioner.GetPartitionKey(id), partitioner.GetRowKey(id), id);
+                value = new StateObjectEntity();
 
-            value.ExtraFlags = (int?)extraFlags;
+            value.ExtraFlags = extraFlags;
 
-            await SetStateObjectAsync(value, cancellationToken);
+            await SetStateObjectAsync(id, value, cancellationToken);
+
         }
 
         public async Task SetLockAsync(string id, uint cookie, DateTime time, CancellationToken cancellationToken)
         {
-            if (table == null)
-                throw new InvalidOperationException();
+            logger.Verbose("SetLockAsync({Id}, {Cookie}, {Time})", id, cookie, time);
 
             var value = await GetStateObjectAsync(id, cancellationToken);
             if (value == null)
-                value = new StateObjectEntity(partitioner.GetPartitionKey(id), partitioner.GetRowKey(id), id);
+                value = new StateObjectEntity();
 
-            value.LockCookie = (int)cookie;
+            value.LockCookie = cookie;
             value.LockTime = time;
 
-            await SetStateObjectAsync(value, cancellationToken);
+            await SetStateObjectAsync(id, value, cancellationToken);
         }
 
         public async Task SetTimeoutAsync(string id, TimeSpan? timeout, CancellationToken cancellationToken)
         {
-            if (table == null)
-                throw new InvalidOperationException();
+            logger.Verbose("SetTimeoutAsync({Id}, {Timeout})", id, timeout);
 
             var value = await GetStateObjectAsync(id, cancellationToken);
             if (value == null)
-                value = new StateObjectEntity(partitioner.GetPartitionKey(id), partitioner.GetRowKey(id), id);
+                value = new StateObjectEntity();
 
-            value.Timeout = timeout?.Ticks;
+            value.Timeout = timeout;
 
-            await SetStateObjectAsync(value, cancellationToken);
+            await SetStateObjectAsync(id, value, cancellationToken);
         }
 
     }

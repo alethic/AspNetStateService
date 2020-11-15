@@ -29,6 +29,26 @@ namespace AspNetStateService.Fabric.Services
         }
 
         /// <summary>
+        /// Starts the data store.
+        /// </summary>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public Task StartAsync(CancellationToken cancellationToken)
+        {
+            return Task.CompletedTask;
+        }
+
+        /// <summary>
+        /// Stops the data store.
+        /// </summary>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public Task StopAsync(CancellationToken cancellationToken)
+        {
+            return Task.CompletedTask;
+        }
+
+        /// <summary>
         /// Gets the given state object from the state manager.
         /// </summary>
         /// <typeparam name="T"></typeparam>
@@ -62,16 +82,6 @@ namespace AspNetStateService.Fabric.Services
         Task RemoveStateAsync(string stateName, CancellationToken cancellationToken)
         {
             return actor.StateManager.TryRemoveStateAsync(stateName, cancellationToken);
-        }
-
-        /// <summary>
-        /// Initializes the data store.
-        /// </summary>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
-        public Task InitAsync(CancellationToken cancellationToken)
-        {
-            return Task.CompletedTask;
         }
 
         /// <summary>

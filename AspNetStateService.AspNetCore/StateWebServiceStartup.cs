@@ -41,15 +41,24 @@ namespace AspNetStateService.AspNetCore
         /// <summary>
         /// Gets a reference to the <see cref="IStateObject"/> implementation.
         /// </summary>
+        /// <param name="provider"></param>
         /// <param name="context"></param>
         /// <returns></returns>
-        protected Task<IStateObject> GetStateObjectAsync(HttpContext context)
+        protected Task<IStateObject> GetStateObjectAsync(IStateObjectProvider provider, HttpContext context)
         {
             var str = context.Request.Path.Value.TrimStart('/');
             var uri = WebUtility.UrlDecode(str);
-            
-            var ctx = context.RequestServices.GetRequiredService<IComponentContext>();
-            return GetStateObjectProvider(ctx).GetStateObjectAsync(uri, context.RequestAborted);
+
+            return provider.GetStateObjectAsync(uri, context.RequestAborted);
+        }
+
+        /// <summary>
+        /// Configures the services.
+        /// </summary>
+        /// <param name="services"></param>
+        public virtual void ConfigureServices(IServiceCollection services)
+        {
+            services.AddRouting();
         }
 
         /// <summary>
@@ -59,9 +68,19 @@ namespace AspNetStateService.AspNetCore
         /// <param name="applicationLifetime"></param>
         public virtual void Configure(IApplicationBuilder app, IHostApplicationLifetime applicationLifetime)
         {
-            app.Use(async (ctx, next) =>
+            var provider = GetStateObjectProvider(app.ApplicationServices.GetService<IComponentContext>());
+            if (provider == null)
+                throw new InvalidOperationException("Could not initialize state object provider.");
+
+            applicationLifetime.ApplicationStarted.Register(() => provider.StartAsync(CancellationToken.None).GetAwaiter().GetResult());
+            applicationLifetime.ApplicationStopped.Register(() => provider.StopAsync(CancellationToken.None).GetAwaiter().GetResult());
+
+            app.UseRouting();
+            app.UseDynamicPipeline();
+
+            app.Map("", b => b.Use(async (ctx, next) =>
             {
-                var state = await GetStateObjectAsync(ctx);
+                var state = await GetStateObjectAsync(provider, ctx);
                 if (state == null)
                     throw new InvalidOperationException("Could not resolve state object for request.");
 
@@ -88,7 +107,7 @@ namespace AspNetStateService.AspNetCore
                 }
 
                 await next();
-            });
+            }));
         }
 
         /// <summary>
