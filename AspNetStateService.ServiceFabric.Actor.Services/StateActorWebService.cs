@@ -8,7 +8,7 @@ using Cogito.ServiceFabric.Services.Autofac;
 
 using Microsoft.AspNetCore.Hosting;
 
-namespace AspNetStateService.Fabric.Services
+namespace AspNetStateService.ServiceFabric.Actor.Services
 {
 
     [RegisterStatelessService("StateWebService", DefaultEndpointName = "HttpServiceEndpoint")]

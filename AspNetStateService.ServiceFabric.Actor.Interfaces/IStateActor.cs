@@ -6,7 +6,7 @@ using AspNetStateService.Interfaces;
 
 using Microsoft.ServiceFabric.Actors;
 
-namespace AspNetStateService.Fabric.Interfaces
+namespace AspNetStateService.ServiceFabric.Actor.Interfaces
 {
 
     /// <summary>

@@ -6,7 +6,7 @@ using System.Web.SessionState;
 
 using Microsoft.AspNet.SessionState;
 
-namespace AspNetStateService.Fabric.Client
+namespace AspNetStateService.ServiceFabric.Actor.Client
 {
 
     public class FabricSessionStateStoreProvider : SessionStateStoreProviderAsyncBase

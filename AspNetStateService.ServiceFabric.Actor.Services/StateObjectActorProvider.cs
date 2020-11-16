@@ -1,14 +1,14 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 
-using AspNetStateService.Fabric.Core;
-using AspNetStateService.Fabric.Interfaces;
+using AspNetStateService.ServiceFabric.Actor.Core;
+using AspNetStateService.ServiceFabric.Actor.Interfaces;
 using AspNetStateService.Interfaces;
 
 using Microsoft.ServiceFabric.Actors;
 using Microsoft.ServiceFabric.Actors.Client;
 
-namespace AspNetStateService.Fabric.Services
+namespace AspNetStateService.ServiceFabric.Actor.Services
 {
 
     /// <summary>

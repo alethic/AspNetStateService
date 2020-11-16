@@ -29,7 +29,7 @@
     <None Include="Scripts\Deploy-FabricApplication.ps1" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\AspNetStateService.Fabric.Services\AspNetStateService.Fabric.Services.csproj" />
+    <ProjectReference Include="..\AspNetStateService.ServiceFabric.Actor.Services\AspNetStateService.ServiceFabric.Actor.Services.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />

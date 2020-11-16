@@ -3,8 +3,8 @@ using System.Threading;
 using System.Threading.Tasks;
 
 using AspNetStateService.Core;
-using AspNetStateService.Fabric.Interfaces;
 using AspNetStateService.Interfaces;
+using AspNetStateService.ServiceFabric.Actor.Interfaces;
 
 using Cogito.ServiceFabric.Actors.Autofac;
 
@@ -13,7 +13,7 @@ using Microsoft.ServiceFabric.Actors.Runtime;
 
 using Serilog;
 
-namespace AspNetStateService.Fabric.Services
+namespace AspNetStateService.ServiceFabric.Actor.Services
 {
 
     /// <summary>
@@ -21,7 +21,7 @@ namespace AspNetStateService.Fabric.Services
     /// </summary>
     [RegisterActor(typeof(StateActorService))]
     [StatePersistence(StatePersistence.Volatile)]
-    public class StateActor : Actor, IStateActor
+    public class StateActor : Microsoft.ServiceFabric.Actors.Runtime.Actor, IStateActor
     {
 
         public static readonly TimeSpan DEFAULT_TIMEOUT = TimeSpan.FromMinutes(20);

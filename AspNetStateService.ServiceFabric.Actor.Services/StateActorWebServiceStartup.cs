@@ -3,7 +3,7 @@ using AspNetStateService.Interfaces;
 
 using Autofac;
 
-namespace AspNetStateService.Fabric.Services
+namespace AspNetStateService.ServiceFabric.Actor.Services
 {
 
     public class StateActorWebServiceStartup : StateWebServiceStartup

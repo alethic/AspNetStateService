@@ -6,7 +6,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\AspNetStateService.Core\AspNetStateService.Core.csproj" />
-    <ProjectReference Include="..\AspNetStateService.Fabric.Interfaces\AspNetStateService.Fabric.Interfaces.csproj" />
+    <ProjectReference Include="..\AspNetStateService.ServiceFabric.Actor.Interfaces\AspNetStateService.ServiceFabric.Actor.Interfaces.csproj" />
     <ProjectReference Include="..\AspNetStateService.Interfaces\AspNetStateService.Interfaces.csproj" />
   </ItemGroup>
 

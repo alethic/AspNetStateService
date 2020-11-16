@@ -5,7 +5,7 @@ using Autofac;
 
 using Cogito.Autofac;
 
-namespace AspNetStateService.Fabric.Services
+namespace AspNetStateService.ServiceFabric.Actor.Services
 {
 
     public static class Program

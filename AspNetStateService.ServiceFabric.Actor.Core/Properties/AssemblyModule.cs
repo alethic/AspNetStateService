@@ -2,7 +2,7 @@
 
 using Cogito.Autofac;
 
-namespace AspNetStateService.Fabric.Core
+namespace AspNetStateService.ServiceFabric.Actor.Core
 {
 
     public class AssemblyModule : ModuleBase

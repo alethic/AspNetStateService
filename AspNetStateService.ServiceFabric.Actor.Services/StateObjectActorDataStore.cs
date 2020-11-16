@@ -8,7 +8,7 @@ using Cogito.Autofac;
 
 using Microsoft.ServiceFabric.Actors.Runtime;
 
-namespace AspNetStateService.Fabric.Services
+namespace AspNetStateService.ServiceFabric.Actor.Services
 {
 
     /// <summary>

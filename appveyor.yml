@@ -22,10 +22,10 @@ before_build:
 
 build_script:
   - cmd: msbuild.exe AspNetStateService.sln /t:AspNetStateService_Fabric:Package
-  - ps: .\Update-PackageVersion.ps1 -PackagePath "$($env:BuildPath)\AspNetStateService.Fabric\pkg\$($env:Configuration)" -Version $env:GitVersion_NuGetVersion
+  - ps: .\Update-PackageVersion.ps1 -PackagePath "$($env:BuildPath)\AspNetStateService.ServiceFabric.Actor\pkg\$($env:Configuration)" -Version $env:GitVersion_NuGetVersion
 
 after_build:
-  - ps: Compress-Archive -Path "$($env:BuildPath)\AspNetStateService.Fabric\pkg\$($env:Configuration)\*" -DestinationPath "$($env:ServiceFabricPackageName).zip"
+  - ps: Compress-Archive -Path "$($env:BuildPath)\AspNetStateService.ServiceFabric.Actor\pkg\$($env:Configuration)\*" -DestinationPath "$($env:ServiceFabricPackageName).zip"
   - ps: Move-Item "$($env:BuildPath)\$($env:ServiceFabricPackageName).zip" "$($env:BuildPath)\$($env:ServiceFabricPackageName).sfpkg"
 
 artifacts:

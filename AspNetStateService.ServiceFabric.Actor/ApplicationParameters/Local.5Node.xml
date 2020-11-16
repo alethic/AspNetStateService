@@ -1,8 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Application xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Name="fabric:/AspNetStateService" xmlns="http://schemas.microsoft.com/2011/01/fabric">
+<Application xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Name="fabric:/AspNetStateService.Actor" xmlns="http://schemas.microsoft.com/2011/01/fabric">
   <Parameters>
-    <Parameter Name="Seq:ServerUrl" Value="http://devseq01.dev.fileandserve.com/" />
-    <Parameter Name="Seq:ApiKey" Value="WXpJvykk0QUmgw6w6TKl" />
     <Parameter Name="StateWebService_InstanceCount" Value="1" />
     <Parameter Name="StateActorService_PartitionCount" Value="4" />
     <Parameter Name="StateActorService_TargetReplicaSetSize" Value="1" />

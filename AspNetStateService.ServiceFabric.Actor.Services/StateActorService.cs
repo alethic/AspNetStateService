@@ -3,7 +3,7 @@ using System.Fabric;
 using System.Threading;
 using System.Threading.Tasks;
 
-using AspNetStateService.Fabric.Interfaces;
+using AspNetStateService.ServiceFabric.Actor.Interfaces;
 
 using Microsoft.ServiceFabric.Actors;
 using Microsoft.ServiceFabric.Actors.Client;
@@ -12,7 +12,7 @@ using Microsoft.ServiceFabric.Actors.Runtime;
 
 using Serilog;
 
-namespace AspNetStateService.Fabric.Services
+namespace AspNetStateService.ServiceFabric.Actor.Services
 {
 
     public class StateActorService : ActorService
