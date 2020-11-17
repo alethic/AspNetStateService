@@ -14,7 +14,6 @@ namespace AspNetStateService.Console
         protected override void Register(ContainerBuilder builder)
         {
             builder.RegisterFromAttributes(typeof(AssemblyModule).Assembly);
-            builder.Populate(s => s.AddHttpClient());
         }
 
     }

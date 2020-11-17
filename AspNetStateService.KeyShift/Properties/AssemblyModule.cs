@@ -13,7 +13,6 @@ using Cogito.Autofac;
 using Cogito.Autofac.DependencyInjection;
 using Cogito.Extensions.Options.Autofac;
 
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace AspNetStateService.KeyShift

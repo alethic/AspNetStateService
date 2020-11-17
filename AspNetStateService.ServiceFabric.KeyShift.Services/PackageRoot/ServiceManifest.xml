@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ServiceManifest xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Name="AspNetStateService.ServiceFabric.KeyShift.ServicesPkg" Version="1.0.0" xmlns="http://schemas.microsoft.com/2011/01/fabric">
+  <ServiceTypes>
+    <StatelessServiceType ServiceTypeName="StateKeyShiftService" />
+  </ServiceTypes>
+  <CodePackage Name="Code" Version="1.0.0">
+    <EntryPoint>
+      <ExeHost>
+        <Program>AspNetStateService.ServiceFabric.KeyShift.Services.exe</Program>
+      </ExeHost>
+    </EntryPoint>
+  </CodePackage>
+  <ConfigPackage Name="Config" Version="1.0.0" />
+  <Resources>
+    <Endpoints>
+      <Endpoint Name="HttpServiceEndpoint" Protocol="http" Type="Input" Port="42424" />
+    </Endpoints>
+  </Resources>
+</ServiceManifest>

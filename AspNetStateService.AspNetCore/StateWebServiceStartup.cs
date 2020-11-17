@@ -78,7 +78,7 @@ namespace AspNetStateService.AspNetCore
             app.UseRouting();
             app.UseDynamicPipeline();
 
-            app.Map("", b => b.Use(async (ctx, next) =>
+            app.Map(PathString.Empty, b => b.Use(async (ctx, next) =>
             {
                 var state = await GetStateObjectAsync(provider, ctx);
                 if (state == null)

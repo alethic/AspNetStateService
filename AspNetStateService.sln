@@ -47,7 +47,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AspNetStateService.MongoDB"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AspNetStateService.Amazon.S3", "AspNetStateService.Amazon.S3\AspNetStateService.Amazon.S3.csproj", "{27C130BA-C11D-4A3B-AFDE-8AA725E55472}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AspNetStateService.KeyShift", "AspNetStateService.KeyShift\AspNetStateService.KeyShift.csproj", "{B30AA1CF-1B9B-4E5E-A575-4AD2F4F00484}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AspNetStateService.KeyShift", "AspNetStateService.KeyShift\AspNetStateService.KeyShift.csproj", "{B30AA1CF-1B9B-4E5E-A575-4AD2F4F00484}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AspNetStateService.ServiceFabric.Actor.Services", "AspNetStateService.ServiceFabric.Actor.Services\AspNetStateService.ServiceFabric.Actor.Services.csproj", "{415E70A2-E22C-4C52-BC45-23D5FFCD8999}"
 EndProject
@@ -56,6 +56,10 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AspNetStateService.ServiceFabric.Actor.Core", "AspNetStateService.ServiceFabric.Actor.Core\AspNetStateService.ServiceFabric.Actor.Core.csproj", "{E3CE8F2B-B20B-4C51-A293-B50438896AD5}"
 EndProject
 Project("{A07B5EB6-E848-4116-A8D0-A826331D98C6}") = "AspNetStateService.ServiceFabric.Actor", "AspNetStateService.ServiceFabric.Actor\AspNetStateService.ServiceFabric.Actor.sfproj", "{B8B2E8B2-4AC3-454A-B207-B02CAB46A6BF}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AspNetStateService.ServiceFabric.KeyShift.Services", "AspNetStateService.ServiceFabric.KeyShift.Services\AspNetStateService.ServiceFabric.KeyShift.Services.csproj", "{0D96DBC5-8C36-49AA-B9C1-46A5603114F9}"
+EndProject
+Project("{A07B5EB6-E848-4116-A8D0-A826331D98C6}") = "AspNetStateService.ServiceFabric.KeyShift", "AspNetStateService.ServiceFabric.KeyShift\AspNetStateService.ServiceFabric.KeyShift.sfproj", "{23BE37E2-7B55-47B4-B689-E7CE503528F3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -151,6 +155,14 @@ Global
 		{B8B2E8B2-4AC3-454A-B207-B02CAB46A6BF}.Debug|Any CPU.Build.0 = Debug|x64
 		{B8B2E8B2-4AC3-454A-B207-B02CAB46A6BF}.Debug|Any CPU.Deploy.0 = Debug|x64
 		{B8B2E8B2-4AC3-454A-B207-B02CAB46A6BF}.Release|Any CPU.ActiveCfg = Release|x64
+		{0D96DBC5-8C36-49AA-B9C1-46A5603114F9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0D96DBC5-8C36-49AA-B9C1-46A5603114F9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0D96DBC5-8C36-49AA-B9C1-46A5603114F9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0D96DBC5-8C36-49AA-B9C1-46A5603114F9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{23BE37E2-7B55-47B4-B689-E7CE503528F3}.Debug|Any CPU.ActiveCfg = Debug|x64
+		{23BE37E2-7B55-47B4-B689-E7CE503528F3}.Debug|Any CPU.Build.0 = Debug|x64
+		{23BE37E2-7B55-47B4-B689-E7CE503528F3}.Debug|Any CPU.Deploy.0 = Debug|x64
+		{23BE37E2-7B55-47B4-B689-E7CE503528F3}.Release|Any CPU.ActiveCfg = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

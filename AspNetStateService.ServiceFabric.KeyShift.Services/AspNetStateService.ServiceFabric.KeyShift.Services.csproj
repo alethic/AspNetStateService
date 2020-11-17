@@ -21,7 +21,6 @@
         <PackageReference Include="Cogito.Extensions.Configuration.Autofac" Version="2.1.14" />
         <PackageReference Include="Cogito.Extensions.Logging.Serilog.Autofac" Version="2.0.20" />
         <PackageReference Include="Cogito.ServiceFabric.Autofac" Version="3.0.11" />
-        <PackageReference Include="Cogito.ServiceFabric.Actors.Autofac" Version="3.0.11" />
         <PackageReference Include="Cogito.ServiceFabric.Configuration.Autofac" Version="3.0.11" />
         <PackageReference Include="Cogito.ServiceFabric.AspNetCore.Kestrel.Autofac" Version="3.0.11" />
         <PackageReference Include="Cogito.ServiceFabric.Services.Autofac" Version="3.0.11" />
@@ -36,9 +35,8 @@
         <ProjectReference Include="..\AspNetStateService.AspNetCore.Kestrel\AspNetStateService.AspNetCore.Kestrel.csproj" />
         <ProjectReference Include="..\AspNetStateService.AspNetCore\AspNetStateService.AspNetCore.csproj" />
         <ProjectReference Include="..\AspNetStateService.Core\AspNetStateService.Core.csproj" />
-        <ProjectReference Include="..\AspNetStateService.ServiceFabric.Actor.Core\AspNetStateService.ServiceFabric.Actor.Core.csproj" />
-        <ProjectReference Include="..\AspNetStateService.ServiceFabric.Actor.Interfaces\AspNetStateService.ServiceFabric.Actor.Interfaces.csproj" />
         <ProjectReference Include="..\AspNetStateService.Interfaces\AspNetStateService.Interfaces.csproj" />
+        <ProjectReference Include="..\AspNetStateService.KeyShift\AspNetStateService.KeyShift.csproj" />
     </ItemGroup>
 
 </Project>
