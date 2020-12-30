@@ -5,7 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Cogito.Core" Version="3.1.18" />
+    <PackageReference Include="Cogito.Core" Version="3.1.36" />
     <PackageReference Include="Microsoft.AspNet.SessionState.SessionStateModule" Version="1.1.0" />
     <PackageReference Include="Microsoft.ServiceFabric" Version="7.1.458" />
     <PackageReference Include="Microsoft.ServiceFabric.Services" Version="4.1.458" />

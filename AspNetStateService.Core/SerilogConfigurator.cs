@@ -17,8 +17,6 @@ namespace AspNetStateService.Core
                 .MinimumLevel.Verbose()
 #endif
                 .Enrich.WithEnvironmentUserName()
-                .Enrich.WithExceptionLogContext()
-                .Enrich.WithMachineName()
                 .Enrich.WithMachineName()
                 .Enrich.WithMemoryUsage()
                 .Enrich.WithProcessId()
